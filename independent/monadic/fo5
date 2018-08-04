@@ -1,0 +1,1 @@
+ALL x (m(x) THEN p(x)) AND ALL x (s(x) THEN m(x)) THEN ALL x (s(x) THEN p(x))

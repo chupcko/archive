@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>EmoPedia</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" href="index.css" type="text/css"/>
+    <script type="text/javascript" src="index.js"></script>
+  </head>
+  <body onload="onLoad();" class="body">
+    <div class="center">
+      <div class="main">
+        <div class="title center shadow">EmoPedia</div>
+        <p/>
+        <div class="center">
+          <form onsubmit="return submitSearch();">
+            <input type="text" value="" id="query" onkeypress="return keyPressSearch(event);" class="input"/>
+            <a href="" id="submit" onclick="return submitSearch();" class="submit">Search</a>
+          </form>
+        </div>
+        <div id="status" class="status"></div>
+        <div id="search" class="frame hidden"></div>
+        <div id="view" class="frame hidden"></div>
+        <div class="signature center">By: Irena Spasi&#x0107;, Goran Lazi&#x0107;</div>
+      </div>
+    </div>
+  </body>
+</html>

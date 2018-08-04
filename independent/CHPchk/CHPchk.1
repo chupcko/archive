@@ -1,0 +1,55 @@
+.TH CHPchk 1L "CHPchk 0.03" "GCL" \" -*- nroff -*-
+.SH IME
+CHPchk 0.03 \- izracunavanje kontrolne sume datoteka
+.SH SINTAKSA
+.B CHPchk
+[\-h] | (ime | \-f datoteka | \-d | \-D)...
+.SH OPIS
+.B CHPchk
+ispisuje na standradni izlaz kontrolnu sumu ( po algoritmima
+.B MD5
+i
+.B CRC
+) navedenih datoteka.
+.SS Opcije
+.TP
+.I \-h
+ispisuje ovo upustvo
+.TP
+.I "\-f D"
+proverava datoteke zapisane u datoteci
+.IR D
+, umesto imena datoteke se moze navesti
+.IR \-
+i tada cita iz stanardne ulazne datoteke
+.TP
+.I \-d
+ne ispisuje datum, umesto datuma ispise 0
+.TP
+.I \-D
+ponovo ispisuje datum
+.SH FORMAT IZLAZA
+.TP
+.I "Ako datoteka ne postoji:"
+r name
+.TP
+.I "Direktorijum:"
+d mode owner group ctime number name
+.TP
+.I "Simbolicki link:"
+l mode owner group ctime link_to name
+.TP
+.I "Blok uredjaj:"
+b mode owner group type ctime name
+.TP
+.I "Karakter uredjaj:"
+c mode owner group type ctime name
+.TP
+.I "Regularna datoteka:"
+f mode owner group size ctime crc md5 name
+.TP
+.I "Ostalo:"
+n mode owner group type ctime name
+.SH AUTOR
+Goran "CHUPCKO" Lazic, koji ne snosi nikakvu odgovornost
+povodom eventualno nastalih problema u radu.

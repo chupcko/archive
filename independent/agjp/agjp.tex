@@ -1,0 +1,1510 @@
+\documentstyle[titlepage,11pt,a4]{article}
+
+  \def\b{$\backslash$}
+  \def\d{d\kern-0.4em\char"16\kern-0.1em}
+  \def\hs{\hspace*{1em}}
+  \def\lra{$\longrightarrow$}
+  \def\naslov#1{\newpage\section{#1}\vspace{3em}}
+  \def\podnaslov#1{\subsection{#1}\vspace{2em}}
+  \def\Ra{\Rightarrow}
+  \def\ra{\rightarrow}
+  \def\s{\hspace*{0.55em}}
+  \def\t#1{{\tt #1}}
+  \def\x{\^\space}
+
+  \def\contentsname{Sadr\v zaj}
+
+\begin{document}
+%
+%
+  \begin{titlepage}
+    \vspace{10em}
+    \begin{center}
+      {\Large UNIVERZITET U BEOGRADU}\\
+      \vspace{1cm}
+      {\Large Matemati\v cki fakultet}\\
+      \vspace{4.5cm}
+      {\Large{\bf Goran Lazi\'c}}\\
+      \vspace{1cm}
+      {\LARGE{\bf Generisanje LL(1)}}\\
+      {\LARGE{\bf sintaksnih analizatora}}\\
+      \vspace{0.7cm}
+      {\Large Diplomski rad}\\
+      \vspace{2cm}
+      {\Large{\bf Mentor: dr.\ Gordana Pavlovi\'c-La\v zeti\'c}}\\
+      \vspace{6.5cm}
+      {\large Beograd, 1995}
+    \end{center}
+  \end{titlepage}
+%
+%
+  \tableofcontents
+%
+%
+  \noindent
+  \naslov{Uvod}
+    U ovom radu bi\'ce opisan jedan metod generisanja sintaksnih analizatora
+    za LL(1) gramatike.
+    Pre svega neophodno je definisati pojmove vezane za formalne gramatike
+    kao i same formalne gramatike.
+    Zatim se defini\v se LL(1) klasa gramatika, za koje je generisanje
+    sintaksnih analizatora veoma jednostavno.
+    Najzad se uvodi sam sistem jezi\v ckih procesora kao jedna
+    implementacija leksi\v cke i sintaksne analize.
+%
+%
+    \podnaslov{Formalne gramatike}
+      Da bi uveli pojam LL(1) gramatike moramo uvesti ve\'ci broj pojmova:\\
+      \\
+      {\em Azbuka} je kona\v can neprazan skup.\\
+      Elementi azbuke su {\em slova}.\\
+      \\
+      {\em Re\v c} ili {\em niska} nad azbukom $\Sigma$ je kona\v can niz
+      slova iz $\Sigma$.\\
+      {\em Prazna re\v c} ili {\em prazna niska} je re\v c bez slova, koja
+      se obele\v zava simbolom $\epsilon$.\\
+      \\
+      {\em Du\v zina re\v ci} $w$ nad azbukom $\Sigma$ je broj slova
+      re\v ci $w$ i ozna\v cava se $|w|$ ($|\epsilon|=0$).\\
+      \\
+      $\Sigma^{i}$ je skup svih re\v ci nad azbukom $\Sigma$ du\v zine
+      $i$ ($\Sigma^{0}=\{\epsilon\}$).\\
+      {\em Skup re\v ci} nad azbukom $\Sigma$ je
+      $\Sigma^{*}=\bigcup^{\infty}_{i=0}\Sigma^{i}$.\\
+      \\
+      {\em Jezik} nad azbukom $\Sigma$ je bilo koji skup
+      $L\subseteq\Sigma^{*}$.\\
+      \\
+      {\em Konkatenacija re\v ci} $u$ i $v$ nad azbukom $\Sigma$ ($|u|=n$,
+      $|v|=m$) je re\v c $w$, u oznaci $uv$, takva da je $|w|=n+m$ i $i$-to
+      slovo re\v ci $w$ je jednako $i$-tom slovu re\v ci $u$ kad je
+      $i\leq n$, odnosno $(i-n)$-tom slovu re\v ci $v$ kada je $i>n$.\\
+      \\
+      Neka su $L$, $L_{1}$, $L_{2}$ jezici nad azbukom $\Sigma$:
+      \begin{enumerate}
+        \item
+        {
+          {\em Konkatenacija jezika} $L_{1}$ i $L_{2}$ je jezik
+          $L_{1}L_{2}=\{uv:u\in L_{1}, v\in L_{2}\}$.
+        }
+        \item
+        {
+          {\em $n$-ti stepen jezika} $L$ ($n\ge 0$) je jezik
+          $
+            L^{n}=
+            \left\{
+            \begin{array}{ll}
+              \{\epsilon\}&,n=0\\
+              LL^{n-1}    &,n>0\\
+            \end{array}
+            \right.
+          $.
+        }
+        \item
+        {
+          {\em Iteracija jezika} L je jezik
+          $L^{*}=\bigcup^{\infty}_{i=0}L^{i}$.
+        }
+      \end{enumerate}
+      {\em Gramatika} je ure\d ena \v cetvorka $G=(N,\Sigma,P,S)$ gde je:
+      \begin{itemize}
+        \item[-]
+        {
+          $N$ neterminalna azbuka, slova te azbuke su {\em neterminali}.
+        }
+        \item[-]
+        {
+          $\Sigma$ terminalna azbuka, slova te azbuke su {\em terminali};
+          $\Sigma\cap N=\emptyset$.
+        }
+        \item[-]
+        {
+          $P$ kona\v can skup {\em pravila} zamene,
+          $P\subset(N\cup\Sigma)^{*}N(N\cup\Sigma)^{*}\times(N\cup\Sigma)^{*}$.
+          Umesto $(\alpha,\beta)\in P$ pi\v semo $\alpha\ra_{G}\beta$ i
+          \v citamo ``$\alpha$ se zamenjuje sa $\beta$ u gramatici $G$''.\\
+        }
+        \item[-]
+        {
+          $S\in N$ {\em po\v cetno slovo}.
+        }
+      \end{itemize}
+      Ako u gramatici $G=(N,\Sigma,P,S)$ postoji pravilo $\alpha\ra_{G}\beta$,
+      onda za svake dve re\v ci $\gamma,\delta\in(N\cup\Sigma)^{*}$ va\v zi
+      $\gamma\alpha\delta\Ra_{G}\gamma\beta\delta$ i ka\v ze se da se re\v c
+      $\gamma\beta\delta$ {\em neposredno izvodi} iz re\v ci
+      $\gamma\alpha\delta$.\\
+      $\Ra^{k}_{G}$ je $k$-ti stepen relacije $\Ra_{G}$.\\
+      $\Ra^{+}_{G}$ je tranzitivno zatvorenje relacije $\Ra_{G}$.\\
+      $\Ra^{*}_{G}$ je tranzitivno i refleksivno zatvorenje relacije $\Ra_{G}$.\\
+      \\
+      {\em Jezik definisan gramatikom} $G=(N,\Sigma,P,S)$ je\\
+      $L(G)=\{w\in\Sigma^{*}:S\Ra^{*}_{G}w\}$.\\
+      \\
+      {\em Jezik gramti\v ckih formi} gramatike $G=(N,\Sigma,P,S)$ je\\
+      $GF(G)=\{\alpha\in(N\cup\Sigma)^{*}:S\Ra^{*}_{G}\alpha\}$.\\
+      \\
+      {\em Izvo\d enje} u gramatici $G=(N,\Sigma,P,S)$ je niz gramati\v ckih
+      formi $\alpha_{0},\alpha_{1},\ldots,\alpha_{n}$ gde je $\alpha_{0}=S$
+      i $\alpha_{i}\Ra_{G}\alpha_{i+1}$ za svako $i$, $0<i\leq n$.\\
+      \\
+      Gramatika $G=(N,\Sigma,P,S)$ je po klasifikaciji \v Comskog:
+      \begin{enumerate}
+        \item
+        {
+          {\em Desno linearna} ako su sva pravila oblika $A\ra_{G} w$ ili
+          $A\ra_{G} wB$, gde su $A,B\in N$, $w\in \Sigma^{*}$
+        }
+        \item
+        {
+          {\em Kontekst slobodna} ako su sva pravila oblika $A\ra_{G}\alpha$
+          gde su $A\in N$, $\alpha\in(N\cup\Sigma)^{*}$.
+        }
+        \item
+        {
+          {\em Kontekst zavisna} ako su sva pravila oblika $\alpha\ra_{G}\beta$
+          gde su $\alpha,\beta\in(N\cup\Sigma)^{*}$, $\alpha$ ima bar jedan
+          neterminal i $|\alpha|\leq|\beta|$.
+        }
+        \item
+        {
+          Ostale gramatike su {\em bez ograni\v cenja}.
+        }
+      \end{enumerate}
+      Kod konteksno slobodnih gramatika mo\v zemo definisati {\em levo
+      izvo\d enje} kao izvo\-\d enje u kojem se svaka slede\'ca
+      gramati\v cka forma dobija iz prethodne zamenom prvog nezavr\v snog
+      slova.\\
+      \\
+      Gramati\v cke forme od kojih se sastoji levo izvo\d enje su {\em leve
+      gramati\v cke forme}.
+%
+%
+    \podnaslov{LL(1) gramatike}
+      Problem odre\d ivanja da li neka re\v c pripada nekom jeziku je
+      problem sintaksne analize.
+      Ako se usredsredimo na sintaksnu analizu konteksno slobodnih gramatika,
+      postoje dva osnovana algoritma sintaksne analize:
+      \begin{enumerate}
+        \item
+        {
+          Sintaksna analiza odozgo na ni\v ze sa vra\'canjem se zasniva na
+          ideji da kre\'cu\'ci od po\v cetnog slova odredimo izvo\d enje
+          neke re\v ci.
+        }
+        \item
+        {
+          Sintaksna analiza odozdo navi\v se sa vra\'canjem se zasniva na
+          ideji da se izvo\d enje odredi od slova re\v ci do po\v cetnog
+          slova (donekle u suprotnom smeru od prethodnog algoritma).
+        }
+      \end{enumerate}
+      Ovi algoritmi su detaljno opisani u [1].
+      Pitanje je da li mo\v zemo da odredimo klasu gramatika, tako da
+      u sintaksnoj analizi te gramatike odozgo na ni\v ze, ne bude
+      vra\'canja.
+      To jest, bilo bi lepo da kod tra\v zenja levog izvo\d enja neke
+      re\v ci, nepro\v citani deo ulazne re\v ci odre\d uje dalji
+      tok izvo\d enja.
+      Dakle, treba odrediti tu klasu konteksno slobodnih gramatika kod
+      kojih u sintaksnoj analizi odozgo na ni\v ze nema vra\'canja.\\
+      \\
+      Definicija:\\
+      Neka je $G=(N,\Sigma,P,S)$ gramatika.
+      Ako za svaku re\v c $x\in L(G)$ i svaku levu gramati\v cku formu
+      $uA\beta$ ($S\Ra^{*}_{G}uA\beta$) koja je saglasna sa $x$
+      ($x=uv$, $v\in\Sigma^{*}$), $A\in N$, $uA\beta\Ra^{*}_{G}x$,
+      izbor $A$-pravila koje treba primeniti da bi se dobila slede\'ca
+      leva gramati\v cka forma izvo\d enja re\v ci $x$, jednozna\v cno
+      odre\d en na osnovu prvog slova re\v ci $v\#$ ($\#$ je slovo
+      koje se ne nalazi u $\Sigma$, tuma\v cimo ga kao oznaku kraja ulaza),
+      onda je $G$ LL(1) gramatika.\\
+      \\
+      Za LL(1) gramatiku $G=(N,\Sigma,P,S)$ va\v zi slede\'ce:\\
+      Ako postoji levo izvo\d enje:\\
+      $S\#\Ra^{*}_{G}uA\beta\#\Ra^{*}_{G}uv\#\Ra^{*}_{G}x\#$\\
+      i ako su $A\ra\alpha_{1}$,\ldots,$A\ra\alpha_{n}$ sva $A$-pravila,
+      onda se pravilo $A\ra\alpha_{i}$ kojim se nastavlja levo izvo\d enje,
+      mo\v ze jedinstveno odabrati na osnovu prvog slova re\v ci $v\#$.\\
+      \\
+      Definicija:\\
+      Za gramatiku $G=(N,\Sigma,P,S)$ i re\v c $\alpha\in(N\cup\Sigma)^{*}$,\\
+      $prvi(\alpha)\subseteq\Sigma\cup\{\epsilon\}$ je skup po\v cetnih
+      slova zavr\v sih re\v ci koje se mogu izvesti iz re\v ci $\alpha$.
+      Ako se iz $\alpha$ mo\v ze izvesti prazna re\v c tada
+      $\epsilon\in prvi(\alpha)$.\\
+      \\
+      Osobine skupa prvi:
+      \begin{enumerate}
+      \item
+      {
+        $prvi(\epsilon)=\{\epsilon\}$
+      }
+      \item
+      {
+        ako $a\in\Sigma$ onda $prvi(a)=\{a\}$
+      }
+      \item
+      {
+        Ako su sva $A$-pravila: $A\ra\alpha_{1}|\ldots|\alpha_{n}$ onda
+        $prvi(a)=\bigcup^{n}_{i=1}prvi(\alpha_{i})$
+      }
+      \item
+      {
+        Ako su re\v ci $\alpha_{1},\ldots,\alpha_{n}\in(\Sigma\cup N)^{+}$ onda\\
+        $
+          prvi(\alpha_{1}\alpha_{2}\ldots\alpha_{n})=
+          \left\{
+          \begin{array}{ll}
+            prvi(\alpha_{1})                                                  &,\epsilon\notin prvi(\alpha_{1})\\
+            prvi(\alpha_{1})/\{\epsilon\}\cup prvi(\alpha_{2}\ldots\alpha_{n})&,\epsilon\in prvi(\alpha_{1})
+          \end{array}
+          \right.
+        $
+      }
+      \end{enumerate}
+      Definicija:\\
+      Za gramatiku $G=(N,\Sigma,P,S)$, skup izbora pravila
+      $(A\ra\alpha)\in P$ je\\
+      $izbor(A\ra\alpha)=\{prvi(\alpha\beta\#):S\Ra^{*}_{G}uA\beta, u\in\Sigma^{*}\}$.\\
+      \\
+      Teorema:\\
+      Gramatika je LL(1) ako su za svako nezavr\v sno slovo $A$, skupovi
+      izbora $A$-pravila uzajamno disjunktni.\\
+      \\
+      Definicija:\\
+      Za gramatiku $G=(N,\Sigma,P,S)$ i slovo $A\in\ N$\\
+      $sled(A)=\{prvi(\alpha\#):S\Ra^{*}_{G}uA\alpha,u\in\Sigma^{*}\}$.\\
+      \\
+      Teorema:\\
+      $
+        izbor(A\ra\alpha)=
+        \left\{
+        \begin{array}{ll}
+          prvi(\alpha)                         &,\epsilon\notin prvi(\alpha)\\
+          prvi(\alpha)/\{\epsilon\}\cup sled(A)&,\epsilon\in prvi(\alpha)\\
+        \end{array}
+        \right.
+      $.\\
+      \\
+      Dokazi svih navedenih teorema mogu se na\'ci u [1].
+      Kod sintaksne analize LL(1) gramatika za zadatu re\v c $x$
+      tra\v zimo levo izvo\d enje re\v ci $x$ i to postupno
+      tra\v zenjem niza levih gramati\v ckih formi izvo\d enja.
+      Pri tra\v zenju levog izvo\d enja, iz neke leve gramati\v cke
+      forme izvo\d enja $uA\beta$ ($u\in \Sigma^{*}$, $A\in N$) izvodimo
+      levu gramati\v cku formu izvo\d enja $u\alpha\beta$, ako se na ulazu
+      nalazi slovo $s\in\Sigma$ i postoji pravilo $A\ra_{G}\alpha$ tako da
+      $s\in izbor(A\ra_{G}\alpha)$.
+      Dakle, za svaku re\v c jezika \v cija je gramatika LL(1) jedinstveno
+      se odre\d uje levo izvo\d ene te re\v ci.
+%
+%
+    \podnaslov{Jezi\v cki procesori}
+      Pored sintaksne analize od zna\v caja su i prevo\d enja re\v ci
+      nekog jezika na neki drugi jezik, a neretko i tuma\v cenja tih
+      re\v ci.
+      Tuma\v cenja nekih re\v ci jezika mo\v zemo svesti na prevo\d enje
+      na jezik nad azbukom semanti\v ckih funkcija.
+      Tada \'ce prevod biti niz semanti\v ckih funkcija koje \'cemo
+      izvr\v siti nad nekim domenom (koji nazivamo semanti\v cki domen).
+      U ovom radu \'ce se opisati prevo\d enje na jezik semanti\v ckih
+      funkcija, to jest prevod \'ce biti niz poziva semanti\v ckih
+      funkcija.\\
+      \\
+      Kako se od sintaksne analize prelazi na prevo\d enje?\\
+      Ako je $G=(N,\Sigma,P,S)$ gramatika koja opisuje jezik $L(G)$,
+      $\Delta$ je skup semanti\v ckih funkcija kojim \'cemo prevoditi
+      re\v ci jezika $L(G)$, onda se mo\v ze konstruisati gramatika
+      $G_{1}=(N,\Sigma\cup\Delta,R,S)$ gde smo pravila iz $R$ konstruisali
+      pro\v sirivanjem pravila iz $P$, i to tako \v sto se sa desne
+      strane pravila iz $P$ ubacuju ili dopisuju semanti\v cke funkcije
+      (u zavisnosti od toga kakvo prevo\d enje \v zelimo).\\
+      Izra\v cunavanje prevoda re\v ci $x\in L(G)$ se svodi na sintaksnu
+      analizu re\v ci $x$, to jest odre\d ivanje levog izvo\d enja
+      re\v ch $x$ u gramatici $G$.
+      Ako primenimo takvo levo izvo\d enje (primenjujemo pravilo gramatike
+      $G_{1}$ nastalo pro\v sirivanjem pravila gramatike $G$) nad
+      gramatikom $G_{1}$ dobi\'cemo re\v c $y\in L(G_{1})$.
+      Va\v zi\'ce da ako iz re\v ci $y$ uklonimo sva slova azbuke $\Delta$
+      dobijamo re\v c $x$.
+      Nas zanima uklanjanje iz re\v ci $y$ svih slova azbuke $\Sigma$.
+      Kad iz re\v ci $y$ uklonimo sva slova azbuke $\Sigma$ dobi\'cemo
+      prevod re\v ci $x$, to jest dobi\'cemo niz semanti\v ckih funkcija
+      koje mo\v zemo izvr\v savati jednu za drugom i time
+      transformisati neki semanti\v cki domen.\\
+      U [1] su opisani kona\v cni i potisni automati prevodioci koji
+      prevode re\v ci iz jednog jezika na drugi jezik i to tako da je
+      prevo\d enje isto kao i formalno definisano prevo\d enje.\\
+      \\
+      Jedan od problema koji je re\v siv ali uvek oduzima dosta vremena
+      je pisanje jezi\v ckih procesora.
+      Jezi\v ckim procesorom mo\v zemo nazvati program koji vr\v si
+      sintaksnu analizu i eventualno tuma\v cenje neke konstrukcije.
+      Ako se kreira gramatika koja je LL(1), onda pisanje programa koji
+      vr\v si sintaksnu analizu je jednostavan ali veliki posao (oduzima
+      puno vremena \v cak i proveravanje  da li je neka gramkatika LL(1)).\\
+      Zato su napravljeni neki generatori jezi\v ckih procesora.
+      Postoji program {\bf LEX} koji generi\v se program na jeziku ``C'' za
+      leksi\v cku analizu i program {\bf YACC} koji generi\v se program
+      na jeziku ``C'' za sintaknu analizu.
+      U ovom radu opisuje se struktura i interpretacija jednog programskog
+      paketa za generisanje jezi\v ckih procesora.\\
+      \\
+      U radu jezi\v ckog procesora razlikujemo leksi\v cku i sintaksnu
+      analizu.
+      Leksi\v cka analiza priprema ulaz za sintaksnu analizu (simboli iz
+      ulazne datoteke ne moraju biti terminalna slova gramatike, to jest
+      terminali gramatike mogu biti i niske simbola).
+      Leksi\v cka analiza generi\v se niz leksema koji sada predstavljaju
+      terminale za sintaksnu analizu.
+      Leksi\v cka analiza se zasniva na regularnim izrazim i kona\v cnim
+      automatima koji su opisani u [1].
+      Sintaksna analiza u sebi sadr\v zi generisanje levog izvo\d enja
+      neke re\v ci (koja se sastoji od niza leksema) i pozivanje
+      semanti\v ckih funkcija kojima vr\v simo ili prevo\d enje ili
+      tuma\v cenje ulaza.\\
+      \\
+      Program {\bf AGLA} generi\v se program koji vr\v si leksi\v cku
+      analizu leksi\v ckih klasa opisanih regularnim izrazima.\\
+      Program {\bf AGSA} generi\v se program koji vr\v si sintaksnu
+      analizu LL(1)\footnote{\v Cak i malo ``ja\v cih'' gramatika.}
+      gramatike opisane Bekus-Naur-ovom notacijom.\\
+      \\
+      \begin{center}
+        \begin{tabular}{cccccc}
+          opis leksi\v ckih klasa&\lra&{\bf AGLA}&\lra&\t{out.h}     & \\
+                                 &    &          &    &+             & \\
+                                 &    &          &    &\t{function.h}& \\
+                                 &    &          &    &+             & \\
+          opis gramatike         &\lra&{\bf AGSA}&\lra&\t{out.c}     &+ \t{lst}\\
+                                 &    &          &    &$\downarrow$  & \\
+                                 &    &          &    &{\bf CC}      & \\
+                                 &    &          &    &$\downarrow$  & \\
+                                 &    &\t{test}  &\lra&\t{a.out}     & \\
+        \end{tabular}
+      \end{center}
+      Ova \v sema pokazuje put kreiranja jezi\v ckih procesora.\\
+      Datoteku sa opisom gramatike u Bekus-Naur-ovoj notaciji ``propu\v stamo''
+      kroz program {\bf AGSA} i dobijamo izve\v staj \t{lst} i datoteku
+      \t{out.c} u kojoj se nalazi procedura na jeziku ``C'' koja vr\v si
+      sintaksnu anlaizu opisane gramatike.\\
+      Datoteku sa regularnim izrazima kojim opisujemo leksi\v cke klase
+      ``propu\v stamo'' kroz program {\bf AGLA} i dobijamo
+      datoteku \t{out.h} u kojoj se nalazi procedura na jeziku ``C'' koja
+      vr\v si leksi\v cku analizu opisanih leksi\v ckih klasa.\\
+      Program \t{out.c} zajedno sa \t{out.h} i \t{function.h} (iskodirane
+      semanti\v cke funkcije) propu\v stamo kroz ``C'' prevodilac i
+      dobijamo program {\bf a.out} koji vr\v si funkciju jezi\v ckog
+      procesora.
+%
+%
+  \naslov{Automatsko generisanje leksi\v ckog analizatora}
+    Program {\bf AGLA} vr\v si generisanje leksi\v ckog analizatora za
+    leksi\v cke klase opisane, u nekoj datoteci, regularnim izrazima
+    (uzeto je da ta datoteka ima nastavak \t{ri}).
+    Ime te datoteke prosle\d ujemo programu {\bf AGLA} iz komandne linije.
+    Program {\bf AGLA} prevodi te regularne izraze u kona\v cni automat i
+    generi\v se program na jeziku ``C'' koji vr\v si otkidanje najdu\v ze
+    mogu\'ce lekseme.
+%
+%
+    \podnaslov{Sintaksa ulaza programa {\bf AGLA}}
+      Prilikom u\v citavanja iz datoteke sa opisom regularnih izraza,
+      beline (\t{'{\b}f'}, \t{'{\b}n'}, \t{'{\b}r'}, \t{'\s'}, \t{'{\b}t'},
+      \t{'{\b}v'}) se zanemaruju (nemaju uticaja na regularne izraze).
+      Komentari, koji se pi\v su izme\d u dva \t{'\$'}, se pretvaraju u
+      belinu pa samim tim i zanemaruju.
+      Nisu dopu\v steni ugnje\v zdeni komentari.\\
+      \\
+      Leksi\v cke klase se opisuju preko opisa leksema i to tako \v sto
+      u datoteci sa nastavkom \t{ri} re\d amo opise leksema.
+      Svaki opis leksema opisuje ili neku leksi\v cku klasu ili neku
+      varijablu koja sadr\v zi neki regularni izraz.
+      Varijable sa regularnim izrazom koristimo za kra\'ci zapis opisa
+      leksi\v cki klasa.\\
+      \\
+      \t
+      {
+        <opis\_lekseme> ::=\\
+        \hs<ime\_varijable> '=' <regularni\_izraz> '.' |\\
+        \hs '=' <regularni\_izraz> '.' |\\
+        \hs<ime\_leksi\v cke\_klase> '=' <regularni\_izraz> '.' |\\
+        \hs<ime\_leksi\v cke\_klase> '=' <regularni\_izraz> '/' <regularni\_izraz> '.' \\
+        \\
+        <regularni\_izraz> ::=\\
+        \hs<slovo> |\\
+        \hs<skup\_slova> |\\
+        \hs<ime\_varijable> |\\
+        \hs'(' <regularni\_izraz> ')' |\\
+        \hs<regularni\_izraz> '*' |\\
+        \hs<regularni\_izraz> '+' |\\
+        \hs<regularni\_izraz> '?' |\\
+        \hs<regularni\_izraz> <regularni\_izraz> |\\
+        \hs<regularni\_izraz> '|' <regularni\_izraz> \\
+      }\\
+      Ime varijable po\v cinje simbolom \t{'\#'} a zatim sledi slovo ili
+      \t{'\_'} pa mo\v ze vi\v se puta slediti slovo, cifra ili \t{'\_'}.\\
+      Ime leksi\v cke klase po\v cinje slovom ili simbolom \t{'\_'} pa
+      mo\v ze vi\v se puta slediti slovo, cifra ili \t{'\_'}.\\
+      Za oba imena je od zna\v caja samo 16 simbola samog imena, a ostalo
+      se zanemaruje (kod imena varijable ne ra\v cuna se \t{'\#'}).\\
+      \\
+      Slovo je bilo koji simbol koji nije belina i koji nema neko
+      tuma\v cenje (dakle svi {\bf ASCII} simboli koji nisu: \t{'{\b}f'}, \t{'{\b}n'},
+      \t{'{\b}r'}, \t{'\s'}, \t{'{\b}t'}, \t{'{\b}v'}, \t{'='}, \t{'.'},
+      \t{'/'}, \t{'['}, \t{']'}, \t{'('}, \t{')'}, \t{'|'}, \t{'*'},
+      \t{'+'}, \t{'?'}, \t{'\x'}, \t{'-'}, \t{'\b'}, \t{'\$'}, \t{'\#'})
+      ili \t{'\b'} za kojim sledi bilo koji simbol \v sto predstavlja
+      ba\v s taj simbol (\t{{\b}x} je \t{'x'}) osim u nekim slu\v cajevima:\\
+      \hs\t{{\b}f} je \t{'{\b}f'}\\
+      \hs\t{{\b}n} je \t{'{\b}n'}\\
+      \hs\t{{\b}r} je \t{'{\b}r'}\\
+      \hs\t{{\b}s} je \t{'\s'}\\
+      \hs\t{{\b}t} je \t{'{\b}t'}\\
+      \hs\t{{\b}v} je \t{'{\b}v'}\\
+      \hs\t{{\b}ooo} je \t{'{\b}ooo'} gde je \t{o} oktalna cifra
+      (najvi\v se do 3 cifre)\\
+      \\
+      Skupom slova zamenjujemo bilo koje slovo iz tog skupa.
+      Skup slova zapisujemo izme\d u \t{'['} i \t{']'} i to:
+      \begin{itemize}
+        \item
+        {
+          \t{[<slovo>\ldots]} ozna\v cava skup svih navedenih slova.\\
+          Na primer: \t{[abcz]=\{a,b,c,z\}}\\
+          Ako negde navedemo \t{<slovo>-<slovo>} to zamenjuje sva slova
+          od jednog do drugog slova ra\v cunaju\'ci i njih same.\\
+          Na primer: \t{[ac-iz]=\{a,c,\ldots,i,z\}}
+        }
+        \item
+        {
+          \t{[\x<slovo>\ldots]} ozna\v cava skup svih slova koja
+          nisu navedena (komplement skupa).\\
+          Na primer: \t{[{\x}ac-iz]=\{a,c,\ldots,i,z\}$^{c}$}
+        }
+        \item
+        {
+          \t{[<slovo>\ldots\x<slovo>\ldots]} ozna\v cava skup slova
+          navedenih pre \t{'\x'} ali koja nisu navedena posle \t{'\x'}
+          (razlika skupova).\\
+          Na primer: \t{[a-z0-9{\x}i6-8]=\{a,\ldots,z,0,\ldots,9\}/\{i,6,\ldots,8\}}
+        }
+        \item
+        {
+          \t{[\x]} ozna\v cava skup svih slova (\t{[\x]=$\emptyset^{c}$}).
+        }
+      \end{itemize}
+%
+%
+    \podnaslov{\v Sta radi program {\bf AGLA}}
+      Da bi smo opisali tuma\v cenje opisa leksi\v ckih klasa u datoteci sa
+      nastavkom \t{ri} moramo opisati tuma\v cenje regularnih izraza.
+      \\
+      Tuma\v cenje operatora u regularnim izra\-zima (pore\d ani po
+      prioritetu od najja\v ceg do najslabijeg:
+      \begin{enumerate}
+        \item
+        {
+          \t{<regularni\_izraz> *}\\
+          je 0 ili vi\v se puta ponovljen regularni izraz,
+        }
+        \item
+        {
+          \t{<regularni\_izraz> +}\\
+          je 1 ili vi\v se puta ponovljeni regularni izraz,
+        }
+        \item
+        {
+          \t{<regularni\_izraz> ?}\\
+          je opcioni (0 ili 1 put ponovljen) regularni izraz,
+        }
+        \item
+        {
+          \t{<regularni\_izraz\_1> <regularni\_izraz\_2>}\\
+          je konkatenacija regularnog izraza 1 i regularnog izraza 2,
+        }
+        \item
+        {
+          \t{<regularni\_izraz\_1> | <regularni\_izraz\_2>}\\
+          je opcija izme\d u regularnog izraza 1 ili regularnog izraza 2.
+        }
+      \end{enumerate}
+      Zagradama \t{'('} i \t{')'} mo\v zemo promeniti prioritet operatora.\\
+      \\
+      Tuma\v cenje opisa lekis\v ckih klasa:
+      \begin{itemize}
+        \item
+        {
+          Definicije varijabli u opisu leksi\v ckuih klasa ne uti\v cu na
+          leksi\v cke klase ve\'c se samo prepi\v su u regularnom izrazu
+          gde su navedene.\\
+          \\
+          Primer:\\
+          \t{\#rec = [\_a-zA-Z][\_a-zA-Z0-9]* .}\\
+          Kada se u neko regularnom izrazu nai\d e na \t{\#rec} to se menja sa\\
+          \t{[\_a-zA-Z][\_a-zA-Z0-9]*}.
+        }
+        \item
+        {
+          Od teku\'ce pozicije u ulaznoj datoteci se \v cita najdu\v za
+          mogu\'ca leksema koja pripada opisanim leksi\v ckim klasama.
+          Pri \v citanju se preska\v cu svi oni regularni izrazi koji su
+          pridru\v zeni opisu lekseme bez navedenog imena leksi\v cke
+          klase (prazna leksi\v cka klasa).\\
+          \\
+          Primer:\\
+          \t
+          {
+            \begin{tabular}{ll}
+                  &= [{\b}s{\b}t{\b}n] .\\
+              ime &= [\_a-zA-Z][\_a-zA-Z0-9]* . \\
+              broj&= [0-9]+ .\\
+            \end{tabular}
+          }\\
+          Opisane su 3 leksi\v cke klase (\t{ime}, \t{broj} i kraj datoteke).
+          Generisani program iz ulazne datoteke zanemaruje \t{' '},
+          \t{'{\b}t'}, \t{'{\b}n'} a prepoznaje leksi\v cke klase koje
+          odgovaraju pojavi najdu\v zeg imena, najdu\v zeg broja ili
+          kraja datoteke.
+        }
+        \item
+        {
+          Ako niz simbola iz ulazne datoteke pripada ve\'cem broju regularnih
+          skupova pridru\v zenih regularnim izrazima nekih leksi\v ckih
+          klasa tada \'ce se prepoznati ona leksi\-\v cka klasa koja je prva
+          navedena.\\
+          \\
+          Primer:\\
+          \t
+          {
+            \begin{tabular}{ll}
+                  &= [{\b}s{\b}t{\b}n] .\\
+              key &= if | then | else | begin | end | while | do .\\
+              ime &= [\_a-zA-Z][\_a-zA-Z0-9]* . \\
+              broj&= [0-9]+ .\\
+            \end{tabular}
+          }\\
+          Kada se na ulazu na\d e recimo \t{"while"}, iako \t{"while"}
+          pripada i leksi\v ckoj klasi \t{ime} i \t{key} bi\'ce prepoznata
+          leksicka klasa \t{key} jer je ona prva navedena.\\
+          Ako se na ulazu na\d e recimo \t{"while0"} bi\'ce prepoznata
+          leksi\v cka klasa \t{ime} jer se \v cita najdu\v za mogu\'ca
+          vrednost lekseme.
+        }
+        \item
+        {
+          Ako niz simbola iz ulazne datoteke pripada ve\'cem broju regularnih
+          skupova pridru\v zenih regularnim izrazima nekih leksi\v ckih
+          klasa i praznih leksi\v ckih klasa tada \'ce se taj niz simbola
+          zanemariti.
+          Mo\v zemo re\'ci da je prazna leksi\v cka klasa ``ja\v ca'' od
+          ostalih leksi\v ckih klasa.\\
+          \\
+          Primer:\\
+          \t
+          {
+            \begin{tabular}{ll}
+                  &= [\b+\b-] .\\
+              key &= \b+ .\\
+              ime &= [\_a-zA-Z][\_a-zA-Z0-9]* . \\
+              broj&= [0-9]+ .\\
+            \end{tabular}
+          }\\
+          Kada se na ulazu na\d e recimo \t{"+abc"} ne\'ce biti prepoznata
+          leksi\v cka klasa \t{key} ve\'c \t{ime} jer je \t{+} zanemaren i
+          nastavlja se \v citanje od \t{"abc"} pa je prepoznata
+          leksi\v cka klasa \t{ime}.
+        }
+        \item
+        {
+          Opis leksi\v cke klase oblika
+          \t{<regularni\_izraz\_1> / <regularni\_izraz\_2>}\\
+          ozna\v cava sve ono \v sto je regularni izraz 1 za kojim sledi
+          regularni izraz 2 ali u vrednost lekseme ne\'ce u\'ci regularni
+          izraz 2 ve\'c \'ce se on \v citati u slede\'cem prepoznavanju.\footnote{Lookahead.}\\
+          \\
+          Primer:\\
+          \t
+          {
+            \begin{tabular}{ll}
+              \#ime &= [\_a-zA-Z][\_a-zA-Z0-9]* . \\
+                    &= [{\b}s{\b}t{\b}n] .\\
+              key   &= : .\\
+              ime   &= \#rec . \\
+              labela&= \#rec / : .\\
+              broj  &= [0-9]+ .\\
+            \end{tabular}
+          }\\
+          Kada se na ulazu recimo na\d e \t{"abc:"} ne\'ce biti prepoznata
+          leksi\v cka klasa \t{ime} ve\'c \t{labela} ali vrednost lekseme
+          ne\'ce biti \t{"abc:"} ve\'c samo \t{"abc"} a pri slede\'cem
+          prepoznavanju bi\'ce prepoznata leksi\v cka klasa \t{key}.
+        }
+      \end{itemize}
+%
+%
+    \podnaslov{Rezultat rada programa {\bf AGLA}}
+      Posle rada programa {\bf AGLA} dobijamo datoteku \t{out.h} u kojoj
+      se pored ostalog nalaze i slede\'ci objekti koje koristimo, u nekom
+      konkretnom jezi\v ckom procesoru, za leksi\v cku analizu:
+      \begin{itemize}
+        \item
+        {
+          \t{AGLA\_class} je \t{enum} promenljiva sa navedenim svim imenima
+          leksi\v ckih klasa kao konstantama, u kojoj \'ce se na\'ci ime
+          (kao konstanta) prepoznate leksi\v cke klase.
+        }
+        \item
+        {
+          \t{AGLA\_EOF} je jedna od konstanti koja je uvek navedena u
+          deklaraciji\\
+          \t{AGLA\_class} i koja predstavlja leksi\v cku klasu kraj
+          datoteke.
+        }
+        \item
+        {
+          \t{AGLA\_MAX\_CLASS} je konstanta u kojoj se nalazi broj svih
+          leksi\v ckih klasa ra\v cunaju\'ci i \t{AGLA\_EOF}.
+        }
+        \item
+        {
+          \t{AGLA\_value} je string u kome \'ce se posle prepoznavanja
+          neke leksi\v cke klase na\'ci simboli koji \v cine tu leksemu
+          (vrednost lekseme).
+        }
+        \item
+        {
+          \t{AGLA\_LEN\_VALUE} je konstanta u kojoj se nalazi najve\'ca
+          mogu\'ca du\v zina vrednosti lekseme.\\
+          Inicijalno je postavljena na \t{1024}.
+        }
+        \item
+        {
+          \t{AGLA\_len} je \t{int} promenljiva u kojoj \'ce se na\'ci
+          du\v zina vrednosti lekseme.
+        }
+        \item
+        {
+          \t{AGLA\_new\_nl} je \t{int} promenljiva u kojoj se nalazi
+          broj teku\'ceg (poslednjeg pro\v citanog) reda.
+        }
+        \item
+        {
+          \t{AGLA\_new\_pos} je \t{int} promenljiva u kojoj se nalazi
+          pozicija poslednjeg pro\v citanog slova u teku\'cem redu.
+        }
+        \item
+        {
+          \t{AGLA\_old\_nl} je \t{int} promenljiva u kojoj \'ce se na\'ci
+          broj reda u kome po\v cinje poslednja pro\v citana leksema ili
+          gde je nastala neka gre\v ska.
+        }
+        \item
+        {
+          \t{AGLA\_old\_pos} je \t{int} promenljiva u kojoj \'ce se na\'ci
+          pozicija u teku\'cem redu odakle po\v cinje poslednja
+          pro\v citana leksema ili gde je nastala neka gre\v ska.
+        }
+        \item
+        {
+          \t{AGLA\_file} je pokaziva\v c na datoteku iz koje \'cemo
+          u\v citavati lekseme.
+        }
+        \item
+        {
+          \t{AGLA\_error} je pokaziva\v c na string u kome \'ce se posle
+          gre\v ske na\'ci poruka o prirodi gre\v ske.
+        }
+        \item
+        {
+          \t{AGLA\_scanner} je procedura (koja vra\'ca \t{int}) koja iz
+          datoteke \t{AGLA\_file} poku\v sava da u\v cita neku leksemu.
+          Ako \t{AGLA\_scanner} prepozna neku leksi\v cku klasu:
+          \begin{itemize}
+            \item
+            {
+              \t{AGLA\_class} \'ce biti ime prepoznate leksi\v cke klase,
+            }
+            \item
+            {
+              \t{AGLA\_value} \'ce biti vrednost lekseme, a ako je
+              prepoznata leksi\v cka klasa \t{AGLA\_EOF} bi\'ce prazan
+              string,
+            }
+            \item
+            {
+              \t{AGLA\_len} \'ce biti du\v zina vrednosti lekseme, a ako
+              je prepoznata leksi\-\v cka klasa \t{AGLA\_EOF} bi\'ce \t{0},
+            }
+            \item
+            {
+              \t{AGLA\_old\_nl} \'ce biti broj reda u kome po\v cinje
+              prepoznata leksema,
+            }
+            \item
+            {
+              \t{AGLA\_old\_pos} \'ce biti pozicija u teku\'cem redu odakle
+              po\v cinje prepo\-znata leksema,
+            }
+            \item
+            {
+              \t{AGLA\_scanner} vra\'ca \t{0}.
+            }
+          \end{itemize}
+          Ako do\d e do neke gre\v ske (nepoznata leksi\v cka klasa ili
+          preduga\v cka vrednost lekseme):
+          \begin{itemize}
+            \item
+            {
+              \t{AGLA\_old\_nl} \'ce biti broj reda u kome je nastala
+              gre\v ska,
+            }
+            \item
+            {
+              \t{AGLA\_old\_pos} \'ce biti pozicija u teku\'cem redu u kome
+              je nastala gre\v ska,
+            }
+            \item
+            {
+              \t{AGLA\_error} \'ce pokazivati na string sa opisom prirode
+              gre\v ske,
+            }
+            \item
+            {
+              \t{AGLA\_scanner} vra\'ca \t{1}.
+            }
+          \end{itemize}
+        }
+      \end{itemize}
+%
+%
+    \podnaslov{\v Sta je potrebno generisanom programu}
+      Da bi program koji je {\bf AGLA} generisao bio potpun, potrebno je
+      isprogramirati proceduru \t{main} u kojoj \'ce se otvoriti
+      \t{AGLA\_file} i iz koje \'ce se pozivati \t{AGLA\_scanner} i
+      obra\d ivati rezultat rada.\\
+      \\
+      Primer:\\
+      Pronala\v zenje svih brojeva iz neke datoteke.\\
+      {\sl Datoteka} \t{find.ri}:\\
+      \t
+      {
+        FIND = [0-9]+ .\\
+        REST = [\x] .\\
+      }\\
+      {\sl Datoteka} \t{find.c}:\\
+      \t
+      {
+        \#include <stdio.h>\\
+        \#include "out.h"\\
+        \\
+        int main(int argc,char *argv[])\\
+        \{\\
+        {\s\s}if(argc==2)\\
+        {\s\s\s\s}if((AGLA\_file=fopen(argv[1],"r"))!=NULL)\\
+        {\s\s\s\s}\{\\
+        {\s\s\s\s\s\s}do\\
+        {\s\s\s\s\s\s}\{\\
+        {\s\s\s\s\s\s\s\s}AGLA\_scanner();\\
+        {\s\s\s\s\s\s\s\s}if(AGLA\_class==FIND)\\
+        {\s\s\s\s\s\s\s\s\s\s}printf("Red \%d slovo \%d: \%s{\b}n",AGLA\_old\_nl,\\
+        {\s\s\s\s\s\s\s\s\s\s\s\s}AGLA\_old\_pos,AGLA\_value);\\
+        {\s\s\s\s\s\s}\}\\
+        {\s\s\s\s\s\s}while(AGLA\_class!=AGLA\_EOF);\\
+        {\s\s\s\s\s\s}fclose(AGLA\_file);\\
+        {\s\s\s\s}\}\\
+        {\s\s\s\s}else\\
+        {\s\s\s\s\s\s}puts("Neispravan ulazni fajl");\\
+        {\s\s}else\\
+        {\s\s\s\s}puts("Prosledi parametar sa imenom ulaznog fajla");\\
+        {\s\s}return 0;\\
+        \}\\
+      }\\
+      Po\v sto datoteku \t{find.ri} ``propustimo'' kroz program {\bf AGLA},
+      dobijamo datoteku \t{out.h} koju priklju\v cuje program \t{find.c}.
+      Kada prevedemo \t{find.c}, dobijamo program koji u nekoj datoteci
+      pronalazi sve brojeve (opisane regularnim izrazom \t{[0-9]+}).
+%
+%
+    \podnaslov{Kako radi program {\bf AGLA}}
+      Za svaki regularni izraz u opisu leksi\v ckih klasa program
+      {\bf AGLA} pravi kona\-\v can automat koji ``ka\v ci'' na
+      jedinstveno po\v cetno stanje.
+      Ako kona\v cni automat opisuje praznu leksi\v cku klasu onda se i
+      vra\'ca na to po\v cetno stanje, a u supro\-tnom ide do stanja u
+      kojem konstatujemo da je prepoznata neka leksi\v cka klasa.
+      Tako dobijeni kona\v cni automat se determinizuje i minimizuje pa za
+      novo dobijeni kona\v cni automat se generi\v se program koji ga
+      simulira.\\
+      U generisanom programu se simulira rad kona\v cnog automata sve dok
+      je prepoznata bar neka leksi\v cka klasa.
+      Kada ne bude prepoznata vi\v se ni jedna leksi\v cka klasa,
+      simulator kona\v cnog automata vra\'ca se do zadnje pozicije u kojoj
+      je bila prepoznata neka leksi\v cka klasa i prepoznaje ba\v s tu
+      leksi\v cku klasu.
+      Tako \'ce biti prepoznata najdu\v za vrednost lekseme koja se
+      mo\v ze prepoznati.
+%
+%
+    \podnaslov{Problemi pri radu sa programom {\bf AGLA}}
+      Pored problema sintakse ulaza (koje prijavljuje program {\bf AGLA})
+      mogu se javiti problemi ako se za ime leksi\v cke klase uzme neko
+      ime koje je rezervisana re\v c ili je ve\'c iskori\v s\'ceno u
+      nekoj deklaraciji.
+      Ovakve gre\v ske ne prijavljuje program {\bf AGLA} ve\'c kompajler
+      kojim prevodimo generisan program.
+      Da bi ih razre\v sili dovoljno je promeniti ime leksi\v cke klase.
+      Program {\bf AGLA} prijavljuje i ako nema dovoljno mesta za rad.\\
+      \\
+      Ograni\v cenja programa {\bf AGLA}:\\
+      (u vidu konstanti koje se mogu po potrebi promeniti)
+      \begin{enumerate}
+        \item
+        {
+          \t{MAX\_BR\_SS} je maksimalan broj skupova slova koji se
+          pojavljuju u opisu svih leksi\v ckih klasa.\\
+          Inicijalno je postavljen na \t{256}.
+        }
+        \item
+        {
+          \t{MAX\_BR\_ST} je maksimalan broj stanja kona\v cnog
+          automata.\\
+          Inicijalno je postavljen na \t{512}.
+        }
+        \item
+        {
+          \t{MAX\_VL\_PR} je maksimalan broj prelazaka u funkciji
+          prelaza kona\v cnog automata.\\
+          Inicijalno je postavljen na \t{16384}.
+        }
+        \item
+        {
+          \t{MAX\_BR\_LX} je maksimalan broj leksi\v ckih klasa koje
+          opisujemo.\\
+          Inicijalno je postavljen na \t{128}.
+        }
+        \item
+        {
+          \t{MAX\_BR\_VA} je maksimalan broj varijabli koje mo\v zemo
+          koristiti.\\
+          Inicijalno je postavljen na \t{128}.
+        }
+        \item
+        {
+          \t{MAX\_VL\_PP\_ST} je veli\v cina steka uz \v ciju pomo\'c
+          pretvaramo regularne izraze u kona\v cne automate.\\
+          Inicijalno je postavljen na \t{256}.
+        }
+      \end{enumerate}
+%
+%
+  \naslov{Automatsko generisanje sintaksnog analizatora}
+    Program {\bf AGSA} vr\v si generisanje sintaksnog analizatora gramatike
+    opisane, u nekoj datoteci, Bekus-Naur-ovom notacijom (uzeto je da ta
+    datoteka ima nastavak \t{bn}).
+    Ime te datoteke prosle\d ujemo programu {\bf AGLA} iz komandne linije.
+    Program {\bf AGSA} ra\v cuna skupove izbora svih pravila te gramatike,
+    proverava da li je ta gramatika LL(1) i generi\v se program na jeziku
+    ``C'' koji vr\v si konkretnu sintaksnu analizu sa eventualnim pozivima
+    semanti\v ckih funkcija.
+%
+%
+    \podnaslov{Sintaksa ulaza programa {\bf AGSA}}
+      Prilikom u\v citavanja iz datoteke sa opisom gramatike, beline
+      (\t{'{\b}f'}, \t{'{\b}n'}, \t{'{\b}r'}, \t{'\s'}, \t{'{\b}t'},
+      \t{'{\b}v'}) se zanemaruju.
+      Komentari, koji se pi\v su izme\d u dva \t{'\$'}, se pre\-tvaraju u
+      belinu pa samim tim i zanemaruju.
+      Nisu dopu\v steni ugnje\v zdeni kome\-ntari.\\
+      \\
+      Gramatika se opisuje preko niza pravila zapisanih u Bekus-Naur-ovoj
+      notaciji.\\
+      \\
+      \t
+      {
+        <pravilo> ::=\\
+        \hs<ime\_neterminala> '::=' <re\v c>{\ldots} ('|' <re\v c>{\ldots} ){\ldots} '.'\\
+        \\
+        <re\v c> ::=\\
+        \hs<ime\_neterminala> |\\
+        \hs<ime\_semanti\v cke\_funkcije> |\\
+        \hs<ime\_leksi\v cke\_klase>\\
+      }\\
+      Ime neterminala po\v cinje simbolom \t{'<'} a zatim sledi slovo ili
+      \t{'\_'} pa mo\v ze vi\v se puta slediti slovo, cifra ili \t{'\_'}
+      i zavr\v sava se simbolom \t{'>'}.\\
+      Ime semanti\v cke funkcije po\v cinje simbolom \t{'@'} a zatim sledi
+      slovo ili \t{'\_'} pa mo\v ze vi\v se puta slediti slovo, cifra
+      ili \t{'\_'}.\\
+      Ime leksi\v cke klase po\v cinje slovom ili simbolom \t{'\_'} pa
+      mo\v ze vi\v se puta slediti slovo, cifra ili \t{'\_'}.\\
+      Za sva imena je od zna\v caja samo prvih 16 simbola samog imena, a
+      ostalo se zanemaruje (kod imena neterminala ne ra\v cunaju se
+      \t{'<'} i \t{'>'}, a kod imena semanti\v ckih funkcija ne ra\v cuna
+      se \t{'@'}).
+%
+%
+    \podnaslov{\v Sta radi program {\bf AGSA}}
+      Gramatika, koju opisujemo programu {\bf AGSA}, se sastoji od svih
+      navedenih pravila stim da skupu neterminala pripadaju svi sintaksom
+      opisani neterminali, a skupu terminala pripadaju sve sintaksom
+      opisane leksi\v cke klase.
+      Po\v cetno slovo je prvi neterminal koji se navede u opisu gramatike
+      (bi\'ce to leva strana prvog pravila).\\
+      Va\v zi slede\'ca zamena:\\
+      \t{<A> ::= $\alpha_{1}$ | \ldots | $\alpha_{n}$ .}
+      je zamena za\\
+      \t
+      {
+        <A> ::= $\alpha_{1}$ .\\
+        \vdots\\
+        <A> ::= $\alpha_{n}$ .\\
+      }\\
+      $\epsilon$-pravila se pi\v su tako \v sto se ne navede ni\v sta za
+      re\v c.\\
+      \\
+      Primer:\\
+      \t
+      {
+        <A> ::= ime <A> | .\\
+        <S> ::= .\\
+      }\\
+      Semanti\v cke funkcije \'ce se izvr\v savati ba\v s onda kada se u
+      izvo\d enu nekog ulaza nai\d e na njih.\\
+      Zadavanje po\v cetne i zavr\v sne semanti\v cke funkcije mo\v ze
+      da se obavi tako \v sto ispred pravog po\v cetnog slova dodamo novo
+      po\v cetno slovo ispred koga pozivamo po\v cetnu semanti\v cku
+      funkciju, a iza zavr\v snu semanti\v cku funkciju.\\
+      \\
+      Primer:\\
+      \t{<S>} je po\v cetno slovo, a \v zelimo da dodamo semanti\v cke
+      funkcije \t{pocetna} i \t{zavrsna}.\\
+      \t
+      {
+        <S\_novo> ::= @pocetna <S> @zavrsna .\\
+        <S> ::= \ldots\\
+      }\\
+      Generisanje programa u \t{out.c} se vr\v si i kada gramatika nije
+      LL(1) jer se neki konflikti poku\v savaju razre\v siti.
+      Neka neka leksi\v cka klasa pripada ve\'cem broju skupova izbora
+      pravila sa istom levom stranom.
+      Tada \'ce se ta leksi\v cka klasa izbaciti iz svih skupova izbora
+      pravila koji su navedeni posle pravila u \v cijem se skupu izbora
+      prvi put (posmatramo samo pravila sa istom levom stranom) javlja
+      ta leksi\v cka klasa.
+      Dakle kad se neka leksi\v cka klasa na\d e u nekom skupu izbora
+      nekog pravila, tada se ta leksi\v cka klasa izbacuje iz svih skupova
+      izbora pravila sa istom levom stranom kao i to neko pravilo.
+      Ako takvim izbacivanjem skup izbora nekog pravila ostane prazan tada
+      to pravilo zanemarujemo.\\
+      \\
+      Primer:\\
+      \t
+      {
+        \begin{tabular}{ll}
+          <S> ::= &Kif <S> <E> |\\
+                  &Kbegin <S> <R> Kend |\\
+                  &Klet .\\
+                  & \\
+          <E> ::= &Kelse <S> |\\
+                  &.\\
+                  & \\
+          <R> ::= &tacka\_zarez <S> <R> |\\
+                  &.\\
+        \end{tabular}\\
+      }\\
+      Nije LL(1) gramatika jer \t{Kelse} pripada skupovima izbora
+      pravilima:\\
+      \hs\t{<E> ::= Kelse <S> .}\\
+      \hs\t{<E> ::= .}\\
+      Koriste\'ci razre\v savanje konflikta \t{Kelse} ostaje samo u skupu
+      izbora prvog pravila \v sto je donekle i logi\v cno jer ako je na
+      redu produkcija neterminala \t{<E>} a na ulazu se nalazi ne\v sto iz
+      leksi\v cke klase \t{Kelse} bilo bi lepo da se izvr\v si ba\v s
+      prvo pravilo (mo\v zemo re\'ci da smo uz poslednju pojavu \t{Kif}
+      vezali prvu pojavu \t{Kelse}).
+%
+%
+    \podnaslov{Rezultat rada programa {\bf AGSA}}
+      Posle rada programa {\bf AGSA} dobijamo datoteke \t{out.h} i \t{lst}.
+      U datoteci \t{lst} se nalaze skupovi izbora za sva pravila opisane
+      gramatke i na kraju konstatacija da li je gramatika LL(1) ili nije.
+      U datoteci \t{out.c} se pored ostalog nalaze i slede\'ci objekti uz
+      \v ciju pomo\'c vr\v simo sintaksnu analizu:
+      \begin{itemize}
+        \item
+        {
+          \t{AGLA\_parser} je procedura (koja vra\'ca \t{int}) koja uz
+          pomo\'c leksi\v cke analize poku\v sava da prepozna neku
+          sintaksnu konstrukciju.
+          Vrati\'ce \t{0} ako je prepoznata konstrukcija koja pripada
+          opisanom jeziku a u suprotnom vra\'ca \t{1} i opis prirode
+          gre\v ske.
+        }
+      \end{itemize}
+      Generisana je i procedura \t{main} koja otvara datoteku (\v cije je
+      ime prosle\d eno kao parametar programu), poziva \t{AGSA\_parser} i
+      obra\d uje gre\v ske.
+      Program koji je generisao program {\bf AGSA} koristi usluge
+      leksi\v cke analize koje generi\v se program {\bf AGLA} pa \v cak
+      i neke strukture i to ba\v s onako kako ih generi\v se program
+      {\bf AGLA}.\\
+      Koriste se:
+      \begin{itemize}
+        \item
+        {
+          \t{AGLA\_class} koji mora obuhvatiti sva imena leksi\v ckih klasa,
+        }
+        \item
+        {
+          \t{AGLA\_EOF},
+        }
+        \item
+        {
+          \t{AGLA\_old\_nl},
+        }
+        \item
+        {
+          \t{AGLA\_old\_pos},
+        }
+        \item
+        {
+          \t{AGLA\_file},
+        }
+        \item
+        {
+          \t{AGLA\_error},
+        }
+        \item
+        {
+          \t{AGLA\_scanner}.
+        }
+      \end{itemize}
+      Pored funkcije koje ima u leksi\v ckoj analizi \t{AGLA\_error} se i
+      dalje koristi kao pokaziva\v c na string sa opisom prirode gre\v ske
+      zbog jednakog tretiranja gre\v saka (a tu funkciju ima i kod
+      semanti\v ckih funkcija).
+%
+%
+    \podnaslov{\v Sta je potrebno generisanom programu}
+      Pored leksi\v cke analize (koju mo\v zemo realizovati programom
+      {\bf AGLA}) mo\v zda \'ce programu generisanom programom {\bf AGSA}
+      biti potrebno opisati i semanti\v cke funkcije.\\
+      Ako se u opisu gramatike koristi bar jedna semanti\v cka funkcija, u
+      generisanom programu bi\'ce priklju\v cena datoteka \t{function.h} u
+      kojoj se moraju na\'ci sve semanti\v cke funkcije spomenute u opisu
+      gramatike.\\
+      Dakle, semanti\v cke funkcije opisujemo u datoteci \t{function.h} i
+      to tako da nemaju argumente i vra\'caju \t{int} i to \t{0} ako je sve
+      u redu, ina\v ce broj razli\v cit od \t{0}.
+      Pored toga moraju i \t{AGLA\_error} postaviti na string sa opisom
+      prirode gre\v ske ako do gre\v ske do\d e.\\
+      \\
+      Dakle, posle kreiranja gramatike i provere da li je LL(1) moramo
+      opisati sve leksi\v cke klase i sve semanti\v cke funkcije koje se
+      javljaju u opisu gramatike.\\
+      \\
+      Primer:\\
+      Ra\v cunanje izraza.\\
+      \\
+      {\sl Datoteka} \t{izraz.bn}:\\
+      \t
+      {
+        \begin{tabular}{ll}
+          <P> ::=&<F> <T> <S> @f\_ispis .\\
+                 & \\
+          <S> ::=&plus <F> <T> @f\_plus <S> |\\
+                 &minus <F> <T> @f\_minus <S> |\\
+                 &.\\
+                 & \\
+          <T> ::=&puta <F> @f\_puta <T> |\\
+                 &podeljeno <F> @f\_podeljeno <T> |\\
+                 &.\\
+                 & \\
+          <F> ::=&minus <F> @f\_u\_minis |\\
+                 &oct\_broj @f\_oct\_broj |\\
+                 &dec\_broj @f\_dec\_broj |\\
+                 &hex\_broj @f\_hex\_broj |\\
+                 &leva\_zagrada <F> <T> <S> desna\_zagrada .\\
+        \end{tabular}\\
+      }\\
+      {\sl Datoteka} \t{izraz.ri}:\\
+      \t
+      {
+        \begin{tabular}{ll}
+                        &= [{\b}s{\b}t{\b}n] .\\
+          plus          &= \b+ .\\
+          minus         &= \b- .\\
+          puta          &= \b* .\\
+          podeljeno     &= \b/ .\\
+          oct\_broj     &= 0 [0-7]* .\\
+          dec\_broj     &= [0-9]+ .\\
+          hex\_broj     &= 0 [xX] [0-9a-fA-F]+ .\\
+          leva\_zagrada &= \b( .\\
+          desna\_zagrada&= \b) .\\
+        \end{tabular}\\
+      }\\
+      {\sl Datoteka} \t{function.h}:\\
+      \t
+      {
+        \#include <stdio.h>\\
+        \#include <stdlib.h>\\
+        \\
+        \#define DUZINA 128\\
+        \\
+        long int Stek[DUZINA];\\
+        int Brojac=0;\\
+        \\
+        int f\_ispis(void)\\
+        \{\\
+        {\s\s}printf("Rezultat je : 0\%lo \%ld 0x\%lX{\b}n",Stek[0],Stek[0],Stek[0]);\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_plus(void)\\
+        \{\\
+        {\s\s}Brojac--;\\
+        {\s\s}Stek[Brojac-1]+=Stek[Brojac];\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_minus(void)\\
+        \{\\
+        {\s\s}Brojac--;\\
+        {\s\s}Stek[Brojac-1]-=Stek[Brojac];\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_puta(void)\\
+        \{\\
+        {\s\s}Brojac--;\\
+        {\s\s}Stek[Brojac-1]*=Stek[Brojac];\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_podeljeno(void)\\
+        \{\\
+        {\s\s}Brojac--;\\
+        {\s\s}Stek[Brojac-1]/=Stek[Brojac];\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_u\_minis(void)\\
+        \{\\
+        {\s\s}Stek[Brojac]=-Stek[Brojac];\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int smesti(long int l)\\
+        \{\\
+        {\s\s}if(Brojac==DUZINA)\\
+        {\s\s}\{\\
+        {\s\s\s\s}AGLA\_error="Nema mesta na steku";\\
+        {\s\s\s\s}return 1;\\
+        {\s\s}\}\\
+        {\s\s}Stek[Brojac]=l;\\
+        {\s\s}Brojac++;\\
+        {\s\s}return 0;\\
+        \}\\
+        \\
+        int f\_oct\_broj(void)\\
+        \{\\
+        {\s\s}long int l;\\
+        {\s\s}sscanf(AGLA\_value+1,"\%lo",\&l);\\
+        {\s\s}return smesti(l);\\
+        \}\\
+        \\
+        int f\_dec\_broj(void)\\
+        \{\\
+        {\s\s}return smesti(atol(AGLA\_value));\\
+        \}\\
+        \\
+        int f\_hex\_broj(void)\\
+        \{\\
+        {\s\s}long int l;\\
+        {\s\s}sscanf(AGLA\_value+2,"\%lx",\&l);\\
+        {\s\s}return smesti(l);\\
+        \}\\
+      }\\
+      ``Propu\v stanjem'' datoteke \t{izraz.ri} kroz program {\bf AGLA}
+      dobijamo datoteku \t{out.h}.
+      ``Propu\v stanjem'' datoteke \t{izraz.bn} kroz program {\bf AGSA}
+      dobijamo datoteke \t{lst} i \t{out.c}.
+      Kada generisan program u \t{out.c} koji priklju\v ci \t{out.h} i
+      \t{function.h} prevedemo dobijamo program {\bf a.out} koji iz
+      ulazne datoteke u\v citava celobrojni izraz i ra\v cuna ga.
+%
+%
+    \podnaslov{Kako radi program {\bf AGSA}}
+      Sintaksnom analizom (metodom rekurzivnog spusta za LL(1) gramatike)
+      ulazna gramatika se sme\v sta u unutra\v snje strukture:
+      \begin{itemize}
+        \item[-]
+        {
+          niz svih imena (neterminala, semanti\v ckih funkcija,
+          leksi\v ckih klasa) koja se pojavljuju u gramatici;
+          prvo ime u nizu je ime neterminala i to ba\v s po\v cetnog
+          slova;
+        }
+        \item[-]
+        {
+          niz svih indeksa imena koja se pojavljuju na desnim stranama
+          pravila; na kraju svakog pravila dodat je indeks $\epsilon$-na
+          ($\epsilon$-pravila imaju samo indeks $\epsilon$-na);
+        }
+        \item[-]
+        {
+          niz svih pravila sa indeksom leve strane i po\v cetkom desne
+          strane u prethodnom nizu.
+        }
+      \end{itemize}
+      Posle sme\v stanja gramatike u unutra\v snju strukturu pristupa se
+      rekurzivnom ra\v cunanju skupa izbora preko skupova prvi i sled.
+      Pri ra\v cunanju skupova zanemaruju se sve semanti\v cke funkcije.
+      Skupovi se \v cuvaju kao polje bitova.\\
+      \\
+      Za svako pravilo \t{<A> ::= $\alpha\beta$ .} gde je
+      $\alpha\in N\cup\Sigma\cup\{\epsilon\}$ i $\beta\in(N\cup\Sigma)^{*}$:\\
+      $
+        prvi(\alpha\beta)=
+        \left\{
+        \begin{array}{ll}
+          \{\epsilon\}                             &,\epsilon=\alpha\beta\\
+          \{\alpha\}                               &,\alpha\in\Sigma\\
+          prvi(\alpha)                             &,\alpha\in N, \epsilon\notin prvi(\alpha)\\
+          prvi(\alpha)/\{\epsilon\}\cup prvi(\beta)&,\alpha\in N, \epsilon\in prvi(\alpha)\\
+        \end{array}
+        \right.
+      $\\
+      Skup prvi za neterminal se ra\v cuna kao unija svih skupova prvi za
+      pravila koja na levoj strani imaju taj neterminal.\\
+      \\
+      U skupu sled za po\v cetno slovo nalazi se leksi\v cka klasa kraj
+      datoteke.
+      Za svaku pojavu neterminala \t{<B>} u svim pravilima oblika
+      \t{<A> ::= \ldots <B> $\alpha$ .} ra\v cunamo:\\
+      $
+        sled(\mbox{\t{<B>}})=
+        \left\{
+        \begin{array}{ll}
+          prvi(\alpha)                         &,\epsilon\notin prvi(\alpha)\\
+          prvi(\alpha)\cup sled(\mbox{\t{<A>}})&,\epsilon\in prvi(\alpha)\\
+        \end{array}
+        \right.
+      $\\
+      \\
+      Za sva pravila ra\v cunamo:\\
+      $
+        izbor(\mbox{\t{<A> ::=}}\s\alpha .)
+        \left\{
+        \begin{array}{ll}
+          prvi(\alpha)                                      &,\epsilon\notin prvi(\alpha)\\
+          prvi(\alpha)/\{\epsilon\}\cup sled(\mbox{\t{<A>}})&,\epsilon\in prvi(\alpha)\\
+        \end{array}
+        \right.
+      $\\
+      \\
+      Skupovi se ra\v cunaju svaki put iz po\v cetka sve dok ima neke
+      promene.\\
+      \\
+      Posle ra\v cunanja skupova izbora pristupa se proveri da li je
+      gramatika LL(1) ili nije.
+      Gramatika je LL(1) ako su svi skupovi izbora za pravila sa istom
+      levom stranom me\d usobno disjunktni.\\
+      \\
+      Na kraju se metodom rekurzivnog spusta generi\v se program i to za
+      svaki nete\-rminal \t{A} sa pravilima
+      \t{<A> ::= $\alpha_{1}$ | \ldots | $\alpha_{n}$ .} generi\v se se
+      procedura:\\
+      \t
+      {
+        int AGSA\_A(void)\\
+        \{\\
+        {\s\s}switch(AGLA\_class)\\
+        {\s\s}\{\\
+        {\s\s\s\s}izbor(<A> ::= $\alpha_{1}$ .):\\
+        {\s\s\s\s\s\s}/* obrada $\alpha_{1}$ */\\
+        {\s\s\s\s\s\s}break;\\
+        {\s\s\s\s}\vdots\\
+        {\s\s\s\s}izbor(<A> ::= $\alpha_{n}$ .):\\
+        {\s\s\s\s\s\s}/* obrada $\alpha_{n}$ */\\
+        {\s\s\s\s\s\s}break;\\
+        {\s\s\s\s}default:\\
+        {\s\s\s\s\s\s}AGLA\_error="\ldots";\\
+        {\s\s\s\s\s\s}return 1;\\
+        {\s\s}\}\\
+        {\s\s}return 0;\\
+        \}\\
+      }\\
+      Na mestu obrade $i$-og pravila \t{<A> ::= $\alpha_{i}$ .}
+      (\t{$\alpha_{i}$=$\beta_{1}$\ldots$\beta_{m}$}) generi\v se se
+      obrada za sve $\beta_{j}$ sukcesivno i to:
+      \begin{itemize}
+        \item
+        {
+          \t{$\beta_{j}$=<ime>}\\
+          Ako je $\beta_{j}$ neterminal \t{<ime>} generi\v se se poziv
+          procedure \t{AGSA\_ime}.
+          Ako \t{AGSA\_ime} vrati \t{1} izlazi se iz procedure sa kodom \t{1}.
+        }
+        \item
+        {
+          \t{$\beta_{j}$=@ime}\\
+          Ako je $\beta_{j}$ semanti\v cka funkcija \t{@ime} generi\v se
+          se poziv semanti\v cke funkcije \t{ime}.
+          Ako semanti\v cka funkcija vrati kod razli\v cit od \t{0} izlazi
+          se iz procedure sa kodom \t{1}
+        }
+        \item
+        {
+          \t{$\beta_{j}$=ime}\\
+          Ako je $\beta_{j}$ leksi\v cka klasa \t{ime} generi\v se se
+          provera da li je poslednja u\v citana leksi\v cka klasa ba\v s
+          \t{ime} i u\v citava se slede\'ca leksi\v cka klasa (ali tek
+          po\v sto se obrade sve semanti\v cke funkcije jer bi
+          u\v citavanj nove lekseme promenilo vrednost lekseme a to
+          mo\v zda koriste neke semanti\v cke funkcije).
+          Ako nije bila prepoznata ta leksi\v cka klasa izlazi se iz
+          procedure sa kodom \t{1}.
+        }
+      \end{itemize}
+      Na kraju program {\bf AGSA} generi\v se proceduru \t{AGSA\_parser}
+      koja u\v cita prvu leksemu pa krene sa izvo\d enjem iz po\v cetnog
+      slovo i na kraju proverava da li je sve pro\v citano iz ulazne
+      datoteke.
+%
+%
+    \podnaslov{Problemi pri radu sa programom {\bf AGSA}}
+      Pored problema sintakse ulaza (koje prijavljuje program {\bf AGSA})
+      mogu se javiti problemi ako se za ime neterminala, semanti\v cke
+      funkcije ili leksi\v cke klase uzme neko ime koje je rezervisana
+      re\v c ili je ve\'c iskori\v s\'ceno u nekoj deklaraciji.
+      Ovakve gre\v ske ne prijavljuje program {\bf AGSA} ve\'c
+      kompajler kojim prevodimo generisan program.
+      Da bi ih razre\v sili dovoljno je promeniti to ime neterminala,
+      semanticke funkcije ili leksi\v cke klase.
+      Program {\bf AGSA} prijavljuje i ako nema dovoljno mesta za rad.\\
+      \\
+      Ograni\v cenja programa {\bf AGSA}:\\
+      (u vidu konstanti koje se mogu po potrebi promeniti):
+      \begin{enumerate}
+        \item
+        {
+          \t{MAX\_BR\_SL} je maksimalan broj re\v ci (neterminala,
+          semanti\v ckih funkcija i leksi\v ckih klasa) koje se
+          pojavljuju u gramatici.\\
+          Inicijalno je postavljen na \t{512}.
+        }
+        \item
+        {
+          \t{MAX\_BR\_PR} je maksimalan broj pravila koji se
+          pojavljuju u gramatici.\\
+          Inicijalno je postavljen na \t{1024}.
+        }
+        \item
+        {
+          \t{MAX\_VL\_DS} je maksimalan broj svih re\v ci na desnim
+          stranama pravila (plus jedna re\v c na svako pravilo).\\
+          Inicijalno je postavljen na \t{32768}.
+        }
+      \end{enumerate}
+%
+%
+  \naslov{Zaklju\v cak}
+    Programi {\bf AGLA} i {\bf AGSA} se najbolje koriste na slede\'ci
+    na\v cin:
+    \begin{enumerate}
+      \item
+      {
+        Opis gramatike pi\v semo u datoteci sa nastavkom \t{bn}.
+      }
+      \item
+      {
+        Programom {\bf AGSA} proveravamo da li je opisana gramatika LL(1) i
+        generi\-\v semo program \t{out.c} koji vr\v si sintaksnu analizu
+        opisane gramatike.
+      }
+      \item
+      {
+        Sve leksi\v cke klase iz datoteke sa opisom gramatike, opisujemo
+        u datoteci sa nastavkom \t{ri}.
+      }
+      \item
+      {
+        Programom {\bf AGLA} generi\v semo program \t{out.h} koji vr\v si
+        leksi\v cku analizu opisanih leksi\v ckih klasa.
+      }
+      \item
+      {
+        Ako se u datoteci sa opisom gramatike nalazi bar jedno ime
+        semanti\v cke funkcije pi\v semo datoteku \t{function.h} u kojoj
+        opisujemo sve semanti\v cke funkcije i semanti\v cki domen ako
+        ga ima.
+      }
+      \item
+      {
+        Prevodimo program \t{out.c} i dobijamo tra\v zeni program
+        {\bf a.out}.
+      }
+    \end{enumerate}
+    Tako mo\v zemo veoma brzo generisati jezi\v cki procesor \v sto daje
+    upotrebnu vrednost programa.\\
+    \\
+    Zamerke programima {\bf AGLA} i {\bf AGSA}:
+    \begin{itemize}
+      \item[-]
+      {
+        Generisani programi nisu optimalno napisani.
+      }
+      \item[-]
+      {
+        Nisu podr\v zane funkcije koje ra\v cunaju pravu vrednost lekseme,
+        ve\'c se to prepu\v sta semanti\v ckim funkcijama.
+      }
+      \item[-]
+      {
+        Nisu podr\v zane tabele simbola, ve\'c se i to prepu\v sta
+        semanti\v ckim funkcijama.
+      }
+    \end{itemize}
+    Pored programa {\bf AGLA} i {\bf AGSA}, bilo bi korisno napisati i
+    program koji bi pomagao u kreiranju LL(1) gramatika\footnote{A mo\v zda
+    i nekih drugih (ja\v cih) klasa gramatika.} i kreiranju semanti\v ckih
+    funkcija.
+    Tako bi se potpuno automatizovalo generisanje jezi\v ckih procesora.\\
+    \\
+    Programi {\bf AGLA} i {\bf AGSA} su napisani na programskom jeziku
+    ``C'' po {\bf ANSI} standardu koji je opisan u [2].
+    Pisani su na {\bf DEC 4100} radnoj stanici a kori\v s\'cen je
+    {\bf GNU C} kompajler.\\
+    \\
+    Ovaj rad je slo\v zen u \LaTeX-u na {\bf DEC 4100} radnoj stanici.
+%
+%
+  \naslov{Literatura}
+  \begin{itemize}
+    \item[{[1]}]
+    {
+      Alfred Aho, Jeffrey Ullman\\
+      ``The Theory Of Parsing, Translation And Compiling''
+    }
+    \item[{[2]}]
+    {
+      Brian Kernighan, Dennis Ritchie\\
+      ``The C Programming Language''
+    }
+    \item[{[3]}]
+    {
+      Bjarne Stroustrup\\
+      ``The C++ Programming Language''
+    }
+    \item[{[4]}]
+    {
+      Niklaus Wirth\\
+      ``Algorithms + Data Structures = Programs''
+    }
+  \end{itemize}
+%
+%
+\end{document}

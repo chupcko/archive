@@ -1,0 +1,38 @@
+mode_setup;
+
+def phone(expr c,vel)=
+  beginchar(c,vel*pt#,8.5*vel*pt#/14,1.5*vel*pt#/14); "Znak za Telefon";
+    px:=w/14; py:=(h+d)/10;
+    x1=x2=2px; x3=2.5px; x4=4px ;x5=4.5px;
+    x6=5px; x7=x8=3.5px; x9=x10=1px; x11=4px;
+    y1=0py; y2=2.5py; y3=4py; y4=5.5py; y5=y7=7py;
+    y6=y10=8py; y8=y9=6.5py; y11=10py;
+    for n=1 upto 11:
+      y[n]:=y[n]-d;
+      y[n+11]:=y[n];
+      x[n+11]:=w-x[n];
+    endfor
+    fill z1--z2..z3{z4-z2}..z4{z5-z3}..z5--z16..z15{z14-z16}..z14{z13-z15}..z13--z12--cycle;
+    fill z6{left}..{down}z7--z8--z9--z10{up}..{right}z11--z22{right}..{down}z21--z20--z19--z18{up}..{left}z17--cycle;
+    unfill 3/14[(w/2,y5),(w/2,y1)]..11/14[(w/2,y5),(w/2,y1)]..cycle;
+    fill 5/14[(w/2,y5),(w/2,y1)]..9/14[(w/2,y5),(w/2,y1)]..cycle;
+    labels(range 1 thru 22);
+  endchar;
+enddef;
+
+phone("0",5);
+phone("1",6);
+phone("2",7);
+phone("3",8);
+phone("4",9);
+phone("5",10);
+phone("6",11);
+phone("7",12);
+phone("8",14);
+phone("9",16);
+
+font_quad=10pt#;
+font_normal_space=1pt#;
+font_identifier="PHONE";
+font_coding_scheme="0123456789 only";
+end.

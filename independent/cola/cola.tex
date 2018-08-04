@@ -1,0 +1,625 @@
+\documentclass[10pt,a4paper,oneside]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{mathtools}
+\usepackage[all]{xy}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\renewcommand{\listfigurename}{Lista slika}
+\renewcommand{\contentsname}{Sadr\v{z}aj}
+\renewcommand{\figurename}{Slika}
+\newtheorem*{definition}{Definicija}
+\newtheorem*{primer}{Primer}
+\newtheorem{theorem}{Teorema}[section]
+\setlength{\parindent}{0cm}
+\begin{document}
+  \title{CoLa}
+  \author{Goran Lazi\'{c}}
+  \date{2011}
+  \maketitle
+  \begin{abstract}
+    CoLa
+    %%%
+  \end{abstract}
+  \section{Uvod}
+    %%%
+  \section{Lambda ra\v{c}un}
+    Da bi formalno uveli lambda ra\v{c}un, uve\v{s}\'{c}emo prvo skup varijabli (promenljivih), zatim skup lambda izraza, i nekoliko funkcija nad lambda izrazima.
+    %%%
+    \subsection{Osnovne definicije}
+    Skup varijabli \'{c}emo ozna\v{c}avti \(\mathcal{V}\), same varijable pisa\'{c}emo malim slovima, uz opciono kori\v{s}\'{c}enje indeksa i/ili akcenta.
+    \begin{primer}[Varjable]
+      \begin{gather*}
+        x\\
+        y_{1}\\
+        z'\\
+        w'''_{42}
+      \end{gather*}
+    \end{primer}
+
+    Lambda izraz defini\v{s}emo koriste\'{c}i skup varijabli \(\mathcal{V}\) i uvodjenjem dve operacije.
+    \begin{definition}[Lambda izraz]
+      Skup lambda izraza \'{c}emo ozna\v{c}avati \(\mathcal{L}\) i defini\v{s}emo ga na slede\'{c}i na\v{c}in:
+      \begin{enumerate}
+        \item
+          \(x
+            \in \mathcal{V} \implies
+            x \in \mathcal{L}
+          \)
+        \item
+          \(
+            \alpha, \beta \in \mathcal{L} \implies
+            (\alpha\ \beta) \in \mathcal{L}
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha \in \mathcal{L} \implies
+            (\lambda x.\alpha) \in \mathcal{L}
+          \)
+      \end{enumerate}
+    \end{definition}
+    Operaciju iz ta\v{c}ke 2 zovemo ``aplikacija'', a operaciju iz ta\v{c}ke 3 zovemo ``apstrakcija''.
+    \begin{primer}[Lambda izrazi]
+      \begin{gather*}
+        x\\
+        (\lambda x.x)\\
+        (\lambda x.(\lambda y.(\lambda z.((x\ z)\ (y\ z)))))\\
+        (\lambda x.(\lambda x.x))
+      \end{gather*}
+    \end{primer}
+
+    U pisanju mo\v{z}emo koristiti neke olak\v{s}ice:
+    \begin{itemize}
+      \item Spoljne zagrade ne pi\v{s}emo, tako da je \(\alpha\ \beta = (\alpha\ \beta)\)\;;
+      \item Aplikacija je levo asocijativna, tako da je \(\alpha\ \beta\ \gamma = ((\alpha\ \beta)\ \gamma)\)\;;
+      \item Telo apstrakcije \v{s}irimo dokle mo\v{z}e, tako da je \(\lambda x.\alpha\ \beta = \lambda x.(\alpha\ \beta)\)\;.
+    \end{itemize}
+
+    Za odredjeni lambda izraz neka varijabla mo\v{z}e biti slobodna ili vezana.
+    Vezane varijable su one koje se pojavljuju u nekoj apstrakciji, slobodne varijable su one koje nisu vezane a pojavljuju se u lambda izrazu. 
+
+    \begin{definition}[Vezane varijable]
+      Funkciju \(B : \mathcal{L} \to \mathcal{P}(\mathcal{V})\) koja racxuna ``vezane varijable'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \begin{enumerate}
+        \item
+          \(
+            x \in \mathcal{V} \implies
+            B[x] = \{\}
+          \)
+        \item
+          \(
+            \alpha, \beta \in \mathcal{L} \implies
+            B[(\alpha\ \beta)] = B[\alpha] \cup B[\beta]
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha \in \mathcal{L} \implies
+            B[(\lambda x.\alpha)] = \{x\} \cup B[\alpha]
+          \)
+      \end{enumerate}
+    \end{definition}
+    \begin{primer}[Vezane varijable]
+      \begin{align*}
+        B[x] &= \{\}\\
+        B[\lambda x.x] &= \{x\}\\
+        B[\lambda x.(\lambda y.(\lambda x.x))] &= \{x, y\}
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[Slobodne varijable]
+      Funkciju \(F : \mathcal{L} \to \mathcal{P}(\mathcal{V})\) koja racxuna ``slobodne varijable'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \begin{enumerate}
+        \item
+          \(
+            x \in \mathcal{V} \implies
+            F[x] = \{x\}
+          \)
+        \item
+          \(
+            \alpha, \beta \in \mathcal{L} \implies
+            F([\alpha\ \beta)] = F[\alpha] \cup F[\beta]
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha \in \mathcal{L} \implies
+            F[(\lambda x.\alpha)] = F[\alpha] \setminus \{x\}
+          \)
+      \end{enumerate}
+    \end{definition}
+    \begin{primer}[Slobodne varijable]
+      \begin{align*}
+        F[x] &= \{x\}\\
+        F[\lambda x.x] &= \{\}\\
+        F[\lambda x.(\lambda y.(\lambda x.x))] &= \{\}
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[Supstitucija]
+      Funkcju \(S : \mathcal{L} \times \mathcal{V} \times \mathcal{L} \to \mathcal{L}\) koja racxuna ``supstituciju'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \begin{enumerate}
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha, \beta \in \mathcal{L} \land
+            x \notin F[\alpha] \implies
+            S[\alpha, x, \beta] = \alpha
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha \in \mathcal{L} \implies
+            S[x, x, \alpha] = \alpha
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha, \beta, \gamma \in \mathcal{L} \implies
+            S[(\alpha\ \beta), x, \gamma] = (S[\alpha, x, \gamma]\ S[\beta, x, \gamma])
+          \)
+        \item
+          \(
+            x, y \in \mathcal{V} \land
+            x \neq y \land
+            \alpha, \beta \in \mathcal{L} \land
+            x \notin F[\beta] \implies
+            S[(\lambda x.\alpha), y, \beta] = (\lambda x.S[\alpha, y, \beta])
+          \)
+      \end{enumerate}
+    \end{definition}
+    \begin{primer}[Supstitucija]
+      \begin{align*}
+        S[\lambda x.x, y, z] &= \lambda x.x\\
+        S[x, y, z] &= x\\
+        S[\lambda x.y\ x, y, \lambda x.x] &= \lambda x.(\lambda x.x)\ x
+      \end{align*}
+    \end{primer}
+  \subsection{Konverzija i Redukcija}
+    Za sada lambda izrazi nemaju nikakvog smisla, ali ako uvedemo neke relacije (konverzije i redukcije) nad lambda izrazima, mo\v{z}emo ih koristiti za ``izra\v{c}unavanje''.
+
+    \begin{definition}[\(\alpha\) konverzija]
+      Binarnu relaciju \(\vartriangleright_{\alpha}\) koju nazivamo ``\(\alpha\) konverzija'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \begin{enumerate}
+        \item
+          \(
+            x \in \mathcal{V} \implies
+            x \vartriangleright_{\alpha} x
+          \)
+        \item
+          \(
+            \alpha_{1}, \alpha_{2}, \beta_{1}, \beta_{2} \in \mathcal{L} \land
+            \alpha_{1} \vartriangleright_{\alpha} \alpha_{2} \land
+            \beta_{1} \vartriangleright_{\alpha} \beta_{2} \implies
+            (\alpha_{1}\ \beta_{1}) \vartriangleright_{\alpha} (\alpha_{2}\ \beta_{2})
+          \)
+        \item
+          \(
+            x \in \mathcal{V} \land
+            \alpha, \beta \in \mathcal{L} \land
+            \alpha \vartriangleright_{\alpha} \beta \implies
+            (\lambda x.\alpha) \vartriangleright_{\alpha} (\lambda x.\beta)
+          \)
+        \item
+          \(
+            x, y \in \mathcal{V} \land
+            \alpha \in \mathcal{L} \land
+            y \notin B[\alpha] \implies
+            (\lambda x.\alpha) \vartriangleright_{\alpha} (\lambda y.S[\alpha, x, y])
+          \)
+      \end{enumerate}
+    \end{definition}
+    \begin{primer}[\(\alpha\) konverzija]
+      \begin{align*}
+        \lambda x.x &\vartriangleright_{\alpha} \lambda y.y\\
+        \lambda x.x\ (\lambda x.x\ x)\ x &\vartriangleright_{\alpha} \lambda z.z\ (\lambda y.y\ y)\ z
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[\(\beta\) redukcija]
+      Binarnu relaciju \(\vartriangleright_{\beta}\) koju nazivamo ``\(\beta\) redukcija'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \[
+        x \in \mathcal{V} \land
+        \alpha, \beta \in \mathcal{L} \land
+        x \notin F[\beta] \implies
+        ((\lambda x.\alpha)\ \beta) \vartriangleright_{\beta} S[\alpha, x, \beta]
+      \]
+    \end{definition}
+    \begin{primer}[\(\beta\) redukcija]
+      \begin{align*}
+        %%%
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[Prosta redukcija]
+      Binarnu relaciju \(\vartriangleright\) koju nazivamo ``prosta redukcija'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \[
+        \alpha, \beta \in \mathcal{L} \land
+        (
+          \alpha \vartriangleright_{\alpha} \beta \lor
+          \alpha \vartriangleright_{\beta} \beta
+        ) \implies
+        \alpha \vartriangleright \beta
+      \]
+    \end{definition}
+    \begin{primer}[Prosta redukcija]
+      \begin{align*}
+        %%%
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[Redukcija]
+      Binarnu relaciju \(\blacktriangleright\) koju nazivamo ``redukcija'' defini\v{s}emo kao tranzitivno zatvorenje relacije \(\vartriangleright\).
+      \[\blacktriangleright = \vartriangleright^{+}\]
+    \end{definition}
+    \begin{primer}[Redukcija]
+      \begin{align*}
+        %%%
+      \end{align*}
+    \end{primer}
+
+    \begin{definition}[Ekstenzionalnost]
+      Binarnu relaciju \(\approx\) koju nazivamo ``ekstenzionalnost'' defini\v{s}emo na slede\'{c}i na\v{c}in:
+      \[
+        \alpha, \beta \in \mathcal{L} \land
+        (
+          (\forall \gamma) (\exists \delta)
+          (\alpha\ \gamma) \blacktriangleright \delta \land
+          (\beta\ \gamma) \blacktriangleright \delta
+        ) \implies
+        \alpha \approx \beta
+      \]
+    \end{definition}
+    \begin{primer}[Ekstenzionalnost]
+      \begin{align*}
+        %%%
+      \end{align*}
+    \end{primer}
+    
+    \begin{theorem}
+      Relacija ekstenzionalnosti je relacija ekvivalencije (\(\alpha, \beta, \gamma \in \mathcal{L}\)).
+      \begin{enumerate}
+        \item \(\alpha \approx \alpha\)
+        \item
+          \(
+            \alpha \approx \beta \implies
+            \beta \approx \alpha
+          \)
+        \item
+          \(
+            \alpha \approx \beta \land
+            \beta \approx \gamma \implies
+            \alpha \approx \gamma
+          \)
+      \end{enumerate}
+    \end{theorem}
+    \begin{proof}[Dokaz]
+      %%%
+    \end{proof}
+  %%%
+  \section{Kombinatori}
+  %%%
+  \subsection{Definicija}
+  %%%
+  \subsection{Svodjenje}
+  %%%
+  \subsection{Baza}
+  %%%
+  \subsection{Prevodjenje}
+  %%%
+  \section{Rekurzija}
+  %%%
+  \section{Logika}
+  %%%
+  \section{Projekcije}
+  %%%
+  \section{Poigravanje, DDD, EDE, EEE}
+  %%%
+  \section{Trash}
+    \begin{align*}
+      \mathbf{I}\ x &\blacktriangleright x\\
+      \mathbf{K}\ x\ y &= x\\
+      \mathbf{S}\ x\ y\ z &= x\ z\ (y\ z)\\
+      \mathbf{F}\ x\ y &= y\\
+      \mathbf{C}\ x\ y\ z &= x\ z\ y\\
+      \mathbf{B}\ x\ y\ z &= x\ (y\ z)\\
+      \mathbf{W}\ x\ y &= x\ y\ y\\
+      \mathbf{M}\ x &= x\ x\\
+      \mathbf{J}\ x\ y &= x\ \mathbf{S}\ \mathbf{K}\\
+      \mathbf{R}\ x\ y &= y\ x\\
+      \mathbf{D}\ x\ y &= x\ y\ x\\
+      \mathbf{E}\ x\ y &= y\ x\ y\\
+    \end{align*}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(11, 3)
+        \put(0, 0){\makebox(1, 1){\(\alpha\)}}
+        \put(0, 2){\framebox(1, 1){\(\bullet\)}}
+        \put(0.5, 2){\vector(0, -1){1}}
+        \put(1, 0.5){\vector(1, 0){1}}
+        \put(1, 2.5){\vector(1, 0){1}}
+        \put(2, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(2, 2){\makebox(1, 1){\(\beta\)}}
+        \put(4, 2){\makebox(1, 1){\(\vartriangleright\)}}
+        \put(6, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(7, 2.5){\vector(1, 0){1}}
+        \put(8, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(9, 2.5){\vector(1, 0){1}}
+        \put(10, 2){\makebox(1, 1){\(\beta\)}}
+      \end{picture}
+      \caption{Redukcija asocijacije}
+      \label{figure:reduction_association}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(13, 3)
+        \put(0, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 2.5){\vector(1, 0){1}}
+        \put(2, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(2, 2){\framebox(1, 1){\(\bullet\)}}
+        \put(2.5, 2){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(4, 2){\makebox(1, 1){\(\beta\)}}
+        \put(6, 2){\makebox(1, 1){\(\succ\)}}
+        \put(8, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(9, 2.5){\vector(1, 0){1}}
+        \put(10, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(11, 2.5){\vector(1, 0){1}}
+        \put(12, 2){\makebox(1, 1){\(\beta\)}}
+      \end{picture}
+      \caption{Redukcija singla}
+      \label{figure:reduction_single}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(13, 3)
+        \put(0, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 2.5){\vector(1, 0){1}}
+        \put(2, 0){\framebox(1, 1){\(x\)}}
+        \put(2, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 2){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(4, 2){\makebox(1, 1){\(\beta\)}}
+        \put(6, 2){\makebox(1, 1){\(\succ\)}}
+        \put(8, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(9, 2.5){\vector(1, 0){1}}
+        \put(10, 2){\framebox(1, 1){\(\mathbf{I}\)}}
+        \put(11, 2.5){\vector(1, 0){1}}
+        \put(12, 2){\makebox(1, 1){\(\beta\)}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{I}$}
+      \label{figure:reduction_lambda_i}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(15, 5)
+        \put(0, 0){\(x \notin \gamma, \mathcal{P}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(6, 4){\makebox(1, 1){\(\succ\)}}
+        \put(8, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(9, 4.5){\vector(1, 0){1}}
+        \put(10, 2){\framebox(1, 1){\(\mathbf{K}\)}}
+        \put(10, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(10.5, 4){\vector(0, -1){1}}
+        \put(11, 2.5){\vector(1, 0){1}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 0){\makebox(1, 1){\(\gamma\)}}
+        \put(12, 2){\framebox(1, 1){\(\bullet\)}}
+        \put(12, 4){\makebox(1, 1){\(\beta\)}}
+        \put(12.5, 2){\vector(0, -1){1}}
+        \put(13, 0.5){\vector(1, 0){1}}
+        \put(14, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{K}$}
+      \label{figure:reduction_lambda_k}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(19, 5)
+        \put(0, 0){\(x \in \gamma, \mathcal{P}, \mathcal{Q}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(5, 2.5){\vector(1, 0){1}}
+        \put(6, 2){\framebox(1, 1){\(\mathcal{Q}\)}}
+        \put(8, 4){\makebox(1, 1){\(\succ\)}}
+        \put(10, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 2){\framebox(1, 1){\(\mathbf{S}\)}}
+        \put(12, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(12.5, 4){\vector(0, -1){1}}
+        \put(13, 2.5){\vector(1, 0){1}}
+        \put(13, 4.5){\vector(1, 0){1}}
+        \put(14, 0){\makebox(1, 1){\(\gamma\)}}
+        \put(14, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(14, 4){\makebox(1, 1){\(\beta\)}}
+        \put(14.5, 2){\vector(0, -1){1}}
+        \put(15, 0.5){\vector(1, 0){1}}
+        \put(15, 2.5){\vector(1, 0){3}}
+        \put(16, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(18, 0){\framebox(1, 1){\(\mathcal{Q}\)}}
+        \put(18, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(18.5, 2){\vector(0, -1){1}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{S}$}
+      \label{figure:reduction_lambda_s}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(17, 5)
+        \put(0, 0){\(x \in \gamma, \mathcal{P}\qquad x \notin \mathcal{Q}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(5, 2.5){\vector(1, 0){1}}
+        \put(6, 2){\framebox(1, 1){\(\mathcal{Q}\)}}
+        \put(8, 4){\makebox(1, 1){\(\succ\)}}
+        \put(10, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 2){\framebox(1, 1){\(\mathbf{C}\)}}
+        \put(12, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(12.5, 4){\vector(0, -1){1}}
+        \put(13, 2.5){\vector(1, 0){1}}
+        \put(13, 4.5){\vector(1, 0){1}}
+        \put(14, 0){\makebox(1, 1){\(\gamma\)}}
+        \put(14, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(14, 4){\makebox(1, 1){\(\beta\)}}
+        \put(14.5, 2){\vector(0, -1){1}}
+        \put(15, 0.5){\vector(1, 0){1}}
+        \put(15, 2.5){\vector(1, 0){1}}
+        \put(16, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(16, 2){\framebox(1, 1){\(\mathcal{Q}\)}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{C}$}
+      \label{figure:reduction_lambda_c}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(19, 5)
+        \put(0, 0){\(x \notin \gamma, \mathcal{P}\qquad x \in \mathcal{Q}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(5, 2.5){\vector(1, 0){1}}
+        \put(6, 2){\framebox(1, 1){\(\mathcal{Q}\)}}
+        \put(8, 4){\makebox(1, 1){\(\succ\)}}
+        \put(10, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 2){\framebox(1, 1){\(\mathbf{B}\)}}
+        \put(12, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(12.5, 4){\vector(0, -1){1}}
+        \put(13, 2.5){\vector(1, 0){1}}
+        \put(13, 4.5){\vector(1, 0){1}}
+        \put(14, 0){\makebox(1, 1){\(\gamma\)}}
+        \put(14, 2){\framebox(1, 1){\(\bullet\)}}
+        \put(14, 4){\makebox(1, 1){\(\beta\)}}
+        \put(14.5, 2){\vector(0, -1){1}}
+        \put(15, 0.5){\vector(1, 0){1}}
+        \put(15, 2.5){\vector(1, 0){3}}
+        \put(16, 0){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(18, 0){\framebox(1, 1){\(\mathcal{Q}\)}}
+        \put(18, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(18.5, 2){\vector(0, -1){1}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{B}$}
+      \label{figure:reduction_lambda_b}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(15, 5)
+        \put(0, 0){\(x \notin \gamma, \mathcal{P}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(5, 2.5){\vector(1, 0){1}}
+        \put(6, 2){\framebox(1, 1){\(x\)}}
+        \put(8, 4){\makebox(1, 1){\(\succ\)}}
+        \put(10, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 2){\makebox(1, 1){\(\gamma\)}}
+        \put(12, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(12.5, 4){\vector(0, -1){1}}
+        \put(13, 2.5){\vector(1, 0){1}}
+        \put(13, 4.5){\vector(1, 0){1}}
+        \put(14, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(14, 4){\makebox(1, 1){\(\beta\)}}
+      \end{picture}
+      \caption{Redukcija lambda $x$}
+      \label{figure:reduction_lambda_x}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(13, 3)
+        \put(0, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 2.5){\vector(1, 0){1}}
+        \put(2, 0){\framebox(1, 1){\(x\)}}
+        \put(2, 2){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 2){\vector(0, -1){1}}
+        \put(3, 0.5){\vector(1, 0){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(4, 0){\framebox(1, 1){\(x\)}}
+        \put(4, 2){\makebox(1, 1){\(\beta\)}}
+        \put(6, 2){\makebox(1, 1){\(\succ\)}}
+        \put(8, 2){\makebox(1, 1){\(\alpha\)}}
+        \put(9, 2.5){\vector(1, 0){1}}
+        \put(10, 2){\framebox(1, 1){\(\mathbf{M}\)}}
+        \put(11, 2.5){\vector(1, 0){1}}
+        \put(12, 2){\makebox(1, 1){\(\beta\)}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{M}$}
+      \label{figure:reduction_lambda_m}
+    \end{figure}
+    \begin{figure}[h]
+      \setlength{\unitlength}{1.5em}
+      \centering
+      \begin{picture}(13, 5)
+        \put(0, 0){\(x \notin \mathcal{P}\)}
+        \put(0, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(1, 4.5){\vector(1, 0){1}}
+        \put(2, 2){\framebox(1, 1){\(x\)}}
+        \put(2, 4){\framebox(1, 1){\(\lambda x\)}}
+        \put(2.5, 4){\vector(0, -1){1}}
+        \put(3, 2.5){\vector(1, 0){1}}
+        \put(3, 4.5){\vector(1, 0){1}}
+        \put(4, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(4, 4){\makebox(1, 1){\(\beta\)}}
+        \put(6, 4){\makebox(1, 1){\(\succ\)}}
+        \put(8, 4){\makebox(1, 1){\(\alpha\)}}
+        \put(9, 4.5){\vector(1, 0){1}}
+        \put(10, 4){\framebox(1, 1){\(\bullet\)}}
+        \put(11, 4.5){\vector(1, 0){1}}
+        \put(12, 4){\makebox(1, 1){\(\beta\)}}
+        \put(10, 2){\framebox(1, 1){\(\mathbf{R}\)}}
+        \put(11, 2.5){\vector(1, 0){1}}
+        \put(12, 2){\framebox(1, 1){\(\mathcal{P}\)}}
+        \put(10.5, 4){\vector(0, -1){1}}
+      \end{picture}
+      \caption{Redukcija lambda $\mathbf{R}$}
+      \label{figure:reduction_lambda_r}
+    \end{figure}
+  \newpage
+  \listoffigures
+  \newpage
+  \tableofcontents
+\end{document}

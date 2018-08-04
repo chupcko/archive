@@ -1,0 +1,14 @@
+a:=3;
+
+if 1+2=3 then
+begin
+  c:=1;
+  b:="tacno"
+end;
+
+b:="a1".b.fill("abc",8);
+debug();
+print("\n",time(),"\n");
+split(getenv("PATH"),":",n);
+for i in n do
+  print(i,": ",n[i],"\n");

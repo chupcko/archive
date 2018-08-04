@@ -1,0 +1,1 @@
+(a THEN (b THEN c)) THEN ((a THEN b) THEN (a THEN c))

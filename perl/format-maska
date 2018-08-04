@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+
+sub upustvo
+{
+  print <<EOF;
+Upustvo: format-maska [-d separator] [-e ekstenzija] [-h] format maska
+
+Za svaki red datoteke format kopira se datoteka maska u prvo polje (koja su
+razdvojena separatorom) na koje je dodata ekstenzija i svaka pojava niske
+\$\$1 se menja sledecim poljem i tako dalje...
+
+Za HTML radionicu napisao CHUPCKO.
+EOF
+  exit(0);
+}
+
+$separator=':';
+$ekstenzija='';
+
+while($ARGV=shift)
+{
+  if($ARGV=~/-(.*)/)
+  {
+    if($1 eq '-')
+    {
+      $ARGV=shift;
+      last;
+    }
+    elsif($1 eq 'd')
+    {
+      $separator=shift;
+    }
+    elsif($1 eq 'e')
+    {
+      $ekstenzija=shift;
+    }
+    else
+    {
+      upustvo();
+    }
+  }
+  else
+  {
+    last;
+  }
+}
+
+$format=$ARGV;
+$maska=shift;
+
+upustvo() unless(defined($format)&&defined($maska));
+
+open(DAT,$format);
+while(<DAT>)
+{
+  chop;
+  @zamene=split(/$separator/,$_);
+  open(UL,$maska);
+  open(IZL,">$zamene[0]$ekstenzija");
+  while(<UL>)
+  {
+    for($i=$#zamene;$i>0;$i--)
+    {
+      s/\$\$$i/$zamene[$i]/g;
+    }
+    print IZL;
+  }
+  close(UL);
+  close(IZL);
+}
+close(DAT);

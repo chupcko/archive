@@ -1,0 +1,410 @@
+\documentclass{article}
+\usepackage{alltt,array,theorem,xspace,multicol,tabularx}
+\title{Implementation of Optimized SK Reduction Machine}
+\author{Sa\v sa Malkov$^1$, Goran Lazi\' c$^2$, Aleksandra Ga\v cevi\'
+c$^3$, Nenad Miti\' c$^2$
+\vspace{1ex}\\
+$^1$Department of Genetics, Institute for Biological Research,\\ 29.
+novembra  142, Belgrade\\
+$^2$Faculty of Mathematics, Studentski trg 16, Belgrade\\
+$^3$ Faculty of Civil Engineering, Bulevar Revolucije 73, Belgrade
+\vspace{1ex}\\
+email:\{xpmfc08, xpmfc09, xpmfc16, xpmfm23\}@yubgss21.bg.ac.yu}
+\date{}
+\def \sp{\vspace{1ex}\\}
+\def \spd{\vspace{2ex}\\}
+\def \ll{Lispkit Lisp\xspace}
+\def \ls{Lispkit/SQL\xspace}
+\setlength {\textheight}{20.5cm}
+\setlength {\textwidth}{14cm}
+\pagestyle{empty}
+\begin{document}
+\vspace{7cm}
+\maketitle
+\thispagestyle{empty}
+\noindent
+\begin{abstract}
+Every applicative evaluator implementation of a functional language
+at procedural host system has to confront with efficiency. Lazy SK
+reduction machine implementation has much more efficiency problems
+than most others, because of its very low level and laziness. In order
+to make fast applicative evaluator implementation with lower memory
+demands, we have tried to improve performances of SK reduction machine
+implementation. In this paper we describe some of optimization methods
+we found, which can improve SK reduction machine as well as some other
+evaluator implementations.
+\end{abstract}
+AMS Subj. Class.(1991): 68N99
+\section{SK reduction machine}
+An algorithm formalization is based on the idea that every object
+involved in the evaluation process is operator-like object, called
+combinator. All combinators can be defined using just few basic
+combinators \cite{combilog}, and we use a formalization with two basic
+combinators S and K. S is defined as three arguments operator, and its
+application can be described as Sxyz$\mapsto$xz(yz), where parenthesis
+denote a separate application. K is defined as two arguments operator
+which selects the first argument: Kxy$\mapsto$x.
+\sp
+SK reduction machine is calculator for SK combinators based expressions.
+SK combinators expressions have standard term syntax with two atoms:
+S and K. In addition, even the set of constants can be defined using
+S and K, it is added to the combinators as a language extension. In
+this paper we introduce only natural numbers as constants. Complete
+description of SK reduction machine can be found in \cite{funcprog},
+\cite{implet}.
+\section{Implementation problems}
+If we take a look at implementations of many different functional
+languages at usual procedural environments, we can note that many
+problems encountered in some of these implementations are present in
+SK reduction machine realization too. Lazy SK reduction machine becomes
+an environment for efficiency testing, and if we develop some
+optimization techniques for better SK reduction results, they could be
+used in other implementations. We were interested in the next problems:
+\begin{itemize}
+\item
+evaluation algorithms, that makes a heart of the reduction machine,
+are recursive with unpredictable depth, which is a problem if a host
+is a procedural system with limited stack size
+\item
+with normal order reduction, there are two classical redex searching
+techniques: spine stack technique, which has unpredictable memory
+requests, and pointer-reversal technique, which uses very little extra
+storage, but is a bit more complex and slower than the first one
+\item
+recursion implemented by Y combinator is inefficient because of large
+memory requests, and requires complex recursive combinators coding
+\item
+the previous problem extremely enlarges in presence of the mutual
+recursiveness of many combinators
+\item
+garbage collector is never good enough (it is pragmatic question,
+at least)
+\end{itemize}
+\section{Optimizations}
+In order to find some better solutions for mentioned problems we have
+designed the optimized SK reduction machine. We have started with no
+optimization and included one by one optimization creating more
+efficient machine.
+\begin{enumerate}
+\item
+{\bf The recursiveness is removed from the implementation.}\\
+All applied algorithms are non-recursive, including even the redex
+searching, evaluation and memory freeing. Without recursiveness the
+implementation at procedural host system has predictable and limited
+memory requests for implementation itself. The implementation without
+recursiveness is faster, too.
+\item
+{\bf New redex searching algorithm is based on a cyclic stack.}\\
+This method is based on the fast redex searching algorithm using a
+stack, and requires a limited memory amount. While operands data
+fills the memory reserved for stack, algorithm chooses which nodes
+to put on the stack, and which to remove from it. At evaluation time
+it is necessary to partially reconstruct the stack which slightly
+slows total evaluation process in relation to simple stack technique.
+\item
+{\bf Efficient SK recursiveness is implemented.}\\
+Instead of use of Y combinator this implementation allows direct
+notations of recursive functions, like F=\ldots F\ldots It is much
+easier to code recursive combinators now, since their definitions
+become much simpler and shorter with less operand shiftings through
+the expression. Main feature this approach obtains is a faster
+evaluation with less memory requirement. Direct notation of mutual
+recursive expressions is allowed, too.
+\item
+{\bf Y is not included as system combinator.}\\
+Y is excluded from system combinators in attempt to daunt its use
+instead of direct notation of recursive expressions.
+\item
+{\bf No need for separate garbage collector.}\\
+Because of absence of the cyclic Y combinator there is no cyclic
+structures in evaluation trees at all, so reference count algorithm
+for garbage collecting is sufficient.
+\item
+{\bf It is easy to add new system combinators.}\\
+Internal reduction machine structure allows simple adding of new
+system operators in order to create more complex machine with simpler
+expressions.
+\end{enumerate}
+\section{Implementation}
+The SK reduction machine is implemented in C language
+according to its description given in
+\cite{funcprog}, \cite{implet}. Reduction machine consists of four main
+parts: memory manager, translator, evaluator and the module that
+implements system operators.
+\subsection{Memory manager}
+Memory manager provides memory pool that contains cells. Cell is an
+atomic memory unit used for SK expression and evaluation. Cell consists
+of left and right parts, appropriate type information and reference
+counter.
+%Its structure is shown below (in C notation):
+%\begin{alltt}
+%      struct cell_struct {
+%         char lefttype;
+%         char righttype;
+%         struct cell_struct *left;
+%         struct cell_struct *right;
+%         unsigned refcount;
+%      };
+%      typedef struct cell_struct Cell;
+%\end{alltt}
+Type can be: {\tt EMPTY\_TYPE}, {\tt POINTER\_TO\_CELL}, {\tt NUMBER},
+{\tt SYSTEM\_OPERATOR}, {\tt USER\_OPERATOR}. Every cell describes an
+application of operator at left side to the operand at right side. If
+there is not any operand at right side (rigthtype value is
+{\tt EMPTY\_TYPE}), then the result of application is operator itself.
+Application {\tt(add 43 25)} will consist of two cells and could be
+noted as application of {\tt(add 43)} combinator to {\tt 25}
+(see Figure \ref{fig:add}).
+%\begin{center}
+\begin{figure}[h]
+\setlength{\unitlength}{1mm}
+\begin{picture}(140,15)
+\put(52.5,0){\framebox(15,5){}}
+\put(52.5,4){\line(1,0){15}}
+\put(60,4){\line(0,-1){4}}
+\put(52.5,0){\makebox(7.5,4){add}}
+\put(60.0,0){\makebox(7.5,4){43}}
+
+\put(65,10){\framebox(15,5){}}
+\put(65,14){\line(1,0){15}}
+\put(72.5,14){\line(0,-1){4}}
+\put(65,10){\makebox(7.5,4){}}
+\put(72.5,10){\makebox(7.5,4){25}}
+\put(68,12){\vector(-1,-1){8}}
+\end{picture}
+\caption{Cells in application of {\tt (add 43)} combinator to {\tt 25}}
+\label{fig:add}
+\end{figure}
+%\end{center}
+Memory manager contains cell allocation and freeing algorithm,
+together with a garbage collector. All free cells are organized in a
+cell list from which are taken at allocation time, and returned after
+freeing. Besides, there is an additional list that contains pointers
+to trees that should be freed and is used for efficient non-recursive
+garbage collecting. In both lists the right side of cell is used for
+list linkage, and in additional list the left side is used to point
+to unreferenced branch. Reference count garbage collector is
+incorporated into the cell freeing algorithm. Simple cell freeing
+algorithm is recursive, because cell can contain two pointers to cells:
+same function is applied twice, once for each branch. Our freeing
+algorithm is not recursive but cyclic, with determined memory demands.
+If cell contains two pointers to other cells, one branch has to be
+preserved in the list without allocating any additional cell, and
+other has to be freed in the same way.
+%(see Figure \ref{fig:alg}).
+%\begin{figure}[h]
+%{\baselineskip=0.80\baselineskip
+%\begin{alltt}
+%dereference:
+%   if( --(cell_to_free->reference_count) == 0 )
+%      if( cell_to_free->righttype == POINTER_TO_CELL ){
+%         next_to_free = cell_to_free->right;
+%         if( cell_to_free->lefttype == POINTER_TO_CELL ){
+%            add_cell_to_list_of_branches( cell_to_free );
+%            cell_to_free = next_to_free;
+%         }else
+%            add_cell_to_list_of_free( cell_to_free );
+%         cell_to_free = next_to_free;
+%         goto dereference;
+%      }else if( cell_to_free->lefttype == POINTER_TO_CELL ){
+%         next_to_free = cell_to_free->left;
+%         add_cell_to_list_of_free( cell_to_free );
+%         cell_to_free = next_to_free;
+%         goto dereference;
+%      }else
+%         add_cell_to_list_of_free( cell_to_free );
+%\end{alltt}
+%}
+%\caption{Freeing algorithm}
+%\label{fig:alg}
+%\end{figure}
+When there is no cells in the list of free cells, memory manager
+frees cells from the branch at the begin of the list of branches
+that should be dereferenced.
+\subsection{Translator}
+Translator is a module that translates textual representation of
+SK expressions to internal graph representation. There are two kind
+of acceptable expressions: definition and evaluation. Definition
+is expression that defines a new combinator (user operator), and
+evaluation is an application of already defined combinators. Its syntax
+is shown at the Figure \ref{fig:syntax}.
+\begin{figure}[h]
+%{\baselineskip=0.80\baselineskip
+\begin{alltt}
+<definition>   ::= <identifier> = <SKexpression>.
+<evaluation>   ::= <SKexpression>.
+<SKexpression> ::= <operator> [<operand>]
+<operator>     ::= <identifier> | <constant> | <SKexpression>
+<operand>      ::= <identifier> | <constant> | (<SKexpression>)
+<combinator>   ::= <operator>   | <operand>
+<constant>     ::= <integer>
+<identifier>   ::= <character> [<any symbol different from `.`>]
+\end{alltt}
+%}
+\caption{Syntax of acceptable expression in BNF form}
+\label{fig:syntax}
+\end{figure}
+Some examples of user defined operators and evaluations are shown in the
+example of application {\tt fact (sum 20)} on Figure \ref{fig:exampl}.
+Comments are enclosed by {\tt\$\$}.
+\begin{figure}[h]
+%{\baselineskip=0.80\baselineskip
+\begin{tabularx}{\linewidth}
+{>{\setlength{\hsize}{1.44\hsize}\tt}X
+ >{\setlength{\hsize}{0.56\hsize}\tt}X}
+fact = S (S if (S mul (S (K fact) pred ))) (K 1).
+&\$ fact n->n! \$\\
+sum = S (S if (S add (S (K sum) pred ))) (K 0).
+&\$ sum n->1+2+$\ldots$+n \$\\
+mul2 = S (S(K add)I) I. &\$ mul2 x->x+x \$\\
+mul2a = mul 2.  &\$ mul2a x->2*x \$\\
+fib = S (C(B if(greater 2))1) (S (B add (B fib pred))
+(B(B fib pred)pred)). &\$ fib n->(n-th \$ \mbox{\$ fibonacci num.)\$}\\
+cons = S (S (KS) ( S(KK) (S(KS)(S(K(SI))K)))) (KK). &\\
+%&\$ makes list of head \$ \mbox{\$ and tail \$}\\
+head = S I (K K). &\\%&\$ head list->(head of list) \$\\
+tail = S I (K(S K)).& \\% &\$ tail list->(tail of list) \$\\
+fact (sum 20).& \\
+\end{tabularx}
+%}
+\caption{Example of function definitions ans applications}
+\label{fig:exampl}
+\end{figure}
+\subsection{Evaluator}
+Evaluator searches the expression for the outermost redex and evaluates
+it. It consists of the redex searching algorithm and the evaluation
+distributor. We define a cyclic stack as a stack that can grow up to
+the previously defined limit, and begin to overwrites itself after the
+limit is reached. The stack notes how much values can be popped down
+before it becomes invalid. In order to reach losed data, stack memorize
+few key positions and builds the valid stack again from the nearest
+known point when it is necessary. If rebuilding process become often,
+the evaluation speed reduces, but fast redex searching algorithm can
+compensate this. The stack algorithm provides correct evaluation even
+if we limit the stack size to only four cells more than the maximal
+number of operands for systems operators is. Expected slowness is not
+really disturbing, because the redex searching is much simpler and
+faster than evaluation of known redex and is optimised to use known
+positions whenever it is possible. The evaluation distributor finds
+out what kind of evaluation is appropriate for given operator. It
+initiates the system operator evaluation or links the user operator
+definition instead of its code. If a system operator has to evaluate,
+the evaluation distributor consider when it is necessary to free
+cells which are not used any more, so the system operator evaluation
+function has not to worry about that. To make user operator definitions
+linkage faster, it has to be done just once and only for the cells that
+have to be applied. Evaluator signs when evaluation is done or system
+resources come down and evaluation can't be finished. The description
+of the evaluation algorithm is shown in the Figure \ref{fig:descr}.
+\begin{figure}[ht]
+%{\baselineskip=0.80\baselineskip
+\begin{alltt}
+function multiple_redex_evaluation( redex_root )
+\{
+   evaluating := true;
+   cell := redex_root;
+   while(evaluating)
+     \{
+      going_down := true;
+      while(going_down)
+        \{
+         if (cell.right_tip != SKTYPE_EMPTY)
+            add_to_argument_stack( cell );
+         if (cell.left_tip == SKTYPE_USER_OPERATOR)
+            \{
+              cell.left_tip := SKTYPE_POINTER;
+              cell.left := operator_definition_root(cell.left);
+            \}
+         if (cell.left_type = SKTYPE_POINTER)
+            cell := cell.left;
+            else going_down = false;
+        \}
+      if (cell.left_type == SKTYPE_SYSTEM_OPERATOR)
+        \{
+         arrity = operator_arrity( cell.left );
+         strictness = operator_strictness( cell.left );
+         if (enough_arguments_at_stack( arrity ))
+            if strictness>0
+              \{
+               \ldots evaluate_strict_arguments\ldots
+               cell := evaluate_system_operator( cell.left );
+              \}
+              else evaluating = false; /* an operator without arguments */
+        \}
+         else evaluating = false; /* a number instead of operator */
+     \}
+\}
+\end{alltt}
+%}
+\caption{Evaluation algorithm - description}
+\label{fig:descr}
+\end{figure}
+%     /* some stack manipulations is necessary to avoid recursiveness */
+\subsection{The module that implements system operators}
+Any system operator is defined by its evaluation function, arrity and
+strictness. The operator arrity is a desired number of operands to
+evaluate it, while strictness denotes how much of first few operands
+have to be evaluated before the operator evaluation. In the pure
+combinator language all operators are non-strict, and do not need any
+operand to be evaluated before its evaluation, but when the language
+is extended by some constants (numbers), then some basic operators on
+these constants are necessary, and often their arguments have to be
+evaluated. The nice example is addition: we can not evaluate
+{\tt(add x y)} if we do not know what numbers x and y represent, so we
+have to evaluate them first. Similarly, we can define conditional
+operator and logical constants using only pure combinators, but it is
+much simpler and faster to use numbers as logical constants and to
+demand the first operand of the if-operator to be evaluated, so
+if-operator has strictness 1. The basic system operators are only S
+and K, and basic number operators are succ, pred and less. It is
+obvious that more system operators will provide faster machine. We
+have implemented if-operator, operators add and mul and few frequently
+used pure combinators:
+\vspace{2ex}\\
+\begin{tabular}{lll}
+I=SKK, Ix$\mapsto$x   &~~~~~~  & F=SK, Fxy$\mapsto$y \\
+C=S(BBS)(KK), Cfxy$\mapsto$fyx & & B=S(KS)K, Bxyz$\mapsto$x(yz) \\
+P=CI, Pxy$\mapsto$yx &\verb+      + & Y=S(CBD)(CBD), Yf$\mapsto$f(Yf)
+\end{tabular}
+\vspace{2ex}\\
+After many tests, it was obvious that directly noted recursive user
+operators are much faster techique with much smaller memory requests
+than those using Y combinator in their definitions. To encourage the use
+of direct recursive coding instead of use of the Y we have excluded Y
+from the set of system operators.
+\section{Conclusion}
+This paper describes an implementation of optimized lazy SK reduction
+machine. Because of low level and laziness of that machine, efficiency
+problems arised. We have developed a more efficient machine using some
+optimization techniques. Our SK reduction machine does not include any
+kind of separate garbage collector, system defined Y combinator or
+recursiveness in its procedural code, but it supports efficient
+recursiveness in the SK expressions it evaluates. Main speed advance and
+memory spare is obtained using evaluation algorithm that evaluates
+recursive combinators without creating any cyclic structures in the
+evaluation tree. Consequence of this speed improvement is that there is
+no need for a separate garbage collector. Instead of it, a simple
+reference count garbage collector is implemented.  Direct recursive
+expression notation allows simpler combinators definitions which
+evaluate faster.  The redex searching algorithm based on the cyclic
+stack is a part of previously mentioned implementation without
+recursiveness. The cyclic stack is better than the simple stack in the
+use of memory but is a little slower when the stack rebuilding process
+is necessary.
+\begin{thebibliography}{9}
+\bibitem{funcprog}
+Field, A.J., and Harrison P.G.
+{\em ``Functional programming''},
+{\em Addison-Wesley}, 1989
+
+\bibitem{combilog}
+Curry H. B., and Feys R.
+{\em Combinatory Logic. Vol 1.},
+North-Holand 1958
+
+\bibitem{implet}
+Peyton Jones S. L.
+{\em The Implementation of Functional Programming Languages},
+Prentice Hall 1987
+\end{thebibliography}
+\end{document}

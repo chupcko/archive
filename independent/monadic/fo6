@@ -1,0 +1,1 @@
+E x p1(x) AND ALL x (p1(x) AND p2(x)) THEN E x p2(x)

@@ -1,0 +1,75 @@
+T[\x.\y.x y x] =
+T[\x.T[\y. x y x]] =
+T[\x.C T[\y. x y] x] =
+T[\x.C x x] =
+S T[\x.C x] T[\x.x] =
+S C I = D
+
+D x y = x y x
+
+T[\x.\y.y x y] =
+T[\x.T[\y.y x y]] =
+T[\x.S T[\y.y x] [\y.y]] =
+T[\x.S T[\y.y x] I] =
+T[\x.S (C I x) I] =
+C T[\x.S (C I x)] I =
+C (B S T[\x.C I x]) I =
+C (B S (C I)) I = E
+
+E x y = y x y
+
+D D D ->                   D D D
+D D E -> D E D -> E D E -> E D E
+D E D -> E D E ->          E D E
+D E E -> E E E ->          E E E
+E D D -> D D D ->          D D D
+E D E ->                   E D E
+E E D -> D E D -> E D E -> E D E
+E E E ->                   E E E
+
+
+T[\x.\y.y x] =
+T[\x.T[\y.y x]] =
+T[\x.C T[\y.y] x] =
+T[\x.C I x] =
+C I = R
+
+R x y = y x
+
+
+
+C D = E
+
+C E = D
+
+
+false = F
+true = K
+not x = x F K
+and x y = x y F
+or x y = x K y
+imp x y = x y K
+ite x y z = x y z
+eq x y = x y (y F K)
+xor x y = x (y F K) y
+
+P^n_m x_1 x_2 ... x_n = x_m
+P^1_1 = I
+P^2_1 = K
+P^2_2 = F
+P^n_m = K T^{n-1}_{m-1}
+P^n_1 = B K T^{n-1}_1
+
+
+D_m x_1 x_2 ... x_n = x_1 x_2 ... x_{m-1}
+D_1 = F
+D_2 = K
+D_n = B D_{n-1}
+
+
+I = '0'
+W I = '1'
+W 'n-1' = 'n'
+
+
+S E I ~ W E

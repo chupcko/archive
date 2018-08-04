@@ -1,0 +1,99 @@
+72 25.4 div dup scale
+
+/line_width_10 0.2 def
+/line_gray_10 0 def
+/line_width_5 0.1 def
+/line_gray_5 0.2 def
+/line_width_1 0.05 def
+/line_gray_1 0.5 def
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+/page_x page_urx page_llx sub 10 sub 10 div truncate 10 mul def
+/page_y page_ury page_lly sub 10 sub 10 div truncate 10 mul def
+
+page_urx page_llx add page_x sub 2 div
+page_ury page_lly add page_y sub 2 div
+translate
+
+line_gray_1 setgray
+line_width_1 setlinewidth
+0 1 page_x
+{
+  /i exch def
+  i 10 mod 0 ne i 5 mod 0 ne and
+  {
+    newpath
+    i line_width_1 neg moveto
+    i page_y line_width_1 add lineto
+    stroke
+  }
+  if
+}
+for
+0 1 page_y
+{
+  /i exch def
+  i 10 mod 0 ne i 5 mod 0 ne and
+  {
+    newpath
+    line_width_1 neg i moveto
+    page_x line_width_1 add i lineto
+    stroke
+  }
+  if
+}
+for
+line_gray_5 setgray
+line_width_5 setlinewidth
+0 5 page_x
+{
+  /i exch def
+  i 10 mod 0 ne
+  {
+    newpath
+    i line_width_5 neg moveto
+    i page_y line_width_5 add lineto
+    stroke
+  }
+  if
+}
+for
+0 5 page_y
+{
+  /i exch def
+  i 10 mod 0 ne
+  {
+    newpath
+    line_width_5 neg i moveto
+    page_x line_width_5 add i lineto
+    stroke
+  }
+  if
+}
+for
+line_gray_10 setgray
+line_width_10 setlinewidth
+0 10 page_x
+{
+  /i exch def
+  newpath
+  i line_width_10 neg moveto
+  i page_y line_width_10 add lineto
+  stroke
+}
+for
+0 10 page_y
+{
+  /i exch def
+  newpath
+  line_width_10 neg i moveto
+  page_x line_width_10 add i lineto
+  stroke
+}
+for
+
+showpage quit

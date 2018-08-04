@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">aLightOff</string>
+  <string name="menu_reset">Reset</string>
+  <string name="menu_mix">Mix</string>
+  <string name="menu_solution">Solution</string>
+  <string name="menu_about">About</string>
+</resources>

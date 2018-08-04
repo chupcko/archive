@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+$,=" ";
+$\="\n";
+
+open(FILE,'/etc/passwd');
+while(<FILE>)
+{
+  ($username,$passwd,$uid,$gud,$realname)=split(/:/,$_,6);
+  if
+  (
+    $uid>500 &&
+    $username ne 'nobody' &&
+    !system('/usr/local/bin/have_www '.$username)
+  )
+  {
+    $HaveWWW{$username}=$realname;
+  }
+}
+close(FILE);
+
+print '<HTML>';
+print '<HEAD>';
+print '<TITLE>Licne prezentacije korisnika ALAS-a</TITLE>';
+print '</HEAD>';
+print '<BODY BACKGROUND="/pic/back.jpg" TEXT=BLACK LINK=BLUE VLINK=GRAY ALINK=GRAY>';
+print '<TABLE>';
+print '<TD WIDTH=160 NOWRAP VALIGN=TOP>';
+print '<A HREF="/I_love_MatF.html"><IMG SRC="/pic/MatF.gif" BORDER=0 WIDTH=102 HEIGHT=52 ALT="MatF"></A>';
+print '</TD>';
+print '<TD>';
+print '<H1>Licne prezentacije korisnika <B>ALAS</B>-a:</H1>';
+print '<P>';
+print '<UL>';
+foreach $username (sort keys %HaveWWW)
+{
+  print "<LI><A HREF=\"/~$username/\"> $HaveWWW{$username} (<B>$username</B>) </A>";
+}
+print '</UL>';
+print '</TD>';
+print '</TABLE>';
+print '</BODY>';
+print '</HTML>';

@@ -1,0 +1,1391 @@
+\documentclass[12pt,a4paper]{article}
+
+  \def\d{d\kern-0.4em\char"16\kern-0.1em}
+  \def\bs{$\backslash$}
+
+  \title{\bf Razvoj alatki pogodnih za\\obradu tekstualnih datoteka}
+  \author{Goran Lazi\'c\\Matemati\v cki fakultet, Beograd}
+  \date{5. Maj 1997. godine}
+
+  \renewcommand\contentsname{Sadr\v zaj}
+  \renewcommand\refname{Literatura}
+  \newtheorem{primer}{Primer}[section]
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+%
+%
+  \section*{Napomena, pre svega}
+    U ovom radu se koriste razni termini koji su za\v sti\'ceni, bez posebnog
+    nagla\-\v savanja o vlasni\v stvu nad imenom.
+    Ovaj rad je prelomljen u sitemu \LaTeX2e.
+%
+%
+  \newpage
+  \section{Uvod}
+    Sa pojavom ra\v cunara javlja se mogu\'cnost skladi\v stenja informacija.
+    Sa pove\-\'canjem brzine rada i pove\'canjem sme\v stajnih kapaciteta
+    ra\v cunara, javlja se potreba za univerzalnim alatkama pogodnim za obradu
+    informacija.
+    Naime ve\'c je op\v ste prihva\'cen datote\v cni model skladi\v stenja
+    informacija.
+    Svi podaci (skladi\v steni u ra\v cunaru) se nalaze u datotekama koje su
+    zapravo samo sekvencija (kona\v can niz) brojeva.
+    Kori\v s\'cenjem raznih kodiranja, ljudski \v citljive informacije se
+    prevode u sekvenciju brojeva, koja se zapisuje u datoteku.
+    Datotekama mo\v zemo baratati (brisati, kopirati, menjati) zahvaljuju\'ci
+    operativnom sistemu, koji podr\v zava rad nad datotekama.
+
+    Op\v ste je prihva\'ceno da se datoteka sastoji od sekvencije okteta.
+    Oktet je informacija koja se mo\v ze zapisati uz pomo\'c 8 bita, dakle
+    neozna\v cen broj iz intervala od 0 do 255.
+    Tako dolazimo do na\v cina zapisivanja teksta u ra\v cunaru.
+
+    Za zapisisvanje teksta koristi se sedmo bitni {\bf ASCII} (akronim od:
+    {\em American Standard Code for Information Interchange}) ili osmo bitni
+    {\bf EBCDIC} (akronim od: {\em Extend Binary Coded Decimal Interchange
+    Code}).
+    U ovim k\^odovima svakom grafi\v ckom znaku (koji se \v cesto koriste)
+    pridodat je po jedan broj, njegov k\^od.
+    {\bf ASCII} k\^od je zastupljeniji u trenutnim realizacijama opera\-tivnih
+    sistema.
+
+    Veoma je zanimljivo videti koji su sve grafi\v cki znaci zastupljeni u
+    ovim k\^odovima.
+    Zastupljena su slova engleske abecede (velika i mala), dekadne cifre,
+    znaci interpunkcije, znaci osnovnih matemati\v ckih simbola kao i
+    kontrolni znaci (koji se koriste za primitivno ure\d ivanje teksta):
+    \begin{verbatim}
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+0 1 2 3 4 5 6 7 8 9
+. , : ; ' ` " ! ?
++ - / \ * = ^ < > ( ) [ ] { }
+@ # $ % & _ | ~
+\end{verbatim}
+    Tu se jos nalazi i praznina (bez grafi\v ckog oblika), kojom odvajmo
+    re\v ci (koju mo\v zemo ponekad posmatrati i kao kontrolni znak).
+    A od kontrolnih znakova (koji imitiraju razne radnje koje smo mogli da
+    proizvedemo na pisa\'cim ma\v si\-nama) imamo:
+    \begin{itemize}
+    \item
+      Novi red, kojim prelazimo u novi red;
+    \item
+      Horizontalni tabulator, za horizontalno poravnanje;
+    \item
+      Vertikalni tabulator, za vertikalno poravnanje;
+    \item
+      Nova strana, kojom prelazimo na slede\'cu stranu;
+    \item
+      Zvonce, zvu\v cni signal.
+    \end{itemize}
+
+    Dakle tekst u ra\v cunaru se predtsavlja kao sekvencija ovih grafi\v ckih
+    znako\-va i kontrolnih znakova.
+    Ovi znaci su dovoljni samo za zapisivanje teksta koji smo mogli da
+    otkucamo na pisa\'coj ma\v sini.
+    Za svaku ve\'cu hijerarhijsku strukturu teksta neophodno nam je neko drugo
+    kodiranje (koja vr\v simo nad {\bf ASCII} k\^odom).
+
+    U ovom radu posmatra\'cemo neke alatke za obradu teksta, kao i kako bi
+    trebalo da izgleda neka alatka kojom bi mogli vi\v se da uradimo.
+%
+%
+  \newpage
+  \section{Rad sa znacima}
+    U konkretnom operativnom sistemu {\bf UNIX}-u (opisanom u \cite{UNIX})
+    datoteke koje sadr\v ze tekst su od velikog zna\v caja jer sva
+    pode\v savanja, svi rezlutati rada su neke tekstualne datoteke.
+    Zato se u koncepciji {\bf UNIX}-a nalazi i programski jezik {\bf C}
+    (opisan u \cite{KR}) na kome mo\v zemo napisati program koji obra\d uje
+    tekstualne datoteke.
+    Tokom vremena izkristalisalo se nekoliko alatki koje se \v cesto koriste i
+    one su izdvojene u posebne komande {\bf UNIX} operativnog sistema.
+
+    Velika prednost operativnog sistema {\bf UNIX} je da se rezultat jedne
+    komande mo\v ze proslediti drugoj komandi (takozvani: piping).
+    Tako da re\d a\-njem vi\v se elementarnih komandi mo\v zemo uraditi neku
+    slo\v zeniju operaciju.
+
+    Sve o slede\'cim komandama mo\v ze se prona\'ci u \cite{UNIX} ili u man
+    stranama\footnote{Upustvo, pomo\'c na {\bf UNIX} operativnom sistemu}
+    (\cite{MAN}).
+%
+    \subsection{\em sort}
+      Komandom {\bf sort} mo\v zemo sortirati redove tekstualne datoteke.
+%
+    \subsection{\em grep}
+      \label{sub:grep}
+      Komandom {\bf grep} pronalazimo sve redove neke datoteke koje sadr\v ze
+      neki regu\-larni izraz.
+      Regularni izraz je opisan na slede\'ci na\v cin:
+      \begin{itemize}
+      \item
+        Bilo koji znak, koji nema specijano zna\v cenje je regularni izraz.
+        Ako \v zelim znak koji ima specijano zna\v cenje ipred njega stavimo
+        {\tt\bs}, stim da slede\'ce sekvence ozna\v cavaju:
+        \begin{itemize}
+        \item
+          {\tt\bs a} je zvonce;
+        \item
+          {\tt\bs b} je brisanje zadnjeg znaka (backspace);
+        \item
+          {\tt\bs f} je nova strana;
+        \item
+          {\tt\bs n} je novi red (newline);
+        \item
+          {\tt\bs r} je pomeranje kolica (carriage return);
+        \item
+          {\tt\bs t} je horizontalna tabulacija;
+        \item
+          {\tt\bs v} je vertikalna tabulacija;
+        \item
+          {\tt\bs ooo} je znak sa k\^odom {\tt ooo}, gde je {\tt o} oktalna
+          cifra;
+        \item
+          \bs\bs\ je sam \bs.
+        \end{itemize}
+      \item
+        Ta\v cka ({\tt.}) zamenjuje bilo koji znak osim kraja reda
+        ({\tt\bs n}).
+      \item
+        Skup slova pi\v semo izme\d u {\tt[} i {\tt]} tako \v sto nabrojimo
+        znakove za koje \v zelimo da pripadaju skupu.
+        Opseg unutar skupa opsujemo crticom ({\tt-}) izme\d u prvog i
+        poslednjeg znaka.
+        Ako \v zelimo komplement skupa posle {\tt[} navodimo {\tt\^\ }.
+      \item
+        Konkatenaciju ne obele\v zavamo, ve\'c jednostavno spojimo regularne
+        iz\-raze.
+      \item
+        {\tt?} ozna\v cava opciono pojavljivanje regularnog izraza.
+      \item
+        {\tt*} ozna\v cava ponavljanje regularnog izraza, uklju\v cuju\'ci i
+        0 puta.
+      \item
+        {\tt+} ozna\v cava ponavljanje regularnog izraza od 1 put i vi\v se.
+      \item
+        {\tt\{n\}} ozna\v cava ponavljanje regularnog izrzaza ta\v cno $n$
+        puta.
+      \item
+        {\tt\{n,\}} ozna\v cava ponavljanje regularnog izrzaza bar $n$ puta.
+      \item
+        {\tt\{,n\}} ozna\v cava ponavljanje regularnog izrzaza najvi\v se $n$
+        puta.
+      \item
+        {\tt\{n,m\}} ozna\v cava ponavljanje regularnog izrzaza izmdeju $n$ i
+        $m$ puta.
+      \item
+        {\tt|} ozna\v cava opciju izme\d u dva regularna izraza.
+      \item
+        {\tt\^\ } ozna\v cava meta-znak koji obele\v zava po\v cetak reda.
+      \item
+        {\tt\$} oznza\v cava meta-znak koji obele\v zava kraj reda.
+      \item
+        Zagradama {\tt(} i {\tt)} mo\v zemo menjati prioritet operatora.
+      \end{itemize}
+
+      Na ovom mestu mo\v zemo primetiti da se koristi logi\v cka podela
+      tekstualnih datoteka na redove (razdvojene znakom za kraj reda).
+      Takva logi\v cka podela ne zadovoljava realne potrebe obrade teksta
+      jer ne\'ce uvek logi\v cke celine biti razdvojene znakom za kraj reda.
+%
+    \subsection{\em uniq}
+      Komanda {\bf uniq} zibacuje sve ponovljene redove (sortirane) tekstualne
+      da\-toteke.
+%
+    \subsection{\em tr}
+      Komandom {\bf tr} mo\v zemo neki znak promeniti u neki drugi znak,
+      izbrisati sve pojave nekog znaka ili eliminisati uzastopna ponavljanja
+      nekog znaka.
+%
+    \subsection{\em sed}
+      Ako ve\'c i pristanemo na logi\v cku orkanizaciju po redovima, potrebna
+      nam je alatka kojom mo\v zemo menjati sadr\v zaj tekstualne datoteke.
+      Komanda {\bf sed} (akronim od stream editor) nam omogu\'cava da
+      bri\v semo, dodajemo, menjamo redove neke tekstualne datoteke.
+
+      Komandi {\bf sed} prenosimo instrukcije koja, zatim, ona obra\d uje.
+      Instrukcije su oblika: {\it adresa[,adresa] funkcija[argumenti]}.
+
+      Adresa je:
+      \begin{itemize}
+      \item
+        Broj koji ozna\v cava broj reda;
+      \item
+        Regularni izraz (opisan u \ref{sub:grep});
+      \item
+        Znak {\tt\$} koji ozna\v cava poslednji red tekstualne datoteke.
+      \end{itemize}
+
+      Adresom odre\d umo dejstvo funkcije, ako nije navedena adresa tada je
+      dejstvo funkcije cela tekstualna datoteka.
+
+      Funkcije su:
+      \begin{itemize}
+      \item
+        {\tt a\bs}\\
+        {\it tekst}\\
+        Dodajemo {\it tekst} posle adresirane linije, zahteva samo jednu
+        adresu;
+      \item
+        {\tt c\bs}\\
+        {\it tekst}\\
+        Menjamo adresirano podru\v cje {\it tekstom};
+      \item
+        {\tt d}\\
+        Bri\v semo adresirano podru\v cje;
+      \item
+        {\tt i\bs}\\
+        {\it tekst}\\
+        Dodajemo {\it tekst} pre adresirane linije, zahteva samo jednu adresu;
+      \item
+        {\tt p}\\
+        Ispi\v se adresirano podru\v cje;
+      \item
+        {\tt r {\it datoteka}}\\
+        Iskopira sadr\v zaj {\it dototeke} posle adrese, zahteva samo jednu
+        adresu;
+      \item
+        {\tt s/{\it regularni-izraz}/{\it zamena}/{\it zastavica}}\\
+        Menja u adresiranom podru\v cju prvu pojavu {\it regularnog-izraza}
+        tekstom {\it zamene}.
+
+        {\it regularni-izraz} je zapisan u skladu sa opisom u \ref{sub:grep}
+        ali uz dodatak: delove regularnog izraza mo\v zemo ozna\v citi sa
+        {\tt\bs(} i {\tt\bs)}.
+        Naime tako ozna\v cene delove regularnog izraza mo\v zemo uvrstiti u
+        {\it zamenu}.
+        Svaka pojava {\tt\bs o} u tekstu zamene, gde je {\tt o} cifra, se
+        menja $o$-tim ozn\v cenim delom regularnog izraza.
+        Svaka pojava {\tt\&} u tekstu zamene se menja celim prepoznatim
+        regularnim izrazom.
+
+        {\it Zastavica} mo\v ze biti broj (tada se vr\v si menjanje samo na
+        tom mestu) ili slovo {\tt g} (tada se vr\v se sve zamene)
+      \item
+        {\tt w {\it datoteka}}\\
+        Snima adresirano podru\v cje u {\it datoteku};
+      \item
+        {\tt y/{\it niska-1}/{\it niska-2}/}\\
+        Menja, u adresiranom podru\v cju, svaki znak iz {\it niske-1} u
+        odgovaraju\'ci znak {\t niske-2};
+      \item
+        {\tt!{\it funkcija}}\\
+        {\it Funkciju} izvr\v sava samo za redove koji ne pripadaju
+        adresiranom pro\-storu.
+      \end{itemize}
+
+      \begin{primer}\ \label{primer:sed}\end{primer}
+      \begin{verbatim}
+/%/s/%\(.*\)$/\{\1\}/
+/Swap(.*,.*)/s/Swap(\(.*\),\(.*\))/\2 \1/
+/./!d
+\end{verbatim}
+
+      Ovaj {\bf sed} program radi slede\'ce:
+      \begin{enumerate}
+      \item
+        U svakom redu koji sadr\v zi {\tt\%}, stavlja u viti\v caste zagrade
+        {\tt\{} i {\tt\}} tekst iza {\tt\%} pa do kraja reda;
+      \item
+        U svakom redu koji sadr\v zi poziv ``funkcije'' {\tt Swap} okrene
+        argumente funkcije {\tt Swap};
+      \item
+        Bri\v se sve redove koji ne sadr\v ze nijedan znak.
+      \end{enumerate}
+%
+    \subsection{\em cut}
+      Komandom {\bf cut} izdvajamo neko polje iz svkog reda neke tekstualne
+      datoteke.
+      Polja su deo reda koji su razdvojeni nekim, unapred definisanim, znakom.
+%
+    \subsection{\em paste}
+      Komandom {\bf paste} spajamo dve tekstulane datoteke, red po red.
+%
+    \subsection{\em join}
+      Komandom {\bf join} spajamo one redove dve tekstualne datoteke koje
+      imaju isto neko polje.
+%
+%
+  \newpage
+  \section{Neke programerske alatke}
+    Kako pravu obradu prirodnojezi\v ckog dokumenta (koji se nalazi u
+    odgovaraju\'coj sintaksnoj formi u tekstualnoj datoteci) mo\v ze
+    pru\v ziti neki programski jezik pogledajmo \v sta od alatki imamo:
+    \begin{itemize}
+    \item
+      Skeneri (scanners): delovi programa, na nekom programskom jeziku, koji
+      prolaze kroz tekstualnu datoteku i dele tekst na ``lekseme''.
+      Skeneri rade uglavnom koriste\'ci mehanizme regularnih izraza).
+    \item
+      Parseri (parsers): delovi programa, na nekom programskom jeziku, koji
+      prolaze kroz skenerima izdvojene ``lekseme'' i proveravaju ispravnost
+      zapisa (sintaksu).
+      Parseri rade uglavnom koriste\'ci konteksno slobodne gramatike i neka
+      njihova su\v zenja: LL(1) i LR(1) gramatike (vi\v se o tome u
+      \cite{AU}).
+    \end{itemize}
+
+    Ovakve delove programa mo\v zemo ili sami napisati (\cite{AU}) ili
+    generisati nekom alatkom za generisanje sintaksne i leksi\v cke analize.
+    Takve delove programa mo\v zemo iskoristiti za obradu tekstualnih datoteka
+    ne vezuju\'c se na logi\v cku podelu po redovima.
+
+    Ako se ve\v zemo za programski jezik {\bf C} mo\v zemo koristiti alatke:
+    {\bf LEX} i {\bf YACC}.
+
+    Pored toga mo\v zemo koristiti i proceduru koja za dve niske ra\v cuna
+    edit (Leven\v stajnovog) rastojanje (takozvano: priblizno upore\d ivanje
+    niski).
+%
+    \subsection{\em LEX}
+      Program {\bf LEX} nam nudi da na osnovu opisa ``leksema'' (regularnim
+      izrazima) generi\v semo proceduru (sme\v stenu u zaglavlje) na
+      programskom jeziku {\bf C} koja razdvaja tekst iz tekstualne datoteke na
+      niz ``leksema''.
+
+      Uz svaku ``leksemu'' mo\v zemo vezati i neki deo k\^oda u programskom
+      jeziku {\bf C} koji se izvr\v sava kada se nai\d e na tu ``leksemu''.
+
+      Zna\v caj programa {\bf LEX} je u tome \v sto njime mo\v zemo u programu
+      pratiti bilo kakvu logi\v cku strukturu tesktualne datoteke.
+
+      Vi\v se o programu {\bf LEX} se mo\v ze na\'ci u \cite{LEX}.
+      Program {\bf AGLA} je pandan programu {\bf LEX} i o je opisan u
+      \cite{AGJP}.
+%
+    \subsection{\em YACC}
+      Program {\bf YACC} nam nudi da na osnovu opisa gramatike (Bekus-Noarovom
+      formom) generi\v semo proceduru (sme\v stenu u zaglavlje) na programskom
+      jeziku {\bf C} koja proverava ispravnost sintaksne forme nad nizom
+      ``leksema'' dobijenih procedurom generisanom programom {\bf LEX}.
+
+      Uz pravila mo\v zemo vezati i neki deo k\^oda (nazvan ``akcija'') u
+      programskom jeziku {\bf C} koji se izvr\v sava kada se sa prepoznavanjem
+      do\d e do njega.
+
+      Zna\v caj programa {\bf YACC} (sli\v cno programu {\bf LEX}) je u tome
+      \v sto njime mo\v zemo u programu pratiti bilo kakvu logi\v cku
+      strukturu tekstualne datoteke.
+      Najbolji primer za to je to \v sto se {\bf LEX} i {\bf YACC} koriste za
+      leksi\v cku i sintaksnu analizu programskih jezika, koji imaju
+      slo\v zeniju logi\v cku strukturu.
+
+      Vi\v se o programu {\bf YACC} se mo\v ze na\'ci u \cite{YACC}.
+      Program {\bf AGSA} je pandan programu {\bf YACC} i o je opisan u
+      \cite{AGJP}.
+%
+    \subsection{\em AKS}
+      {\bf AKS} je procedura napisana u programskom jeziku {\bf C} koja
+      realizuje jednu modifikaciju edit rastojanja, uvo\d enjem te\v zinskih
+      faktora.
+
+      Mo\v ze se iskoristiti za pribli\v zna upore\d ivanja niski: kada
+      dobijamo i informaciju koliko jedna niska ``li\v ci'' na drugu.
+
+      Vi\v se o paketu {\bf AKS} se mo\v ze na\'ci u \cite{AKS}.
+%
+%
+  \newpage
+  \section{Alatke za obradu tekstualnih datoteka}
+    Kako se javlja potreba za univerzalnom, prenosivom, alatkom za obradu
+    tekstualnih datoteka pojavljuju se {\bf AWK} i {\bf PERL} koji imaju u
+    sebi sjedinjene sve alatke do sada nabrojene, a i mogu\'cnost
+    pro\v sirenja.
+
+    I {\bf AWK} i {\bf PERL} imaju pretenzije da budu jedine alatke koje su
+    neophodne to jest da kompletno re\v savaju sve mogu\'ce probleme u obradi
+    tekstualnih datoteka.
+%
+    \subsection{\em AWK}
+      Ime {\bf AWK} je nastalo kao akronim od po\v cetnih slova imena autora:
+      Aho, Weinberger, Kernighan.
+      Osnovna ideja {\bf AWK}-a je se prolazi kroz redove tekstulne datoteke i
+      za svaki red koji zadovoljava neki uslov da se izvr\v si neka akcija.
+      Svaki red se deli na polja, i u akciji mo\v zemo da pristupimo svakom
+      polju pojedina\v cno.
+
+      Zna\v cajni novitet je to \v sto mo\v zemo sami izabrati znak koji
+      odvaja redove i polja.
+      Me\d utim i dalje ne mo\v zemo da koristimo neku slo\v zeniju
+      logi\v cku stru\-kturu u tekstualnoj datoteci (recimo da redove odvajamo
+      regulranim izrazima).
+
+      Vi\v se o {\bf AWK}-u se mo\v ze na\'ci u \cite{AWK}.
+%
+      \subsubsection{Tipovi podataka}
+        \label{sub:awktipovi}
+        {\bf AWK} nije strogo tipiziran jezik, glavni tip je niska znakova.
+        Prepoznaje celobrojne i realne brojeve, kao i asocijativne nizove.
+
+        Asocijativni nizovi su kao i obi\v cni nizovi ali indeks mo\v ze biti
+        bilo \v sta, pa i niska.
+        Tako da kada pristupimo prvi put nekom indeksu niza on se
+        inicijalizuje, mo\v zemo ga obrisati naredbom {\tt delete
+        {\it niz}[{\it indeks}]}.
+        Ceo niz mo\v zemo obrisati naredbom {\tt delete {\it niz}}.
+
+        Ako \v zelimo da nam neka promenjilva ``ide'' po indeksu nekog niza
+        kori\-stimo petlju {\tt for ( {\it promenjliva} in {\it niz} )}.
+%
+      \subsubsection{Sintaksa}
+        Instrukcije {\bf AWK}-u su oblika:
+        \begin{itemize}
+        \item
+          {\it uzorak} {\tt\{{\it akcija}\}}\\
+          Svaki put kada {\bf AWK} nai\d e na {\it uzorak} u teku\'cem
+          pro\v citanom redu tekstualne datoteke izvr\v si se {\it akcija}.
+          Ako {\it uzorak} nije naveden onda se {\it akcija} izv\v sava za
+          svaki red.
+          Ako nije nije navedena nijedna instrukcija prosto se ispi\v se svaki
+          u\v citani red.
+        \item
+          {\tt function {\it ime}({\it parametri}) \{{\it akcija}\}}\\
+          \v Cime defini\v semo funkciju {\it ime}.
+          Poziv funkcije je: {\it ime{\tt(}parametri{\tt)}}, stim \v sto oni
+          parametri koje ne navedemo u pozivu se smatraju lokalnim
+          promenjljivima za funkciju.
+          Nizovi se prenose po referenci, a ostale promenjlive po vrednosti.
+        \end{itemize}
+
+        Uzorak mo\v ze biti:
+        \begin{itemize}
+        \item
+          {\tt BEGIN}\\
+          Akcija se izvr\v sava pre svih ostalih akcija.
+        \item
+          {\tt END}\\
+          Akcija se izvr\v sava posle svih ostalih akcija.
+        \item
+          {\tt/{\it regularni-izraz}/}\\
+          Akcija se izvr\v sava samo ako se u teku\'cem redu nalazi
+          {\it regularni-izraz}.
+
+          Regularni izraz je istog oblika kao i u \ref{sub:grep}.
+        \item
+          {\it relacija}\\
+          Akcija se izvr\v sava samo ako je zadovoljena relacija.
+        \item
+          {\it uzorak-1 {\tt||} uzorak-2}\\
+          Akcija se izvr\v sava ako je zadovoljen {\it uzorak-1} ili
+          {\it uzorak-2}.
+        \item
+          {\it uzorak-1 {\tt\&\&} uzorak-2}\\
+          Akcija se izvr\v sava ako je zadovoljen {\it uzorak-1} i
+          {\it uzorak2}.
+        \item
+          {\it uzorak-1 {\tt?} uzorak-2 {\tt:} uzorak-3}\\
+          Akcija se izvr\v sava ako je zadovoljen {\it uzrorak-1} i {\it
+          uzorak-2} ili ako nije zadovoljen {\it uzorak-1} i zadovoljen je
+          {\it uzorak-3}.
+        \item
+          {\tt( {\it uzorak} )}\\
+          Promena prioriteta izra\v cunavanja uzorka.
+        \item
+          {\tt!{\it uzorak}}\\
+          Akcija se izvr\v sava samo ako {\it uzorak} nije ispunjen.
+        \item
+          {\it uzorak-1{\tt,} uzorak-2}\\
+          Akcija se izvr\v sava za sve one redove koji se nalaze izme\d u
+          reda koji zadovoljava {\it uzorak-1} i reda koji zadovoljava
+          {\it uzorak-2}.
+        \end{itemize}
+
+        Akcija je niz naredbi koje su razdvojene znakom {\tt;} i koje se mogu
+        grupisati viti\v castim zagradama {\tt\{} i {\tt\}}.
+        Naredbe su:
+        \begin{itemize}
+        \item
+          Izraz, gde su operatori slede\'ci:
+          \begin{itemize}
+          \item
+            {\tt= += -= *= /= \%= \^\ =} su dodele vrednosti, {\tt a@=b} je
+            zamena za {\tt a=a@b} (gde je {\tt@} jedan od
+            {\tt+ - * / \% \^\ });
+          \item
+            {\tt?:} je tenarna operacija, {\tt a?b:c} je {\tt b} ako je
+            {\tt a} ta\v cno a u suprotnom je {\tt c};
+          \item
+            {\tt||} je logi\v cko ili;
+          \item
+            {\tt\&\&} je logi\v cko i;
+          \item
+            {\tt\~\  !\~\ } su upore\d ivanje sa regulranim izrazom i
+            negacija upore\d i\-vanja sa regulranim izrazom, konstantni deo
+            je sa desne strane;
+          \item
+            {\tt< <= > >= == !=} su relacije: manje, manje ili jednako,
+            ve\'ce, ve\'ce ili jednako, jednako, nejednako;
+          \item
+            Konkatenaciju niski ne bele\v zimo nijednim znakom, ve\'c samo
+            nare\-\d amo niske;
+          \item
+            {\tt+ -} su sabiranje i oduzimanje;
+          \item
+            {\tt * / \%} su mno\v zenje, deljenje, ostatak pri deljenju;
+          \item
+            {\tt + - !} unarne operacija: plus, promena znaka, i logi\v cka
+            negacija;
+          \item
+            {\tt\^\ } je stepenovanje (mogu\'ci je i oblik {\tt**});
+          \item
+            {\tt++ --} su uve\'canje i smanjenje promenjlive za 1;
+          \end{itemize}
+        \item
+          {\tt if ({\it uslov}) {\it naredba-1} {\it[} else
+          {\it naredba-2 ]}}\\
+          Ako je ispunjen {\it uslov} izvr\v sava se {\it naredba-1} a ako
+          nije ispunjen {\it uslov} i naveden je opcioni {\tt else} deo
+          izvr\v sava se {\it naredba-2}.
+        \item
+          {\tt while ( {\it uslov} ) {\it naredba}}\\
+          Sve dok je ispunjen {\it uslov} izvr\v sava se {\it naredba}
+        \item
+          {\tt do {\it naredba} ( {\it uslov} )}\\
+          Sve dok je ispunjen {\it uslov} izvr\v sava se {\it naredba}
+        \item
+          {\tt for ( {\it izraz-1}; {\it uslov}; {\it izraz-2} )
+          {\it naredba}}\\
+          Najpre se izvr\v si {\it izraz-1}, pa sve dok je ispunjen
+          {\it uslov} izvr\v sava se {\it naredba} i {\it izraz-3}.
+        \item
+          {\tt for ( {\it promenjliva} in {\it niz} ) {\it naredba}}\\
+          Sve dok se {\it promenljiva} nalazi u indeksu niza {\it niz}
+          izvr\v sava se {\it naredba} (vi\v se o tome u \ref{sub:awktipovi})
+        \item
+          {\tt break}\\
+          Izlazi iz trenutne petlje.
+          Ska\v ce na prvu naredbu posle petlje.
+        \item
+          {\tt continue}\\
+          Ponovo zapo\v cinje trenutnu petlju.
+          Ska\v ce na prvu naredbu petlje.
+        \item
+          {\tt delete {\it niz}[{\it indeks}]}\\
+          Bri\v se clan niza {\it niz} sa indeksom {\it indeks} (vi\v se o
+          tome u \ref{sub:awktipovi})
+        \item
+          {\tt delete {\it niz}}\\
+          Bri\v se niz {\it niz} (vi\v se o tome u \ref{sub:awktipovi})
+        \item
+          {\tt exit {\it[ izraz ]}}\\
+          Izlazi iz programa i vra\'ca {\it izraz} ako je naveden.
+        \end{itemize}
+%
+      \subsubsection{Ugra\d ene promenjilve}
+        \label{sub:awkpromenjlive}
+        Pre svega, kada {\bf AWK} podeli red na polja on dodeli promenjlivoj
+        {\tt\$0} vrednost celog reda a promenjlivoj {\tt\$$i$} vrednost
+        $i$-tog polja.
+        Od koristi su i slede\'ce promenjlive:
+        \begin{itemize}
+        \item
+          {\tt ARGC} je broj imena datoteka koja su prosle\d ena {\bf AWK}-u.
+        \item
+          {\tt ARGIND} je broj trenutnog argumenta koji se obra\d uje.
+        \item
+          {\tt ARGV} je niz sa nazivima datoteka prosle\d enim {\bf AWK}-u.
+          Indeksi su od 0 do {\tt ARGC}-1.
+        \item
+          {\tt CONVFMT} je niska sa formatom da konverziju brojeva u nisku,
+          inicijalno je postavljena na ``{\tt\%.6g}''.
+          Zna\v cenje {\it formata} je isto kao i zna\v cenje for\-mata
+          funkcije {\tt printf} programskog jezika {\bf C} (\cite{KR,AWK}).
+        \item
+          {\tt ENVIRON} je niz u kojem se nalaze promenljive iz okru\v zenja
+          (koje se nasle\d uju pozivom iz operativnog sistema).
+        \item
+          {\tt ERRNO} je niska koja \'ce u slu\v caju gre\v ske sadr\v zati
+          opis gre\v ske.
+        \item
+          {\tt FIELDWIDTHS} je niska koja sadr\v zi brojeve razdvojene
+          prazninom koji predstavljaju koliko treba da budu \v siroka polja.
+          Naime tada su polja fiksne \v sirine.
+        \item
+          {\tt FILENAME} je ime datoteke koja se trenutno obra\d uje, nije
+          definisana vrednost za uzorak {\tt BEGIN}
+        \item
+          {\tt FNR} je broj reda u okviru obrade trenutne datoteke.
+        \item
+          {\tt FS} je niska \v ciji je prvi znak separator polja, inicijalno
+          je postavljena na prazninu.
+        \item
+          {\tt IGNORECASE} je promenjliva koja nam predtsvlja inforaciju da li
+          \'cemo u pore\d enju niski voditi ra\v cuna o velik i malim slovima
+          ili ne.
+          Ako je {\tt IGNORECASE} razli\v cito od 0 tada se ne vodi ra\v cuna
+          o velim ili malim slovima, inicijalno je 0.
+        \item
+          {\tt NF} je broj polja u trenutnom redu.
+          Naime promenjlive {\tt\$$i$} postoje samo za
+          $0\le i\le\hbox{\tt NF}$.
+        \item
+          {\tt NR} je sve ukupni broj redova koji su obra\d eni.
+        \item
+          {\tt OFMT} je niska sa formatom u kojem se prikazuju brojevi,
+          inicijalno je postavljena na ``{\tt\%.6g}''.
+          Zna\v cenje {\it formata} je isto kao i zna\v cenje formata funkcije
+          {\tt printf} programskog jezika {\bf C} (\cite{KR,AWK}).
+        \item
+          {\tt OFS} je niska sa izlaznim separatorom polja, inicijalno je
+          postavljena na prazninu.
+        \item
+          {\tt ORS} je niska sa izlaznim separatorom redova, inicijalno je
+          postavljena na novi red.
+        \item
+          {\tt RS} je niska \v ciji prvi znak predstavlja separator redova,
+          ako je {\tt RS} prazna niska tada je separator redova prazan red,
+          inicijalno je postavljena na novi red.
+        \item
+          {\tt RSTART} je indeks prvog znaka koji je prona\d en
+          kori\v s\'cenjem funkcije {\tt match} (opisana u
+          \ref{sub:awkfunkcije}) ili 0 ako nije prona\d en.
+        \item
+          {\tt RLENGHT} je du\v zina niske prona\d ene funkcijom {\tt match}
+          ili -1 ako nije prona\d ena.
+        \item
+          {\tt SUBSEP} je znak kojim u vi\v se dimenzionalnim nizovima spajamo
+          indekse, inicijalno je postavljen na ``{\tt\bs034}''.
+          Naime ako {\tt x["123","abc"]} je u stvari {\tt x["123\bs034abc"]}.
+        \end{itemize}
+%
+      \subsubsection{Ugra\d ene funkcije}
+        \label{sub:awkfunkcije}
+        {\bf AWK} poseduje tri grupe ugra\d enih funkcija: funkcija za
+        ulaz/izlaz, numeri\v cke funkcije i funkcija za rad sa niskama.
+        Funkcije za ulaz/izlaz su:
+        \begin{itemize}
+        \item
+          {\tt close({\it datoteka})}\\
+          Zatvara datoteku {\it datoteka}.
+        \item
+          {\tt getline}\\
+          U\v citava slede\'ci red i pode\v sava {\tt\$0}, {\tt NF}, {\tt NR},
+          {\tt NFR}.
+          Vra\'ca 0 ako je kraj datoteke a -1 ako je do\v slo do gre\v ske.
+          Ako se navede {\tt< {\it datoteka}} tada u\v citava red iz
+          {\it datoteke}.
+        \item
+          {\tt getline {\it s}}\\
+          U\v citava slede\'ci red i sme\v sta ga u promenjlivu {\it s},
+          pode\v sava {\tt NR} i {\tt NFR},
+          Vra\'ca 0 ako je kraj datoteke a -1 ako je do\v slo do gre\v ske.
+          Ako se iza navede {\tt< {\it datoteka}} tada u\v citava red iz
+          {\it datoteke}.
+        \item
+          {\tt next {\it [datoteka]}}\\
+          Zavr\v sava proces za teku\'ci red i u\v citava slede\'ci red (iz
+          {\it datoteke} ako je navedena).
+        \item
+          {\tt print {\it [izrazi]}}\\
+          Ispisuje {\it izraze} (us skladu sa {\tt OSF}, {\tt ORS},
+          {\tt OFMT}).
+          Ako su {\it izrazi} izostavljeni ispisuje teku\'ci red.
+          Ako se iza navede {\tt> {\it datoteka}} onda ispisuje u datoteku,
+          tako\d e sa {\tt>>} dodaje na datoteku, a sa {\tt|} prosle\d uje
+          nekom programu.
+        \item
+          {\tt printf {\it format}, {\it izrazi}}\\
+          Ispisuje {\it izraze} u skladu sa {\it formatom} koji je isti kao
+          format za {\tt printf} u programskom jeziku {\bf C} (\cite{KR,AWK}).
+          Ako se iza navede {\tt> {\it datoteka}} onda ispisuje u datoteku,
+          tako\d e sa {\tt>>} dodaje na datoteku, a sa {\tt|} prosle\d uje
+          nekom programu.
+        \item
+          {\tt system({\it komanda})}\\
+          Izvr\v sava {\it komandu} operativnog sistema.
+        \end{itemize}
+
+        Numeri\v cke funkcije su: {\tt atan2}, {\tt cos}, {\tt exp},
+        {\tt int}, {\tt log}, {\tt rand}, {\tt sin}, {\tt sqrt}, {\tt srand}.
+
+        Funkcije za rad sa niskama su:
+        \begin{itemize}
+        \item
+          {\tt gsub({\it r}, {\it s}, {\it t})}\\
+          U niski {\it t} svaku pojavu regularnog izraza {\it r} menja sa
+          {\it s} i vra\'ca broj promena.
+          Ako {\it t} nije navedeno podrazumeva {\tt\$0}.
+        \item
+          {\tt index({\it s}, {\it t})}\\
+          Vra\'ca poziciju gde se u niski {\it s} nalazi niska {\it t} ili 0
+          ako se ne nalazi.
+        \item
+          {\tt lenght({\it s})}\\
+          Vra\'ca du\v zinu niske {\it s} ili du\v zinu {\tt\$0} ako {\it s}
+          nije navedeno.
+        \item
+          {\tt match({\it s}, {\it r})}\\
+          Vra\'ca poziciju gde se u niski {\it s} nalazi regularni izraz
+          {\it r} ili 0 ako se ne nalazi.
+          Tako\d e pode\v sava {\tt RSTART} i {\tt RLENGHT}.
+        \item
+          {\tt split({\it s}, {\it a}, {\it r})}\\
+          Deli nisku {\it s} na delove odvojenee regulranim izrazom {\it r} u
+          niz {\it a} i vra\'ca broj polja.
+          Ako se ne navede regulrani izraz {\it r} koristi {\tt FS}.
+        \item
+          {\tt sprintf({\it format}, {\it izrazi})}\\
+          Vra\'ca nisku u kojoj su koriste\'ci {\it format} ``ispisani''
+          {\it izrazi}.
+          {\it Format} je isti kao format funkcije {\tt printf} programskog
+          jezika {\bf C} (\cite{KR,AWK}).
+        \item
+          {\tt sub({\it r}, {\it s}, {\it t})}\\
+          Kao i {\tt gsub} ali menja samo prvu pojavu.
+        \item
+          {\tt substr({\it s}, {\it i}, {\it n})}\\
+          Vra\'ca {\it n} znakova od pozicije {\it i} niske {\it s}.
+          Ako {\it n} nije navedeno vra\'ca sve znakove do kraja niske
+          {\it s}.
+        \item
+          {\tt tolower({\it s})}\\
+          Vra\'ca nisku {\it s} sa svim velikim slovima preba\v cenim u mala.
+        \item
+          {\tt toupper({\it s})}\\
+          Vra\'ca nisku {\it s} sa svim malim slovima preba\v cenim u velika.
+        \end{itemize}
+
+        \begin{primer}\ \label{primer:awk}\end{primer}
+        \begin{verbatim}
+    {
+      split($0,a,"[ \t.,;:!?/-]+");
+      for(i in a)
+        if(a[i]!="")
+          reci[tolower(a[i])]++;
+    }
+END {
+      for(i in reci)
+        print i,reci[i] | "sort";
+    }
+\end{verbatim}
+
+        Ovim {\bf AWK} programom brojimo sve re\v ci koje se pojavljaju u
+        nekoj datoteci.
+        Naime svaki u\v citani red delimo u niz {\tt a} po regularnom izrzazu
+        {\tt"[ \bs t.,;:!?/-]+"} (vi\v sestruka ponavljanja ovih znakova).
+        Prolaze\'ci kroz niz {\tt a} prebacujemo svaki \v clan niza u mala
+        slova i uve\'cavamo element niza {\tt reci} na mestu elemnta niza
+        {\tt a}.
+
+        Na kraju datoteke ispisujemo sve pro\v citane re\v ci i broj njihovog
+        pojavlji\-vanja (i sve to propustamo kroz sistemski program
+        {\tt sort}).
+%
+    \subsection{\em PERL}
+      Ime {\bf PERL} je nastalo kao akronim od: {\em Practical Extraction and
+      Report Language}.
+      {\bf PERL} je zami\v sljen kao jezik koji zamenjuje programski jezik
+      {\bf C}, {\bf sed}, {\bf AWK} kao i skripte za operativni sistem
+      {\bf UNIX}.
+      Kao takav {\bf PERL} mo\v ze da uradi sve \v sto mo\v ze i {\bf sed} i
+      {\bf AWK},
+      dok nije ba\v s dobra zamena za programski jezik {\bf C} jer je
+      {\bf PERL} samo interpretaor.
+
+      Tako da postoje i programi {\bf s2p} i {\bf a2p} koji prevode {\bf sed}
+      i {\bf AWK} programe na {\bf PERL} (\v cak je {\bf s2p} i sam napisan na
+      {\bf PERL}-u).
+      U tom smislu je {\bf PERL} mo\'cniji od {\bf sed}-a i {\bf AWK}-a ali
+      ba\v s zato \v sto je ve\v sta\v cki stvoren pun je nasle\d a iz
+      {\bf sed}-a i {\bf AWK}-a koje mo\v ze ponekad da zasmeta.
+
+      Za razliku od {\bf sed}-a i {\bf AWK}-a, {\bf PERL} ne deli u\v citane
+      redove na polja ve\'c nama prepu\v sta da sami podelimo, \v sto nam daje
+      malo ve\'cu slobodu.
+      A i za u\v citavanje redova imamo malo ve\'cu slobodu.
+
+      Vi\v se o {\bf PERL}-u mo\v ze se na\'ci u \cite{PERL}.
+%
+      \subsubsection{Tipovi podataka}
+        {\bf PERL} kao i {\bf AWK} nije strogo tipiziran jezik ali iz naziva
+        promenjlive mo\v ze\-mo naslutiti kojeg je slo\v zenog tipa
+        promenljiva.
+        Naime imena svih promenjlih zapo\v cinju znakom {\tt\$}.
+        \begin{itemize}
+        \item
+          {\tt\$a} je obi\v cna promenljiva (uglavnom niska, ali mo\v ze se
+          tuma\v citi i kao realni broj);
+          Zanimljivo je da unutar znaka dvostrukog navodnika {\tt"} vrednost
+          promenljivih se zamenjuje (interpolira), \v sto ne va\v zi za
+          obi\v cne navodnike {\tt'}.
+
+          Na primer: ako je {\tt\$a="abc"}, tada \'ce niska {\tt"12\$a34"}
+          biti {\tt"12abc34"}, dok \'ce niska {\tt'12\$a34'} biti ba\v s
+          ta ({\tt\$a} se ne interpolira).
+        \item
+          {\tt\$a[10]} je 10-ti element niza {\tt a}, sam niz (kao listu svih
+          svojih elemenata) ozna\v cavamo sa {\tt@a};
+        \item
+          {\tt\$a\{'abc'\}} je {\tt'abc'}-ti element asocijativne
+          tabele\footnote{Hash} {\tt a}, samu asocijativnu tabelu (kao listu
+          indeksa i sadr\v zaja) ozna\v cavamo sa {\tt\%a};
+        \item
+          {\tt\$\#a} je du\v zina niza {\tt@a};
+        \item
+          {\tt<a>} je ru\v cica\footnote{Handle} datoteke i naj\v ce\v s\'ce
+          ozna\v cava teku\'ci red datoteke (svakim slede\'cim \v citanjem
+          u\v citavamo slede\'ci red).
+          Kada nai\d emo na kraj dato\-teke {\tt<a>} je prazna niska.
+          Ako navedemo samo {\tt<>} to je ru\v cica datoteke standardnog
+          ulaza.
+        \end{itemize}
+
+        Treba jo\v s napomenuti da ime ne mora nu\v zno biti slovo ili cifra
+        ve\'c mo\v ze biti i neki znak (ali takva imena su ve\'c ugra\d ena).
+%
+      \subsubsection{Sintaksa}
+        Komentari se pi\v su izme\d u {\tt/*} i {\tt*/} ili posle {\tt\#} ili
+        {\tt\bs\bs} pa do kraja reda.
+
+        Program je niz naredbi koje se razdvajaju znakom {\tt;} a mogu se
+        grupisati u blok koji je ome\d en sa {\tt\{} i {\tt\}}.
+        Iza svake naredbe mo\v ze stajati uslov za izvr\v senje:
+        \begin{itemize}
+        \item
+          {\tt xxx if {\it izraz}}\\
+          Izvr\v si\'ce naredbu {\tt xxx} samo ako je {\it izraz} razli\v cit
+          od 0;
+        \item
+          {\tt xxx unless {\it izraz}}\\
+          Izvr\v si\'ce naredbu {\tt xxx} samo ako je {\it izraz} jednak 0;
+        \item
+          {\tt xxx while {\it izraz}}\\
+          Izvr\v sava\'ce naredbu {\tt xxx} sve dko je {\it izraz} razli\v cit
+          od 0;
+        \item
+          {\tt xxx until {\it izraz}}\\
+          Izvr\v sava\'ce naredbu {\tt xxx} sve dko je {\it izraz} jednak 0;
+        \end{itemize}
+
+        Naredbe su oblika:
+        \begin{itemize}
+        \item
+          Izraz u kome u\v cestvuju:
+          \begin{itemize}
+          \item
+            {\tt++ --} su uve\'cavanje i smanjenje promenjlive za 1;
+          \item
+            {\tt**} je stepenovanje;
+          \item
+            {\tt! + -} su unarne operacije: logi\v cka negacija, plus i
+            promena zna\-ka broja;
+          \item
+            {\tt=\~\  !\~\ } su upore\d ivanje sa regularnim izrazom i
+            negacija upore\d i\-vanja sa regulranim izrazom;
+          \item
+            {\tt* / \% x} su mno\v zenje, deljenje, ostatak pri deljenju i
+            ponavljanje niske;
+          \item
+            {\tt+ - .} su sabiranje, oduzimanje i konkatenacija niski;
+          \item
+            {\tt< <= > >= == != <=>} su upore\d ivanje brojeva: manje, manje
+            ili jednako, ve\'ce, ve\'ce ili jednako, jednako, razli\v cito i
+            {\tt<=>} vra\'ca -1 ako je prvi broj manji, 0 ako su jednaki, 1
+            ako je prvi broj ve\'ci;
+          \item
+            {\tt lt le gt ge eq ne cmp} su leksiografsko upore\d ivanje
+            niski: ma\-nje, manje ili jednako, ve\'ce, ve\'ce ili jednako,
+            jednako, razli\v cito, i {\tt cmp} vra\'ca -1 ako je prva niska
+            pre druge, 0 ako su jednake, 1 ako je prva niska posle druge;
+          \item
+            {\tt\&\&} je logi\v cko i;
+          \item
+            {\tt||} je logi\v cko ili;
+          \item
+            {\tt..} je operator opsega;
+          \item
+            {\tt?:} je tenarna operacija, {\tt a?b:c} je {\tt b} ako je
+            {\tt a} ta\v cno a u suprotnom je {\tt c};
+          \item
+            {\tt= **= *= /= \%= += -= .= \&\&= ||=} su dodele vrednosti,
+            {\tt a@=b} je zamena za {\tt a=a@b} (gde je {\tt@} jedan od
+            {\tt** * / \% + - . \&\& ||});
+          \item
+            {\tt not and or xor} su drugi nazivi za logi\v cke operacije.
+          \end{itemize}
+        \item
+          {\tt if ({\it izraz}) {\it blok-1 [} else {\it blok-2 ]}}\\
+          Ako je {\it izraz} razli\v cit od 0 izvr\v si se {\it blok-1}.
+          Ako je naveden {\tt else} deo i ako je {\it izraz} jednak 0
+          izvr\v sava se {\it blok-2}.
+        \item
+          {\tt {\it [labela]} while ({\it izraz}) {\it blok-1 [} continue
+          {\it blok-2 ]}}\\
+          Sve dok je {\it izraz} razli\v cit od 0 izvr\v sava se {\it blok-1}.
+          {\it Blok-2} se izvr\v sava svaki put pre izra\v cunavanja
+          {\it iraza}.
+        \item
+          {\tt {\it [labela]} for ({\it izraz-1}; {\it izraz-2};
+          {\it izraz-3}) {\it blok}}\\
+          Prvo izvr\v si {\it izraz-1}, pa sve dok je {\it izraz-2}
+          razli\v cit od 0 izvr\v sava se {\it izraz-3} i blok.
+        \item
+          {\tt {\it [labela]} foreach {\it promenjliva} ({\it lista})
+          {\it blok}}\\
+          {\it Promenjliva} prolazi kroz sve elemente {\it liste} i
+          izvr\v sava se {\it blok}.
+        \item
+          {\tt next {\it [labela]}}\\
+          Ponovo izvr\v sava teku\'ci blok ili blok ozna\v cen {\it labelom},
+          ali pre toga izvr\v si blok iza {\tt continue} ako je naveden.
+          Ska\v ce na prvu naredbu teku\'ceg ili ozna\v cnog bloka.
+        \item
+          {\tt last {\it [labela]}}\\
+          Zavr\v sava teku\'ci blok ili blok ozna\v cen {\it labelom}.
+          Ska\v ce na prvu naredbu posle teku\'ceg ili ozna\v cenog bloka.
+        \end{itemize}
+%
+      \subsubsection{Ugra\d ene promenljive}
+        Kada {\bf PERL} pro\v cita red on smesti sadr\v zaj u {\tt\$\_}.
+        Od va\v znosti su i slede\'ce promenljive:
+        \begin{itemize}
+        \item
+          {\tt\$$i$} je promenljiva u kojoj se nalazi $i$-ti prepoznati
+          regularni izraz koji ome\d en sa {\tt(} i {\tt)} ($i$ je cifra).
+        \item
+          {\tt\$\&} je promenljiva u kojoj se nalazi prepoznati regularni
+          izraz.
+        \item
+          {\tt\$`} je promenljiva u kojoj se nalazi ono \v sto predhodi
+          prepoznatom regu\-larnom izrazu.
+        \item
+          {\tt\$'} je promenljiva u kojoj se nalazi ono \v sto se nalazi posle
+          prepoznatog regularnog izraza.
+        \item
+          {\tt\$+} je promenljiva u kojoj se nalazi poslednji prepoznati
+          regularni izraz koji je ome\d en sa {\tt(} i {\tt)}.
+        \item
+          {\tt\$*} je promenjliva kojom odlu\v cujemo da li \'ce
+          pretra\v zivanja i\'ci kroz vi\v se redova.
+          Ako je {\tt\$*} razli\v cito od 0 tada se pretra\v zivanje vr\v si
+          kroz vi\v se redova (znak za novi red ne zaustavlja pretragu).
+        \item
+          {\tt\$.} je promenljiva u kojoj se nalazi broj teku\'ceg reda.
+        \item
+          {\tt\$/} je niska \v cijim je sadr\v zajem teku\'ca datoteka
+          podeljena na redove.
+          Za razliku od {\bf AWK}-a {\tt\$.} ne mora biti samo jedan znak, ali
+          i dalje ne podr\v zava regularne izraze.
+          Ako {\tt\$.} nije definisano tada se obra\d uje cela datoteka (cela
+          datoteka je jedan red).
+        \item
+          {\tt\$,} je niska sa izlaznim separatorom polja, sli\v cno {\bf AWK}
+          promenjlivoj {\tt OFS} opisanoj u \ref{sub:awkpromenjlive}.
+        \item
+          {\tt\$\bs} je niska sa izlaznim separatorom redova, sli\v cno
+          {\bf AWK} promenjlivoj {\tt OFR} opisanoj u
+          \ref{sub:awkpromenjlive}.
+        \item
+          {\$\#} je niska sa formatom u kojem se prikazuju brojevi, inicijalno
+          je postavljena na ``{\tt\%.20g}''.
+          Zna\v cenje {\it formata} je isto kao i zna\v cenje formata funkcije
+          {\tt printf} programskog jezika {\bf C} (\cite{KR,PERL}).
+        \item
+          {\tt\$ARGV} je promenjliva koja sadr\v zi ime teku\'ce datoteke.
+        \item
+          {\tt@ARGV} je niz (du\v zine {\tt\$\#ARGV}) koji sadr\v zi argumente
+          prenete programu.
+          Napomena {\tt\$ARGV[0]} nije ime programa ve\'c prvi argument.
+        \item
+          {\tt\%ENV} je asocijativna tabela sa niskama iz okru\v zenja (koje
+          se nasle\d uju pozivom iz operativnog sistema).
+        \end{itemize}
+%
+      \subsubsection{Ugra\d ene funkcije}
+        {\bf PERL} poseduje pet grupa ugra\d enih funkcija: op\v ste
+        funkcije, funkcija za ulaz/izlaz, numeri\v cke funkcije, funkcija za
+        rad sa niskama i sistemske funkcije (o koje se ovde ne\'ce spomenuti
+        ali su opisane u \cite{PERL}).
+        Op\v ste funkcije su:
+        \begin{itemize}
+        \item
+          {\tt defined {\it izraz}}\\
+          Vra\'ca ta\v cno ako je {\it izraz} definisan.
+        \item
+          {\tt delete {\it izraz}}\\
+          Bri\v se {\it izraz}, naro\v cito ima smisla ako je to element niza.
+        \item
+          {\tt die {\it niska}}\\
+          Ispisuje {\it nisku} u standardnu datoteku za gre\v ske i zavr\v si
+          program sa neuspehom.
+        \item
+          {\tt each {\it asocijativan-tabela}}\\
+          Svakim pozivom vra\'ca po klju\v c i vrednost iz
+          {\it asocijativne-tabele}.
+          Kada vi\v se nema vrednosti vra\'ca netacno.
+        \item
+          {\tt exists {\it izraz}}\\
+          Vra\'ca ta\v cno ako je {\it izraz} postoji.
+        \item
+          {\tt exit {\it izraz}}\\
+          Izlazi iz programa i vra\'ca {\it izraz};
+        \item
+          {\tt join {\it izraz}, {\it lista}}\\
+          Spaja elemente {\it liste} (razdvojene {\it izrazom}) u nisku.
+        \item
+          {\tt keys {\it asocijativan-tabela}}\\
+          Vra\'ca listu sa klju\v cevima (indeksima)
+          {\it asocijativane-tabele}.
+        \item
+          {\tt reverse {\it lista}}\\
+          Okre\'ce {\it listu}.
+        \item
+          {\tt sort {\it lista}}\\
+          Sortira {\it listu}.
+        \item
+          {\tt system {\it komanda}}\\
+          Izvr\v sava {\it komandu} operativnog sistema.
+        \end{itemize}
+
+        Funkcije za ulaz/izlas su:
+        \begin{itemize}
+        \item
+          {\tt close {\it datoteka}}\\
+          Zatvara {\it datoteku}.
+        \item
+          {\tt eof {\it datoteka}}\\
+          Vra\'ca ta\v cno ako se stiglo do kraja {\it datoteke}.
+          Ako se izostavi {\it datoteka} podrazumeva se standardna ulazna
+          datoteka.
+        \item
+          {\tt open {\it datoteka}, {\it s}}\\
+          Otvara {\it datoteku} sa imenom {\it s}.
+          Ako {\it s} po\v cinje znakom {\tt<} onda se otvara za \v citanje,
+          ako po\v cinje znakom {\tt>} otvara se za pisanje, ako po\v cinje sa
+          {\tt>>} otvara sa za dodavanje a ako po\v cinje sa {\tt|} onda se
+          izlaz prosle\d uje programu koji je naveden.
+        \item
+          {\tt print {/it datoteka izraz}}\\
+          Ispisuje {\it izraz} (u skladu sa {\tt\$OFS}, {\tt\$ORS},
+          {\tt\$OFMT}) u {\it datoteku}.
+          Ako se izostavi {\it datoteka} podrazumeva se standardna ulazna
+          datoteka.
+        \item
+          {\tt printf{/it datoteka format}, {\it izrazi}}\\
+          Ispisuje {\it izraze} u {\it datoteku} po {\it formatu}.
+          {\it Format} je istog oblika kao i format funkcije {\tt printf}
+          programskog jezika {\bf C} (\cite{KR,PERL}).
+          Ako se izostavi {\it datoteka} podrazumeva se standardna ulazna
+          datoteka.
+        \end{itemize}
+
+        Numeri\v cke funkcije su: {\tt abs}, {\tt atan2}, {\tt cos},
+        {\tt exp}, {\tt hex}, {\tt int}, {\tt log}, {\tt oct}, {\tt ord},
+        {\tt rand}, {\tt sin}, {\tt qrt}, {\tt srand}.
+
+        Funkcije za rad sa niskama su:
+        \begin{itemize}
+        \item
+          {\tt chop {\it s}}\\
+          Uklanja zadnji znak (uglavnom znak za kraj reda) niske {\it s} ili
+          {\tt\$\_} ako niska nije navedena.
+        \item
+          {\tt chr {\it i}}\\
+          Vra\'ca znak koji se nalazi na mestu {\it i}.
+        \item
+          {\tt index {\it s}, {\it t}, {\it i}}\\
+          Vra\'ca poziciju prve pojave niske {\it t} u nisci {\it s} ili
+          $-1$ ako se ne pojavljuje.
+          Pretra\v zivanje se vr\v si od {\it i}-te pozicije ako je {\it i}
+          navedeno.
+        \item
+          {\tt lc {\it s}}\\
+          Vra\'ca nisku {\it s} sa svim velikim slovima pretvorenim u mala.
+        \item
+          {\tt lcfirst {\it s}}\\
+          Vra\'ca nisku {\it s} sa prvim slovom pretvorenim u malo.
+        \item
+          {\tt lenght {\it s}}\\
+          Vra\'ca du\v zinu niske {\it s} ili du\v zinu {\tt\$\_} ako {\it s}
+          nije navedeno.
+        \item
+          {\tt m/{\it r}/{\it zastavica}}\\
+          Pretra\v zuje regularni izraz {\it r} unutar niske koja je
+          specifirana operacijama {\tt=\~\ } i {\tt!\~\ } ili unutar
+          {\tt\$\_}.
+          Postavljaju se vrednosti promenljivih: {\tt\$$i$}, {\tt\$\&},
+          {\tt\$`}, {\tt\$'}, {\tt\$+}.
+          {\it Zastavica} mo\v ze biti {\tt i}, tada se zanemaruju velika i
+          mala slova.
+
+          Ina\v ce nije neophodno navesti poziv funkcije {\tt m} ve\'c je
+          dovoljno samo navesti {\tt/{\it r}/}.
+        \item
+          {\tt rindex {\it s}, {\it t}, {\it i}}\\
+          Vra\'ca poziciju poslednje pojave niske {\it t} u nisci {\it s} ili
+          $-1$ ako se ne pojavljuje.
+          Pretra\v zivanje se vr\v si do {\it i}-te pozicije ako je {\it i}
+          navedeno.
+        \item
+          {\tt s/{\it r}/{\it s}/{\it zastavice}}\\
+          Zamenjuje niskom {\it s} prvu pojavu regularnog izraza {\it r} u
+          nisci koja je specifirana operacijama {\tt=\~\ } i {\tt~\~\ } ili u
+          {\tt\$\_}.
+          U nisci {\it s} mogu se koristii promenljivih: {\tt\$$i$},
+          {\tt\$\&}, {\tt\$`}, {\tt\$'}, {\tt\$+}.
+          \begin{itemize}
+          \item
+            {\tt g}, tada zamenjuje sve pojave regularnog izraza {\it r}, a ne
+            samo prvu pojavu;
+          \item
+            {\tt i}, tada se zanemaruju velika i mala slova.
+          \end{itemize}
+        \item
+          {\tt split /{\it r}/, {\it s}, {\it i}}\\
+          Deli nisku {\it s} na delove odvojene regularnim izrazom {\it r} u
+          niz {\tt@\_}.
+          Ako je navedeno {\it i} uzima se samo prvih {\it i} \v clanova.
+          Ako nije navedeni ni {\it s} tada se koristi {\tt\$\_}.
+        \item
+          {\tt sprintf {\it format}, {\it izrazi}}\\
+          Vra\'ca nisku u kojoj su koriste\'ci {\it format} ``ispisani''
+          {\it izrazi}.
+          {\it Format} je isti kao format funkcije {\tt printf} programskog
+          jezika {\bf C} (\cite{KR,PERL}).
+        \item
+          {\tt substr {\it s}, {\it i}, {\it n}}\\
+          Vra\'ca {\it n} znakova od pozicije {\it i} niske {\it s}.
+          Ako {\it n} nije navedeno vra\'ca sve znakove do kraja niske
+          {\it s}.
+        \item
+          {\tt tr/{\it niska-1}/{\it niska-2}/{\it zastavice}}\\
+          Menja svaki znak iz {\it niske-1} u odgovaraju\'ci znak
+          {\it niske-2} u nisci koja je specifirana operacijama {\tt=\~\ } i
+          {\tt!\~\ } ili u {\tt\$\_}.
+          Zastavice (koje su opcione) mogu biti:
+          \begin{itemize}
+          \item
+            {\tt c}, tada posmatra ne {\it nisku-1} ve\'c njen komplement;
+          \item
+            {\tt d}, tada bri\v se znakove iz {\it niske-1}.
+          \item
+            {\tt s}, tada bri\v se sva vi\v sestruka uzastopna pojavljivanja
+            znakova iz {\it niske-1}.
+          \end{itemize}
+        \item
+          {\tt uc {\it s}}\\
+          Vra\'ca nisku {\it s} sa svim malim slovima pretvorenim u velika.
+        \item
+          {\tt ucfirst {\it s}}\\
+          Vra\'ca nisku {\it s} sa prvim slovom pretvorenim u veliko.
+        \end{itemize}
+%
+      \subsubsection{Primeri}
+        \begin{primer}\ \end{primer}
+        Ponovimo primer \ref{primer:sed} ali sada na {\bf PERL}-u.
+        \begin{verbatim}
+$\="\n";
+while(<>)
+{
+  chop;
+  s/%(.*)$/\{$1\}/ if(/%/);
+  s/Swap\((.*),(.*)\)/$2 $1/ if(/Swap\(.*,.*\)/);
+  next unless (/./);
+  print;
+}
+\end{verbatim}
+
+        Prvo podesimo promenjlivu {\tt\$\_} tako da posle svakog poziva
+        funkcije {\tt print} se ispi\v se i znak novog reda.
+        Zatim sve dok ima redova u standardnoj ulaznoj datoteci, u\v citani
+        red se dodeljuje promenljivoj {\tt\$\_} i izvr\v sava se telo petlje.
+
+        U telu petlje se prvo funkcijom {\tt comp} iz {\tt\$\_} izbacuje znak
+        kraja reda.
+        Zatim ako se u {\tt\$\_} pojavljuje znak {\tt\%} stavlja u
+        viti\v caste zagrade {\tt\{} i {\tt\}} tekst iza {\tt\%} pa sve do
+        kraja reda.
+        Ako {\tt\$\_} sadr\v zi poziv ``funkcije'' {\tt Swap} okre\'ce
+        argumente funkcije {\tt Swap}.
+        Ako je {\tt\$\_} prazna niska zapo\v cinje se ponovo sa proverom
+        uslova petlje i ako je zadovoljen ponovo se izvr\v sava telo petlje.
+        Na kraju se ispi\v se sadr\v zaj eventualno promenjenog {\tt\$\_}.
+
+        \begin{primer}\ \end{primer}
+        Ponovimo primer \ref{primer:awk} ali sada na {\bf PERL}-u.
+        \begin{verbatim}
+$,=" ";
+$\="\n";
+while(<>)
+{
+  chop;
+  @a=split(/[ \t.,;:!?\/-]+/);
+  foreach $i (0..$#a)
+  {
+    if($a[$i] ne "")
+    {
+      $reci{lc($a[$i])}++;
+    }
+  }
+}
+foreach $i (sort keys %reci)
+{
+  print $i,$reci{$i};
+}
+\end{verbatim}
+
+        Prvo se podese promenljive {\tt\$,} i {\tt\$\bs} zbog ispisivanja.
+        Zatim prolaze\'ci kroz sve redove standardne ulazne datoteke
+        razdvajamo u niz {\tt@a} promenjlivu {\tt\$\_} po regularnom izrazu
+        {\tt[ \t.,;:!?\/-]+} (dakle u niz {\tt@a} idu samo re\v ci).
+        Prolazimo promenjlivom {\tt\$i} od 0 do duzine niza {\tt@a}
+        ({\tt\$\#a}) i uve\'cavamo za 1 element asocijativne tabele
+        {\tt\%reci} na mestu {\tt lc($a[$i])} ({\tt i}-ta re\v c ulaznog reda,
+        pretvorena u mala slova).
+
+        Na kraju datoteke prolazimo promenljivom {\tt i} kroz sortirane
+        klju\v ceve (indekse) asocijativne tabele {\tt\%reci} i ispisujemo
+        re\v c i broj pojavljivanja.
+%
+%
+  \newpage
+  \section{Zaklju\v cak}
+    Iz svega dosad nabrojanog, ispostavlja se da je najpogodnije obra\d ivati
+    te\-kstualne datoteke programima pisanim u programskom jeziku {\bf C} uz
+    kori\v s\'cenje {\bf LEX}-a i {\bf YACC}-a.
+    Me\d utim programski jezik {\bf C} uz {\bf LEX} i {\bf YACC}, nije
+    pogodan za sve one kojima programiranje nije prvenstvena oblast
+    interesovanja (na primer: lingvisti), a sa druge strane i za neke
+    jednostavne obrade neopohodno je napisati dosta k\^oda.
+
+    Kao slede\'ca alternativa imamo {\bf AWK} koji ima manje mogu\'cnsti od
+    programskog jezika {\bf C} uz kori\v s\''cenje {\bf LEX}-a i
+    {\bf YACC}-a.
+    {\bf AWK} nam zato omogu\'cava da neke jednostavne obrade implementiramo
+    jednostavno, ali nas ograni\v cava logi\v cko struktura ulazne tekstualne
+    datoteke (podela na redove).
+
+    Dosta pogodniji od {\bf AWK}-a, ali ne toliko mo\'can kao programski
+    jezik {\bf C} uz kori\v s\'cenje {\bf LEX}-a i {\bf YACC}-a, je
+    {\bf PERL}.
+    U {\bf PERL}-u jednostavne obrade i dalje jednostavno implementiramo ali
+    i dalje nas ograni\v cava logi\v cka struktura ulazne tekstualne
+    datoteke (podela na redove).
+    Poseban problem predstavlja velika kripti\v cnost {\bf PERL}-a koja je
+    posledica toga \v sto su se nazivi {\bf PERL} funkcija nasledili iz
+    {\bf UNIX}-a i {\bf sed}-a.
+
+    Naime neophodno je napomenuti da su i {\bf AWK} i {\bf PERL} nastali kao
+    alatke pogodne za obradu izve\v staja raznih programa operativnog sistema
+    {\bf UNIX} i da kao takvi nisu pogodni za obradu svih vrsta tekstualnih
+    datoteka.
+
+    Kao jedno od re\v senja name\'ce se: kreiranje nove alatke koja bi bila
+    pogodna za obradu tekstualni datoteka.
+    Taj novi jezik mora kao prvo da u potpunosti da ima istu ``mo\'c'' kao
+    {\bf AWK} i {\bf PERL} ali da nudi i vi\v se.
+
+    \v Sta bi sve treba da sadr\v zi ta nova alatka:
+    \begin{enumerate}
+    \item
+      Od tipova podataka potrebne su nam svakako niske, ali i brojevi kao i
+      mogu\'cnost rada sa asocijativnim tabelama (ubacivanje novog elementa,
+      brisanje nekog elementa, prolazak kroz indekse).
+    \item
+      Funkcije za rad sa datotekama uklju\v cuju\'ci i funkciju koja bi iz
+      datoteke u\v citavala regularni izraza ili kontekstno slobodan jezik.
+    \item
+      Funkcije za rad sa niskama, regularnim izrazima i sa kontekstno
+      slobo\-dnim gramatikama.
+    \item
+      Mehanizam \v sirenja jezika (metodom makr\^o-zamena) tako da jezik
+      bude pogodan i za one kojima nije prvensvena oblast interesovanja
+      programiranje (mo\'ci \'ce da se naprave makr\^oi koji realizuju neke
+      tipske obrade).
+    \end{enumerate}
+
+    U svakom slu\v caju alatka bi trebalo biti oslobo\d ena kripti\v cnosti
+    i podrazumevanih vrednosti, jer kripti\v cnost i podrazumevane vrednosti
+    smanjuju \v citljivost {\bf PERL} programa.
+
+    Za razliku od {\bf AWK}-a i {\bf PERL}-a kod kojih smo ograni\v ceni na
+    logi\v cku podelu ulazne teksualne datoteke na redove posebnu pogodnost
+    \'ce predstavljati mogu\'cnost slobodnijeg pra\'cenja proizvoljne
+    logi\v cke strukture ulazne datoteke, jer se nudi mogu\'cnost
+    u\v citavanja regularnog izraza i kontesktno slobodnog jezika iz ulazne
+    datoteke.
+
+    Makr\^o-zamenama bi mogli da realizujemo neke osnovne obrade tekstua\-lnih
+    datoteka, tako mo\v zemo dekompozicijom problema lak\v se do\'ci do
+    re\v senja.
+    U tom cilju je neophodno realizovati makr\^o-zamene koje re\v savaju
+    odre\d ene klase problema koje bi postavile krajne grupe korisnika
+    (na primer: obrada elektrenskog re\v cnika, punjenje korpusa, \ldots).
+
+    Sama alatka bi trebalo da ima dva na\v cina kori\v s\'cenja:
+    \begin{itemize}
+    \item
+      Kao interpretator, u tom slu\v caju bi se interpretirao program.
+    \item
+      Kao prevodilac na programski jezik {\bf C}, u tom slu\v caju bi se
+      generisao program na programskom jeziku {\bf C} koji bi vr\v sio
+      tra\v zenu obradu.
+    \end{itemize}
+
+    Ovim na\v cinima kori\v s\'cenja mo\v zemo jednostavno obraditi neku
+    ulaznu da\-toteku interpretiranjem, a ako je to deo obrade nekog ve\'ceg
+    projekta onda prevo\d enjem na programski jezik {\bf C} dobijamo deo
+    k\^oda koji vr\v si tu obradu.
+
+    Pored toga prevo\d enjem na programski jezik {\bf C} imamo potpunu
+    prenosivost i mogu\'cnost izvr\v savanja na svim platformama na kojima
+    postoji prevodilac za programski jezik {\bf C}.
+
+    Krajni cilj je da se kreira alatka koja \'ce biti prihva\'cena kao
+    standard za obradu tekstualnih datoteka.
+    Kako se za sada u te svrhe koristi uglavnom {\bf AWK} i {\bf PERL}, a
+    oni su pokazali dosta nedostataka imamo kao mogu\'cnost da pro\v sirujemo
+    {\bf AWK} i {\bf PERL} ili da kreiramo potpuno novu alatku.
+
+    Pro\v sirenja {\bf AWK}-a i {\bf PERL}-a nisu mogu\'ca bez ve\'ce promene
+    samog jezika zbog koncepcije deljenja ulazne datoteke na redove, tako da
+    je pravlje\-nje nove alatke jedno od boljih re\v senja jer alatka mo\v ze
+    da se izdizajnira po potrebi krajne ciljne grupe korisnika a to su u
+    ovom trenutku svi oni koji se bavem tekstom zapisanom na ra\v cunaru.
+%
+%
+  \newpage
+  \begin{thebibliography}{}
+  \bibitem{KR}
+    B. W. Kernighan, D. M. Richi\\
+    ``The C Programming Language''\\
+    Prentice-Hall (1978)
+  \bibitem{UNIX}
+    ``UNIX System V Relase 2.0''\\
+    Bell Laboratiories (1983)
+  \bibitem{MAN}
+    ``UNIX Programmer's Manual''\\
+    Berkley Software Distribution (1991)
+  \bibitem{AU}
+    A. V. Aho, J. D. Ulman\\
+    ``The Theory of Parsing, Translation and Compiling''\\
+    Addison-Wesley (1978)
+  \bibitem{LEX}
+    M. E. Lesk\\
+    ``LEX-A Lexical Analyser Generator''\\
+    Bell Laboratiories (1975)
+  \bibitem{YACC}
+    Stephen C. Johnson\\
+    ``Yet Another Compiler Compiler''\\
+    Bell Laboratiories (1975)
+  \bibitem{AGJP}
+    Goran Lazi\'c\\
+    ``Automatsko generisanje jezi\v ckih procesora''\\
+    Matemati\v cki fakultet, Beograd (1994)
+  \bibitem{AKS}
+    Goran Lazi\'c\\
+    ``Pribli\v zno upore\d ivanje niski''\\
+    Matemati\v cki fakultet, Beograd (1996)
+  \bibitem{AWK}
+    A. V. Aho, B. W. Kernighan, P. J. Weinberger\\
+    ``The AWK Programming Language''\\
+    Addison-Wesley (1988)
+  \bibitem{PERL}
+    Larry Wall\\
+    ``Learning PERL''\\
+    O'Reilly \& Associates (1991)
+  \end{thebibliography}
+\end{document}

@@ -1,0 +1,1 @@
+(M a AND M b) THEN M(a AND b)

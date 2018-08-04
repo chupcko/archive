@@ -1,0 +1,327 @@
+$
+
+<program> ::=
+  <naredba> <naredbe> .
+
+<naredba> ::=
+  LA_k_if <izraz> LA_k_then <naredba> LA_k_else <naredba> @SF_special
+| LA_k_while <izraz> LA_k_do <naredba> @SF_special
+| LA_k_do <naredba> LA_k_until <izraz> @SF_special
+| LA_k_loop <naredba> @SF_special
+| LA_k_for <varijabla> <niz> LA_k_in <varijabla> <niz> @SF_iz_memorije LA_k_do <naredba> @SF_special
+
+| <varijabla> <niz> LA_dodela <izraz> @SF_dodela
+| <varijabla> LA_l_zag @SF_procedura <argumenti> LA_d_zag @SF_poziv_procedure
+
+| LA_k_procedure LA_ime @SF_nova_procedure LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_function LA_ime @SF_nova_funkcije LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_begin <naredba> <naredbe> LA_k_end
+
+| LA_k_break @SF_break
+| LA_k_continue @SF_continue
+| LA_k_return <mozda_izraz>
+| .
+
+<imena> ::=
+  LA_ime @SF_dodaj_argument <o_imena>
+| .
+
+<o_imena> ::=
+  LA_zarez LA_ime @SF_dodaj_argument <o_imena>
+|.
+
+<naredbe> ::=
+  LA_separator <naredba> <naredbe>
+|.
+
+<mozda_izraz> ::=
+  <izraz> @SF_return_func
+| @SF_return_proc .
+
+<izraz> ::=
+  <izraz> LA_k_or <izraz> @SF_or
+| <izraz> LA_k_and <izraz> @SF_and
+
+| <izraz> LA_eq <izraz> @SF_eq
+| <izraz> LA_neq <izraz> @SF_neq
+
+| <izraz> LA_lt <izraz> @SF_lt
+| <izraz> LA_le <izraz> @SF_le
+| <izraz> LA_gt <izraz> @SF_gt
+| <izraz> LA_ge <izraz> @SF_ge
+| <izraz> LA_k_in <izraz> @SF_in
+
+| <izraz> LA_plus <izraz> @SF_plus
+| <izraz> LA_minus <izraz> @SF_minus
+| <izraz> LA_tacka <izraz> @SF_konkatenacija
+
+| <izraz> LA_puta <izraz> @SF_puta
+| <izraz> LA_podeljeno <izraz> @SF_podeljeno
+| <izraz> LA_k_mod <izraz> @SF_mod
+
+| LA_k_not <izraz> @SF_not
+| LA_minus <izraz> @SF_u_minus
+
+| LA_k_true @SF_bool_true
+| LA_k_false @SF_bool_false
+| LA_k_sfin @SF_sfin
+| LA_k_sfout @SF_sfout
+| LA_integer @SF_integer
+| LA_real @SF_real
+| LA_string @SF_string
+| <varijabla> <niz> @SF_iz_memorije
+| <varijabla> LA_l_zag @SF_funkcija <argumenti> LA_d_zag @SF_poziv_funkcije
+| LA_l_zag <izraz> LA_d_zag .
+
+<varijabla> ::=
+  LA_ime @SF_varijabla .
+
+<niz> ::=
+  LA_l_u_zag <izraz> @SF_indeks LA_d_u_zag <niz>
+| .
+
+<argumenti> ::=
+  <izraz> <o_argumenti>
+|.
+
+<o_argumenti> ::=
+  LA_zarez <izraz> <o_argumenti>
+|.
+
+$
+$
+
+<program> ::=
+  <naredba> <naredbe> .
+
+<naredba> ::=
+  LA_k_if <izraz> LA_k_then <naredba> LA_k_else <naredba> @SF_special
+| LA_k_while <izraz> LA_k_do <naredba> @SF_special
+| LA_k_do <naredba> LA_k_until <izraz> @SF_special
+| LA_k_loop <naredba> @SF_special
+| LA_k_for <varijabla> <niz> LA_k_in <varijabla> <niz> @SF_iz_memorije LA_k_do <naredba> @SF_special
+
+| <varijabla> <dodela_ili_procedura>
+
+| LA_k_procedure LA_ime @SF_nova_procedure LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_function LA_ime @SF_nova_funkcije LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_begin <naredba> <naredbe> LA_k_end
+
+| LA_k_break @SF_break
+| LA_k_continue @SF_continue
+| LA_k_return <mozda_izraz>
+| .
+
+<dodela_ili_procedura> ::=
+  <niz> LA_dodela <izraz> @SF_dodela
+| LA_l_zag @SF_procedura <argumenti> LA_d_zag @SF_poziv_procedure .
+
+<imena> ::=
+  LA_ime @SF_dodaj_argument <o_imena>
+| .
+
+<o_imena> ::=
+  LA_zarez LA_ime @SF_dodaj_argument <o_imena>
+|.
+
+<naredbe> ::=
+  LA_separator <naredba> <naredbe>
+|.
+
+<mozda_izraz> ::=
+  <izraz> @SF_return_func
+| @SF_return_proc .
+
+<izraz> ::=
+  <izraz> LA_k_or <izraz_f> @SF_or
+| <izraz> LA_k_and <izraz_f> @SF_and
+| <izraz_f> .
+
+<izraz_f> ::=
+  <izraz_f> LA_eq <izraz_e> @SF_eq
+| <izraz_f> LA_neq <izraz_e> @SF_neq
+| <izraz_e> .
+
+<izraz_e> ::=
+  <izraz_e> LA_lt <izraz_d> @SF_lt
+| <izraz_e> LA_le <izraz_d> @SF_le
+| <izraz_e> LA_gt <izraz_d> @SF_gt
+| <izraz_e> LA_ge <izraz_d> @SF_ge
+| <izraz_e> LA_k_in <izraz_d> @SF_in
+| <izraz_d> .
+
+<izraz_d> ::=
+  <izraz_d> LA_plus <izraz_c> @SF_plus
+| <izraz_d> LA_minus <izraz_c> @SF_minus
+| <izraz_d> LA_tacka <izraz_c> @SF_konkatenacija
+| <izraz_c> .
+
+<izraz_c> ::=
+  <izraz_c> LA_puta <izraz_b> @SF_puta
+| <izraz_c> LA_podeljeno <izraz_b> @SF_podeljeno
+| <izraz_c> LA_k_mod <izraz_b> @SF_mod
+| <izraz_b> .
+
+<izraz_b> ::=
+  LA_k_not <izraz_b> @SF_not
+| LA_minus <izraz_b> @SF_u_minus
+| <izraz_a> .
+
+<izraz_a> ::=
+  LA_k_true @SF_bool_true
+| LA_k_false @SF_bool_false
+| LA_k_sfin @SF_sfin
+| LA_k_sfout @SF_sfout
+| LA_integer @SF_integer
+| LA_real @SF_real
+| LA_string @SF_string
+| <varijabla> <promenljiva_ili_funkcija>
+| LA_l_zag <izraz> LA_d_zag .
+
+<varijabla> ::=
+  LA_ime @SF_varijabla .
+
+<promenljiva_ili_funkcija> ::=
+  <niz> @SF_iz_memorije
+| LA_l_zag @SF_funkcija <argumenti> LA_d_zag @SF_poziv_funkcije .
+
+<niz> ::=
+  LA_l_u_zag <izraz> @SF_indeks LA_d_u_zag <niz>
+| .
+
+<argumenti> ::=
+  <izraz> <o_argumenti>
+|.
+
+<o_argumenti> ::=
+  LA_zarez <izraz> <o_argumenti>
+|.
+
+$
+
+<program> ::=
+  <naredba> <naredbe> .
+
+<naredba> ::=
+  LA_k_if <izraz> LA_k_then <naredba> LA_k_else <naredba> @SF_special
+| LA_k_while <izraz> LA_k_do <naredba> @SF_special
+| LA_k_do <naredba> LA_k_until <izraz> @SF_special
+| LA_k_loop <naredba> @SF_special
+| LA_k_for <varijabla> <niz> LA_k_in <varijabla> <niz> @SF_iz_memorije LA_k_do <naredba> @SF_special
+
+| <varijabla> <dodela_ili_procedura>
+
+| LA_k_procedure LA_ime @SF_nova_procedure LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_function LA_ime @SF_nova_funkcije LA_l_zag <imena> LA_d_zag LA_k_is @SF_def_func_proc <naredba>
+
+| LA_k_begin <naredba> <naredbe> LA_k_end
+
+| LA_k_break @SF_break
+| LA_k_continue @SF_continue
+| LA_k_return <mozda_izraz>
+| .
+
+<dodela_ili_procedura> ::=
+  <niz> LA_dodela <izraz> @SF_dodela
+| LA_l_zag @SF_procedura <argumenti> LA_d_zag @SF_poziv_procedure .
+
+<imena> ::=
+  LA_ime @SF_dodaj_argument <o_imena>
+| .
+
+<o_imena> ::=
+  LA_zarez LA_ime @SF_dodaj_argument <o_imena>
+|.
+
+<naredbe> ::=
+  LA_separator <naredba> <naredbe>
+|.
+
+<mozda_izraz> ::=
+  <izraz> @SF_return_func
+| @SF_return_proc .
+
+<izraz> ::=
+  <izraz_f> <izraz_1> .
+
+<izraz_1> ::=
+  LA_k_or <izraz_f> @SF_or <izraz_1>
+| LA_k_and <izraz_f> @SF_and <izraz_1>
+| .
+
+<izraz_f> ::=
+  <izraz_e> <izraz_f_1> .
+
+<izraz_f_1> ::=
+  LA_eq <izraz_e> @SF_eq <izraz_f_1>
+| LA_neq <izraz_e> @SF_neq <izraz_f_1>
+| .
+
+<izraz_e> ::=
+  <izraz_d> <izraz_e_1> .
+
+<izraz_e_1> ::=
+  LA_lt <izraz_d> @SF_lt <izraz_e_1>
+| LA_le <izraz_d> @SF_le <izraz_e_1>
+| LA_gt <izraz_d> @SF_gt <izraz_e_1>
+| LA_ge <izraz_d> @SF_ge <izraz_e_1>
+| LA_k_in <izraz_d> @SF_in <izraz_e_1>
+| .
+
+<izraz_d> ::=
+  <izraz_c> <izraz_d_1> .
+
+<izraz_d_1> ::=
+  LA_plus <izraz_c> @SF_plus <izraz_d_1>
+| LA_minus <izraz_c> @SF_minus <izraz_d_1>
+| LA_tacka <izraz_c> @SF_konkatenacija <izraz_d_1>
+| .
+
+<izraz_c> ::=
+  <izraz_b> <izraz_c_1> .
+
+<izraz_c_1> ::=
+  LA_puta <izraz_b> @SF_puta <izraz_c_1>
+| LA_podeljeno <izraz_b> @SF_podeljeno <izraz_c_1>
+| LA_k_mod <izraz_b> @SF_mod <izraz_c_1>
+| .
+
+<izraz_b> ::=
+  LA_k_not <izraz_b> @SF_not
+| LA_minus <izraz_b> @SF_u_minus
+| <izraz_a> .
+
+<izraz_a> ::=
+  LA_k_true @SF_bool_true
+| LA_k_false @SF_bool_false
+| LA_k_sfin @SF_sfin
+| LA_k_sfout @SF_sfout
+| LA_integer @SF_integer
+| LA_real @SF_real
+| LA_string @SF_string
+| <varijabla> <promenljiva_ili_funkcija>
+| LA_l_zag <izraz> LA_d_zag .
+
+<varijabla> ::=
+  LA_ime @SF_varijabla .
+
+<promenljiva_ili_funkcija> ::=
+  <niz> @SF_iz_memorije
+| LA_l_zag @SF_funkcija <argumenti> LA_d_zag @SF_poziv_funkcije .
+
+<niz> ::=
+  LA_l_u_zag <izraz> @SF_indeks LA_d_u_zag <niz>
+| .
+
+<argumenti> ::=
+  <izraz> <o_argumenti>
+|.
+
+<o_argumenti> ::=
+  LA_zarez <izraz> <o_argumenti>
+|.

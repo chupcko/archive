@@ -1,0 +1,78 @@
+Promenlyive su niske, brojevi (celi i relni), logicxke i datoteke.
+
+Regularni izrazi:
+  a      sam znak
+  /a     znak koji sledi iza
+  +      1 ili visxe puta
+  *      0 ili visxe puta
+  ?      0 ili 1-om
+  |      ili
+  (...)  zagradyivanye
+  [...]  skup slova
+  ]...[  skup slova koja nisu navedena
+  ][     jocker znak
+  {...}  akcija
+  <...>  uokviravanje
+  ^      pocxetak
+  $      kraj
+
+  regexp(stringre,string) vracya integer i to <0, gresxka; =0 nije pronasxao; >0 pronasxao
+
+  posle poziva regexp podesxene su sledecye promenlyive:
+    rera : string; vrednost akcije
+    rermb : integer; pozicija u nisci gde pocxinye prepoznat regularni izraz
+    rerme : integer; pozicija u nisci gde se zavrsxava prepoznat regularni izraz
+    rern : integer; broj uokvirenih delova regularnih izraza
+    rervb : integer[]; niz pozicija u nisci gde pocxinyu uokvireni delovi regularnog izraza
+    rerve : integer[]; niz pozicija u nisci gde se zavrsxavaju uokvireni delovi regularnog izraza
+
+Priblizxno uporedyivanye niski:
+  a      sam znak
+  /a     znak koji sledi iza
+  ?      opcija
+  |      ili
+  [...]  skup slova
+  ]...[  skup slova koja nisu navedena
+  ][     jocker znak
+  {...}  akcija i to (redosled: slovo akcija opcija):
+    c=broj  tezxinski faktor menjanya je broj za tekucye slovo
+    C=broj  tezxinski faktor menjanya je broj za tekucye i sva sledecya slova
+    d=broj  tezxinski faktor brisanya je broj za tekucye slovo
+    D=broj  tezxinski faktor brisanya je broj za tekucye i sva sledecya slova
+    i=broj  tezxinski faktor umetanya je broj za tekucye slovo
+    I=broj  tezxinski faktor umetanya je broj za tekucye i sva sledecya slova
+    m=broj  vrednost tezxinske funkcije je broj za tekucye slovo
+    M=broj  vrednost tezxinske funkcije je broj za tekucye i sva sledecya slova
+    c=broj  tezxinski faktor zamene je broj za tekucye slovo
+    C=broj  tezxinski faktor zamene je broj za tekucye i sva sledecya slova
+
+Neke funkcije:
+  openr(string) : file; otvara datoteku za cxitanye
+  openw(string) : file; otvara datoteku za pisanye
+  opena(string) : file; otvara datoteku za dodavanye
+  piper(string) : file; startuje program i preusmerava nyegov izlaz u datoteku
+  pipew(string) : file; startuje program i preusmerava nyegov ulaz iz datoteke
+  close(file) : void; zatvara ddatoteku
+  eof(file) : boolean; kraj datoteke ili ne
+  write(file,string); upisuje u datoteku
+  seekb(file,integer); pozicionira se unutar datoteke od pocxetka
+  seekc(file,integer); pozicionira se unutar datoteke u odnosu na trenutnu poziciju
+  seeke(file,integer); pozicionira se unutar datoteke u odnosu na kraj
+  reads(dat,integer) : integer; cita iz datoteke nisku max. specifirane duzine i dodeljuje je u nisku fread
+  readre(dat,stringre) : integer; cita iz datoteke regularni izraz i dodeljuje:
+    frera : string; vrednost akcije
+    frerm : string; ucxitani regulrani izraz
+    frern : integer; broj uokvirenih delova regularnih izraza
+    frervb : integer[]; niz pozicija u nisci gde pocxinyu uokvireni delovi regularnog izraza
+    frerve : integer[]; niz pozicija u nisci gde se zavrsxavaju uokvireni delovi regularnog izraza
+
+Primer: ispis svih logovanja korisnika "mika"
+
+dat=piper("last");
+while not eof(dat) do
+begin
+  readre(dat,"]\n[*\n");
+  if regexp("^mika",frerm) > 0 then
+    print(frerm);
+end
+close(dat);

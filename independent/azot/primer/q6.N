@@ -1,0 +1,9 @@
+s:="mama";
+b:=35;
+debug();
+s:=b;
+debug();
+print(tolower("\n\nMoja mama najbolje kuha "),s," ",string(787.34)," ",true,"\n");
+# exit(19);
+c:=abs(-10.89)+system("ls");
+debug();

@@ -1,0 +1,12 @@
+#include "windows.h"
+#include "planina.h"
+
+Ikona ICON planina.ico
+
+Meni MENU
+BEGIN
+  POPUP "&Radi"
+  BEGIN
+    MENUITEM "&Iscrtavanje",MENU_ITEM
+  END
+END

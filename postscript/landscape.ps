@@ -1,0 +1,36 @@
+72 2.54 div dup scale
+/Helvetica findfont 0.5 scalefont setfont
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+
+1 1 moveto
+(page_llx=) show page_llx 16 string cvs show ( ) show
+(page_lly=) show page_lly 16 string cvs show ( ) show
+(page_urx=) show page_urx 16 string cvs show ( ) show
+(page_ury=) show page_ury 16 string cvs show
+
+page_urx page_llx sub 2 div
+page_ury page_lly sub 2 div
+translate
+90 rotate
+page_lly page_ury sub 2 div
+page_llx page_urx sub 2 div
+translate
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+
+1 1 moveto
+(page_llx=) show page_llx 16 string cvs show ( ) show
+(page_lly=) show page_lly 16 string cvs show ( ) show
+(page_urx=) show page_urx 16 string cvs show ( ) show
+(page_ury=) show page_ury 16 string cvs show
+
+showpage quit

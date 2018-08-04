@@ -1,0 +1,9 @@
+#ifndef __CONFIGURATION_H__
+#define __CONFIGURATION_H__
+
+__INCLUDE_BEGIN__
+#define R2_CUBE_DIMENSION 2
+#define R2_CUBE_SIDE_NUMBER 6
+__INCLUDE_END__
+
+#endif

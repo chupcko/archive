@@ -1,0 +1,68 @@
+mode_setup;
+
+def monogram(expr c,vel,okvir)=
+  beginchar(c,
+    if okvir:
+      11*vel*pt#/7,9*vel*pt#/7,2*vel*pt#/7
+    else:
+      vel*pt#,vel*pt#,0
+    fi
+  ); "GL Monogram";
+    p:=w/if okvir: 11 else: 7 fi;
+    x15=x16=x35=x38=0p;
+    x1=x14=x17=x22=x36=x37=1p;
+    x12=x13=x21=x20=2p;
+    x6=x7=x10=x11=3p;
+    x9=x18=x19=x31=x34=4p;
+    x2=x3=x8=x30=5p;
+    x23=x26=x27=6p;
+    x4=x5=x24=x25=x28=x29=x32=x33=7p;
+    y1=y2=y23=y24=0p;
+    y16=y17=y18=y25=y26=1p;
+    y3=y4=y19=y20=2p;
+    y5=y6=3p;
+    y7=y8=y15=y21=y22=y27=y28=4p;
+    y9=y10=y13=y14=y29=y30=y35=5p;
+    y31=y32=y36=6p;
+    y11=y12=y33=y34=y37=y38=7p;
+    if okvir:
+      for n=1 upto 38:
+        x[n]:=x[n]+2p;
+      endfor;
+      x45=x46=0p;
+      x39=x44=x47=x50=1p;
+      x40=x43=x48=x49=10p;
+      x41=x42=11p;
+      y39=y40=-2p;
+      y41=y46=y47=y48=-1p;
+      y42=y45=y49=y50=8p;
+      y43=y44=9p;
+      fill z39--z40--z41--z42--z43--z44--z45--z46--cycle;
+      unfill z47--z48--z49--z50--cycle;
+    fi;
+    fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--z15--z16--cycle;
+    unfill z17--z18--z19--z20--z21--z22--cycle;
+    fill z23--z24--z25--z26--cycle;
+    fill z27--z28--z29--z30--cycle;
+    fill z31--z32--z33--z34--cycle;
+    fill z35--z36--z37--z38--cycle;
+    labels(range 1 thru 38);
+  endchar;
+enddef;
+
+monogram("0",7,false);
+monogram("1",7,true);
+monogram("2",8,false);
+monogram("3",8,true);
+monogram("4",11,false);
+monogram("5",11,true);
+monogram("6",16,false);
+monogram("7",16,true);
+monogram("8",36,false);
+monogram("9",36,true);
+
+font_quad=10pt#;
+font_normal_space=1pt#;
+font_identifier="GL";
+font_coding_scheme="0123456789 only";
+end.

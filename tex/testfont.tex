@@ -1,0 +1,198 @@
+\tracinglostchars=0
+\tolerance=1000
+\raggedbottom
+\nopagenumbers
+\parindent=0pt
+\newlinechar=`@
+\hyphenpenalty=200
+\doublehyphendemerits=30000
+\newcount\m
+\newcount\n
+\newcount\p
+\newdimen\dim
+
+\def\tableoffont#1{
+  \font\testfont=#1
+  \spaceskip=0pt
+  \leftline{\rm Table of font {\tt #1}}%
+  \medskip
+  \testfont
+  \setbaselineskip
+  \ifdim\fontdimen6\testfont<10pt
+    \rightskip=0pt plus 20pt
+  \else
+    \rightskip=0pt plus 2em
+  \fi
+  \spaceskip=\fontdimen2\testfont
+  \xspaceskip=\fontdimen2\testfont
+  \advance\xspaceskip by\fontdimen7\testfont
+  \table
+  \eject
+}
+
+\def\setbaselineskip{
+  \setbox0=\hbox{%
+    \n=0
+    \loop
+      \char\n
+      \ifnum\n<255\advance\n by 1
+    \repeat
+  }%
+  \baselineskip=6pt
+  \advance\baselineskip by \ht0
+  \advance\baselineskip by \dp0
+}
+
+\def\oct#1{\hbox{\rm\'{}\kern-.2em\it#1\/\kern.05em}}
+
+\def\hex#1{\hbox{\rm\H{}\tt#1}}
+
+\def\setdigs#1"#2{
+  \gdef\h{#2}
+  \m=\n
+  \divide\m by 64
+  \xdef\0{\the\m}%
+  \multiply\m by-64
+  \advance\m by\n
+  \divide\m by 8
+  \xdef\1{\the\m}%
+}
+
+\def\testrow{
+  \setbox0=\hbox{%
+    \penalty 1
+    \def\\{\char"\h}%
+    \\0\\1\\2\\3\\4\\5\\6\\7\\8\\9\\A\\B\\C\\D\\E\\F%
+    \global\p=\lastpenalty
+  }%
+}
+
+\def\oddline{
+  \cr\noalign{\nointerlineskip}%
+  \multispan{19}\hrulefill&%
+  \setbox0=\hbox{\lower 2.3pt\hbox{\hex{\h x}}}\smash{\box0}\cr
+  \noalign{\nointerlineskip}%
+}
+
+\newif\ifskipping
+
+\def\evenline{
+  \loop
+    \skippingfalse
+    \ifnum\n<256
+      \m=\n
+      \divide\m by 16
+      \chardef\next=\m
+      \expandafter\setdigs\meaning\next
+      \testrow
+      \ifnum\p=1 \skippingtrue \fi
+    \fi
+    \ifskipping \global\advance\n by 16
+  \repeat
+  \ifnum\n=256
+    \let\next=\endchart
+  \else
+    \let\next=\morechart
+  \fi
+  \next
+}
+
+\def\morechart{
+  \cr\noalign{\hrule\penalty5000}%
+  \chartline \oddline \m=\1 \advance\m by 1 \xdef\1{\the\m}
+  \chartline \evenline
+}
+
+\def\chartline{&\oct{\0\1x}&&\:&&\:&&\:&&\:&&\:&&\:&&\:&&\:&&}
+
+\def\chartstrut{\lower4.5pt\vbox to14pt{}}
+
+\def\table{
+  $$\global\n=0
+  \halign to\hsize\bgroup
+    \chartstrut##\tabskip0pt plus10pt&
+    &\hfil##\hfil&\vrule##\cr
+    \lower6.5pt\null
+    &&&\oct0&&\oct1&&\oct2&&\oct3&&\oct4&&\oct5&&\oct6&&\oct7&\evenline
+}
+
+\def\endchart{
+  \cr\noalign{\hrule}
+  \raise11.5pt\null&&&\hex 8&&\hex 9&&\hex A&&\hex B&
+  &\hex C&&\hex D&&\hex E&&\hex F&\cr
+  \egroup$$\par
+}
+
+\def\:{
+  \setbox0=\hbox{\char\n}%
+  \ifdim\ht0>7.5pt
+    \reposition
+  \else
+    \ifdim\dp0>2.5pt\reposition\fi
+  \fi
+  \box0
+  \global\advance\n by 1
+}
+
+\def\reposition{
+  \setbox0=\vbox{\kern2pt\box0}
+  \dim=\dp0
+  \advance\dim by 2pt
+  \dp0=\dim
+}
+
+\tableoffont{cmb10}
+\tableoffont{cmbsy10}
+\tableoffont{cmbx10}
+\tableoffont{cmbxsl10}
+\tableoffont{cmbxti10}
+\tableoffont{cmcsc10}
+\tableoffont{cmcsc8}
+\tableoffont{cmdunh10}
+\tableoffont{cmex10}
+\tableoffont{cmff10}
+\tableoffont{cmfi10}
+\tableoffont{cmitt10}
+\tableoffont{cmmi10}
+\tableoffont{cmmib10}
+\tableoffont{cmr10}
+\tableoffont{cmsl10}
+\tableoffont{cmsltt10}
+\tableoffont{cmss10}
+\tableoffont{cmssbx10}
+\tableoffont{cmssdc10}
+\tableoffont{cmssi10}
+\tableoffont{cmssq8}
+\tableoffont{cmssqi8}
+\tableoffont{cmsy10}
+\tableoffont{cmtcsc10}
+\tableoffont{cmtex10}
+\tableoffont{cmti10}
+\tableoffont{cmtt10}
+\tableoffont{cmu10}
+\tableoffont{cmvtt10}
+\tableoffont{emsy10}
+\tableoffont{euex10}
+\tableoffont{eufb10}
+\tableoffont{eufm10}
+\tableoffont{eurb10}
+\tableoffont{eurm10}
+\tableoffont{eusb10}
+\tableoffont{eusm10}
+\tableoffont{lasy10}
+\tableoffont{lasyb10}
+\tableoffont{lcmss8}
+\tableoffont{lcmssb8}
+\tableoffont{lcmssi8}
+\tableoffont{logo10}
+\tableoffont{logobf10}
+\tableoffont{logosl10}
+\tableoffont{manfnt}
+\tableoffont{msam10}
+\tableoffont{msbm10}
+\tableoffont{wncyb10}
+\tableoffont{wncyi10}
+\tableoffont{wncyr10}
+\tableoffont{wncysc10}
+\tableoffont{wncyss10}
+\bye

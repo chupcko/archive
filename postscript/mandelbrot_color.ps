@@ -1,0 +1,103 @@
+72 2.54 div dup scale
+
+/nx 800 def
+/ny 800 def
+/xmin -2 def
+/ymin -1.25 def
+/xmax 0.5 def
+/ymax 1.25 def
+/iteration 100 def
+/box_width 0.9 def
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+/to_scale page_urx page_llx sub box_width mul nx div def
+/box_x nx to_scale mul def
+/box_y ny to_scale mul def
+
+page_urx page_llx add box_x sub 2 div
+page_ury page_lly add box_y sub 2 div
+translate
+to_scale dup scale
+
+/plot
+{
+  3 dict
+  begin
+    /blue exch def
+    /green exch def
+    /red exch def
+    /y exch def
+    /x exch def
+    red green blue setrgbcolor
+    newpath
+    x y moveto
+    x 1 add y lineto
+    x 1 add y 1 add lineto
+    x y 1 add lineto
+    closepath
+    fill
+  end
+}
+def
+
+/calculate
+{
+  7 dict
+  begin
+    /z0y exch def
+    /z0x exch def
+    /zx z0x def
+    /zy z0y def
+    0 1 iteration
+    {
+      /i exch def
+      zx zx mul zy zy mul add sqrt 2 gt
+      {
+        exit
+      }
+      if
+      /znx zx zx mul zy zy mul sub z0x add def
+      /zny zx zy mul 2 mul z0y add def
+      /zx znx def
+      /zy zny def
+    }
+    for
+    i iteration eq
+    {
+      0
+      0
+      0
+    }
+    {
+      1 i iteration div sub
+      1 i iteration div sub
+      1
+    }
+    ifelse
+  end
+}
+def
+
+0 1 nx 1 sub
+{
+  /x exch def
+  0 1 ny 1 sub
+  {
+    /y exch def
+    xmin xmax xmin sub x mul nx 1 sub div add
+    ymin ymax ymin sub y mul ny 1 sub div add
+    calculate
+    /blue exch def
+    /green exch def
+    /red exch def
+    x y red green blue plot
+  }
+  for
+}
+for
+
+showpage quit

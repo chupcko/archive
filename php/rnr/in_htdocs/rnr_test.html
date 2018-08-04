@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>RnR Test</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+      body
+      {
+        background-color: rgb(100%, 100%, 100%);
+        color: rgb(0%, 0%, 0%);
+        font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+        font-size: 12pt;
+      }
+
+      a,
+      a:active,
+      a:link,
+      a:visited
+      {
+        color: rgb(0%, 0%, 0%);
+        text-decoration: none;
+      }
+
+      a:focus,
+      a:hover
+      {
+        background-color: rgb(90%, 90%, 90%);
+        outline-style: none;
+      }
+
+      .left
+      {
+        float: left;
+      }
+
+      .clear
+      {
+        clear: both;
+      }
+
+      .margin
+      {
+        margin: 1em;
+      }
+
+      .big
+      {
+        height: 25em;
+        width: 80em;
+      }
+
+      .hidden
+      {
+        display: none;
+        position: absolute;
+      }
+
+      .box
+      {
+        background: rgb(100%, 100%, 100%);
+        border-color: rgb(80%, 80%, 100%);
+        border-style: solid;
+        border-width: 3px;
+        margin-top: 1.5em;
+        padding: 1em;
+      }
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+      function toggle_display(id)
+      {
+        var element = document.getElementById(id);
+        if(element.style.display == 'block')
+          element.style.display = 'none';
+        else
+        {
+          var all = document.getElementsByClassName('box');
+          for(var i = 0; i < all.length; i++)
+          {
+            var item = all[i];
+            item.style.display = 'none';
+          }
+          var offsets = document.getElementById(id+'_mark').getBoundingClientRect();
+          element.style.left = offsets.left+'px';
+          element.style.top = offsets.top+'px';
+          element.style.display = 'block';
+        }
+      }
+
+      function toggle_disabled(id)
+      {
+        var element = document.getElementById(id);
+        element.disabled = !element.disabled;
+      }
+
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    <div>
+      <div class="left margin">
+        <a href="rnr.php/auth/logout" target="output">/auth/logout</a><br/>
+        <a href="rnr.php/auth/info" target="output">/auth/info</a>
+        <p/>
+        <a href="rnr.php/auth/login?username=admin&password=a" target="output">/auth/login admin</a><br/>
+        <a href="rnr.php/auth/login?username=user1&password=u1" target="output">/auth/login user1</a><br/>
+        <a href="rnr.php/auth/login?username=user2&password=u2" target="output">/auth/login user2</a><br/>
+        <p/>
+        <a href="rnr.php/auth/admin/list_sessions" target="output">/auth/admin/list_sessions</a><br/>
+        <a href="rnr.php/auth/admin/cleanup_sessions" target="output">/auth/admin/cleanup_sessions</a>
+        <p/>
+        <a id="test_increment_mark" href="#" onclick="toggle_display('test_increment'); return false;">/test/increment ...</a><br/>
+        <a id="test_upload_mark" href="#" onclick="toggle_display('test_upload'); return false;">/test/upload ...</a><br/>
+        <a href="rnr.php/test/mysql_data_simple" target="output">/test/mysql_data_simple</a><br/>
+        <a href="rnr.php/test/mysql_data" target="output">/test/mysql_data</a><br/>
+        <a href="rnr.php/test/ok" target="output">/test/ok</a>
+      </div>
+      <div class="left">
+        <iframe name="output" class="big margin"></iframe>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div id="test_increment" class="hidden box">
+      <a href="#" onclick="toggle_display('test_increment'); return false;">Close</a>
+      <b>/test/increment:</b>
+      <p/>
+      <form method="GET" action="rnr.php/test/increment" target="output" onsubmit="toggle_display('test_increment'); return true;">
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_increment_value');"/>
+        <input type="input" id="test_increment_value" name="value" value="0"> value<br/>
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_increment_extra');"/>
+        <input type="input" id="test_increment_extra" name="extra" value="0"> o<br/>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+    <div id="test_upload" class="hidden box">
+      <a href="#" onclick="toggle_display('test_upload'); return false;">Close</a>
+      <b>/test/upload:</b>
+      <p/>
+      <form method="POST" enctype="multipart/form-data" action="rnr.php/test/upload" target="output" onsubmit="toggle_display('test_upload'); return true;">
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_upload_file');"/>
+        <input type="file" id="test_upload_file" name="file"> file<br/>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+  </body>
+</html>

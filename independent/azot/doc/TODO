@@ -1,0 +1,6 @@
+regexp:
+  -obrisi poziciju tamo gde ne zavisi od mesta :))
+  -tamo gde nije potreban return skini ga
+
+all:
+  -Parcijalno dinamicki alocirani nizovi

@@ -1,0 +1,48 @@
+<akordi>    ::= <akord> <akordi_1> .
+
+<akordi_1>  ::= <akord> <akordi_1> |
+                .
+
+<akord>     ::= <key> <sta> @f_ispis .
+
+<key>       ::= k_a   @f_a   |
+                k_ais @f_ais |
+                k_b   @f_b   |
+                k_c   @f_c   |
+                k_cis @f_cis |
+                k_d   @f_d   |
+                k_dis @f_dis |
+                k_e   @f_e   |
+                k_f   @f_f   |
+                k_fis @f_fis |
+                k_g   @f_g   |
+                k_gis @f_gis .
+
+<sta>       ::= mol @f_mol <dodatak> |
+                dur @f_dur <dodatak> |
+                    @f_dur <dodatak> |
+                sus @f_sus <dodatak> |
+                dim @f_dim           .
+
+<dodatak>   ::= <podeljeno> <dodaci> |
+                .
+
+<podeljeno> ::= razlika |
+                .
+
+<dodaci>    ::= <opcija> <dodaci_1> .
+
+<dodaci_1>  ::= razlika <opcija> <dodaci_1> |
+                .
+
+<opcija>    ::= o5m   @f_o5m   |
+                o5p   @f_o5p   |
+                o6    @f_o6    |
+                o7    @f_o7    |
+                omaj7 @f_omaj7 |
+                o9m   @f_o9m   |
+                o9    @f_o9    |
+                o9p   @f_o9p   |
+                o11   @f_o11   |
+                o11p  @f_o11p  |
+                o13   @f_o13   .

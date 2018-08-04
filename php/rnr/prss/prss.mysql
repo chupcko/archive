@@ -1,0 +1,129 @@
+DROP DATABASE IF EXISTS prss;
+CREATE DATABASE prss CHARACTER SET utf8 COLLATE utf8_bin;
+GRANT ALL PRIVILEGES ON prss.* TO 'prss'@'localhost' IDENTIFIED BY 'prss';
+FLUSH PRIVILEGES;
+USE prss;
+
+DROP TABLE IF EXISTS prss_users;
+CREATE TABLE prss_users
+(
+  id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  username CHAR(64)        NOT NULL DEFAULT '',
+  password CHAR(32)        NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY prss_users__username (username)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS prss_sessions;
+CREATE TABLE prss_sessions
+(
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id       BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  value         CHAR(40)        NOT NULL DEFAULT '',
+  creation_time TIMESTAMP       NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES prss_users (id) ON DELETE CASCADE,
+  UNIQUE KEY prss_sessions__value (value)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS prss_licenses;
+CREATE TABLE prss_licenses
+(
+  id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name CHAR(64)        NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY prss_licenses__name (name)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS prss_permissions;
+CREATE TABLE prss_permissions
+(
+  id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id    BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  license_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES prss_users (id) ON DELETE CASCADE,
+  FOREIGN KEY (license_id) REFERENCES prss_licenses (id) ON DELETE CASCADE,
+  UNIQUE KEY prss_permissions__user_id__license_id (user_id, license_id)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP FUNCTION IF EXISTS prss_f_users_username;
+DELIMITER ;;
+CREATE FUNCTION prss_f_users_username(var_id BIGINT)
+  RETURNS CHAR(64)
+  BEGIN
+    DECLARE var_username CHAR(64) DEFAULT '';
+    SELECT
+      username INTO var_username
+    FROM
+      prss_users
+    WHERE
+      id = var_id;
+    RETURN var_username;
+  END;
+;;
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS prss_f_users_id;
+DELIMITER ;;
+CREATE FUNCTION prss_f_users_id(var_username CHAR(64))
+  RETURNS BIGINT
+  BEGIN
+    DECLARE var_id CHAR(64) DEFAULT -1;
+    SELECT
+      id INTO var_id
+    FROM
+      prss_users
+    WHERE
+      username = var_username;
+    RETURN var_id;
+  END;
+;;
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS prss_f_licenses_name;
+DELIMITER ;;
+CREATE FUNCTION prss_f_licenses_name(var_id BIGINT)
+  RETURNS CHAR(64)
+  BEGIN
+    DECLARE var_name CHAR(64) DEFAULT '';
+    SELECT
+      name INTO var_name
+    FROM
+      prss_licenses
+    WHERE
+      id = var_id;
+    RETURN var_name;
+  END;
+;;
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS prss_f_licenses_id;
+DELIMITER ;;
+CREATE FUNCTION prss_f_licenses_id(var_name CHAR(64))
+  RETURNS BIGINT
+  BEGIN
+    DECLARE var_id BIGINT DEFAULT -1;
+    SELECT
+      id INTO var_id
+    FROM
+      prss_licenses
+    WHERE
+      name = var_name;
+    RETURN var_id;
+  END;
+;;
+DELIMITER ;
+
+-- Data
+
+INSERT INTO prss_users (username, password) VALUES ('admin', MD5('a'));
+INSERT INTO prss_users (username, password) VALUES ('user1', MD5('u1'));
+INSERT INTO prss_users (username, password) VALUES ('user2', MD5('u2'));
+
+INSERT INTO prss_licenses (name) VALUES ('admin');
+INSERT INTO prss_licenses (name) VALUES ('test');
+
+INSERT INTO prss_permissions(user_id, license_id) VALUES (prss_f_users_id('admin'), prss_f_licenses_id('admin'));
+INSERT INTO prss_permissions(user_id, license_id) VALUES (prss_f_users_id('admin'), prss_f_licenses_id('test'));
+INSERT INTO prss_permissions(user_id, license_id) VALUES (prss_f_users_id('user2'), prss_f_licenses_id('test'));

@@ -1,0 +1,372 @@
+\documentclass[12pt,a4paper,titlepage]{article}
+
+  \def\d{d\kern-0.4em\char"16\kern-0.1em}
+  \def\bs{$\backslash$}
+
+  \title{\bf Programski jezik {\em AZOT}\\za rukovanje tekstom}
+  \author{Goran Lazi\'c\\Matemati\v cki fakultet, Beograd}
+  \date{1997. godina}
+
+  \renewcommand\contentsname{Sadr\v zaj}
+  \renewcommand\refname{Literatura}
+  \newtheorem{primer}{Primer}[section]
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+%
+%
+  \section*{Napomena, pre svega}
+    U ovom radu se koriste razni termini koji su za\v sti\'ceni, bez posebnog
+    nagla\v savanja o vlasni\v stvu nad imenom.
+    Ovaj rad je prelomljen u sitemu \LaTeX2e.
+%
+%
+  \newpage
+  \section{Uvod}
+    Sa pojavom ra\v cunara javlja se mogu\'cnost skladi\v stenja raznih
+    informacija.
+    Sa pove\'canjem brzine rada i pove\'canjem sme\v stajnih kapaciteta
+    ra\v cunara, javlja se potreba za univerzalnim alatkama pogodnim za obradu
+    informacija.
+    Naime ve\'c je op\v ste prihva\'cen datote\v cni model skladi\v stenja
+    informacija.
+    Svi podaci (skladi\v steni u ra\v cunaru) se nalaze u datotekama koje su
+    zapravo samo sekvencija (kona\v can niz) ograni\v cenih brojeva.
+    Kori\v s\'cenjem raznih kodiranja, ljudski \v citljive informacije se
+    prevode u sekvenciju brojeva, koja se zapisuje u datoteku.
+    Datotekama mo\v zemo baratati (brisati, kopirati, menjati) zahvaljuju\'ci
+    operativnom sistemu, koji podr\v zava rad nad datotekama.
+
+    Op\v ste je prihva\'ceno da se datoteka sastoji od sekvencije okteta.
+    Oktet je informacija koja se mo\v ze zapisati uz pomo\'c 8 bita, dakle
+    neozna\v cen broj iz intervala od 0 do 255.
+    Tako dolazimo do na\v cina zapisivanja informacija u ra\v cunaru.
+
+    Primer kodiranja je kodiranje slike, gde se slika razgra\d uje na ta\v cke
+    i svaku ta\v cku opisujemo kodom njene boje. Tako sliku prevodimo u
+    sekvenciju brojeva. Na sli\v can na\v cin se kodira i zvuk. Dok kod
+    kodiranja teksta imamo nekoliko problema.
+
+    Sam tekst mozemo kodirati u sirovom formatu (\v cesto zvanom ASCII format
+    teksta). U sirovom formatu re\d amo slova onako kako se pojavljuju uz
+    jednu vrstu formatiranja.
+
+    Za zapisisvanje teksta u sirovom formatu, koristi se sedmo bitni {\bf
+    ASCII} (akronim od: {\em American Standard Code for Information
+    Interchange}) ili osmo bitni {\bf EBCDIC} (akronim od: {\em Extend Binary
+    Coded Decimal Interchange Code}).
+    U ovim k\^odovima svakom grafi\v ckom znaku (koji se \v cesto koriste)
+    pridodat je po jedan broj, njegov k\^od.
+    {\bf ASCII} k\^od je zastupljeniji u trenutnim realizacijama operativnih
+    sistema.
+
+    Veoma je zanimljivo videti koji su sve grafi\v cki znaci zastupljeni u
+    ovim k\^odovima.
+    Zastupljena su slova engleske abecede (velika i mala), dekadne cifre,
+    znaci interpunkcije, znaci osnovnih matemati\v ckih simbola kao i
+    kontrolni znaci (koji se koriste za primitivno ure\d ivanje teksta):
+    \begin{verbatim}
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+0 1 2 3 4 5 6 7 8 9
+. , : ; ' ` " ! ?
++ - / \ * = ^ < > ( ) [ ] { }
+@ # $ % & _ | ~
+\end{verbatim}
+    Tu se jos nalazi i praznina (bez grafi\v ckog oblika), kojom odvajmo
+    re\v ci (koju mo\v zemo ponekad posmatrati i kao kontrolni znak).
+    A od kontrolnih znakova (koji imitiraju razne radnje koje smo mogli da
+    proizvedemo na pisa\'cim ma\v sinama) imamo:
+    \begin{itemize}
+    \item
+      Novi red, kojim prelazimo u novi red;
+    \item
+      Horizontalni tabulator, za horizontalno poravnanje;
+    \item
+      Vertikalni tabulator, za vertikalno poravnanje;
+    \item
+      Nova strana, kojom prelazimo na slede\'cu stranu;
+    \item
+      Zvonce, zvu\v cni signal.
+    \end{itemize}
+
+    Dakle tekst u ra\v cunaru se predtsavlja kao sekvencija ovih grafi\v ckih
+    znakova i kontrolnih znakova.
+    Ovi znaci su dovoljni samo za zapisivanje teksta koji smo mogli da
+    otkucamo na pisa\'coj ma\v sini.
+    Za svaku ve\'cu hijerarhijsku strukturu teksta neophodno nam je neko drugo
+    kodiranje (koja vr\v simo nad {\bf ASCII} k\^odom).
+
+    Tako recimo, program za neki programski jezik zapisujemo u formatu
+    sirovog teksta. Rane konfiguracione datoteke za neki operativni sistem
+    su u formatu sirovog teksta, kao i rezultati rada raznih komandi
+    operativnog sistema. Za zapis grfi\v ckog oblika prirodno jezi\v ckog
+    dokumenta mozemo koristiti recimo sisteme {\bf POSTSCRIPT}, {\TeX},
+    {\LaTeX}, {\bf troff}. A za sam zapis prirodno jezi\v ckog dokumenta
+    naprimer {\bf SGML} ili {\bf HTML} u kojima se u odgovaraju\'coj sintaksi
+    zapisuje prirodno jezo\v cki dokumet u sirovom formatu teksta.
+
+    U ovom radu posmatra\'cemo neke alatke za obradu teksta u sirovom
+    formatu, kao i jedan novi programski jezik za rukovanje tekstom.
+%
+%
+  \newpage
+  \section{Rad sa znacima u {\bf UNIX}}
+    U konkretnom operativnom sistemu {\bf UNIX}-u (opisanom u \cite{UNIX})
+    datoteke koje sadr\v ze tekst su od velikog zna\v caja jer sva
+    pode\v savanja, svi rezlutati rada su neke tekstualne datoteke.
+    Zato se u koncepciji {\bf UNIX}-a nalazi i programski jezik {\bf C}
+    (opisan u \cite{KR}) na kome mo\v zemo napisati program koji obra\d uje
+    tekstualne datoteke.
+    Tokom vremena izkristalisalo se nekoliko alatki koje se \v cesto koriste i
+    one su izdvojene u posebne komande {\bf UNIX} operativnog sistema.
+
+    Velika prednost operativnog sistema {\bf UNIX} je da se rezultat jedne
+    komande mo\v ze proslediti drugoj komandi (takozvani: piping).
+    Tako da re\d anjem vi\v se elementarnih komandi mo\v zemo uraditi neku
+    slo\v zeniju operaciju.
+
+    Sve o slede\'cim komandama mo\v ze se prona\'ci u \cite{UNIX} ili u man
+    stranama\footnote{Upustvo, pomo\'c na {\bf UNIX} operativnom sistemu}
+    (\cite{MAN}).
+%
+    \subsection{\em sort}
+      Komandom {\bf sort} mo\v zemo sortirati redove tekstualne datoteke.
+%
+    \subsection{\em grep}
+      \label{sub:grep}
+      Komandom {\bf grep} pronalazimo sve redove neke datoteke koje sadr\v ze
+      neki regularni izraz.
+      Regularni izraz je opisan na slede\'ci na\v cin:
+      \begin{itemize}
+      \item
+        Bilo koji znak, koji nema specijano zna\v cenje je regularni izraz.
+        Ako \v zelim znak koji ima specijano zna\v cenje ipred njega stavimo
+        {\tt\bs}, stim da slede\'ce sekvence ozna\v cavaju:
+        \begin{itemize}
+        \item
+          {\tt\bs a} je zvonce;
+        \item
+          {\tt\bs b} je brisanje zadnjeg znaka (backspace);
+        \item
+          {\tt\bs f} je nova strana;
+        \item
+          {\tt\bs n} je novi red (newline);
+        \item
+          {\tt\bs r} je pomeranje kolica (carriage return);
+        \item
+          {\tt\bs t} je horizontalna tabulacija;
+        \item
+          {\tt\bs v} je vertikalna tabulacija;
+        \item
+          {\tt\bs ooo} je znak sa k\^odom {\tt ooo}, gde je {\tt o} oktalna
+          cifra;
+        \item
+          \bs\bs\ je sam \bs.
+        \end{itemize}
+      \item
+        Ta\v cka ({\tt.}) zamenjuje bilo koji znak osim kraja reda
+        ({\tt\bs n}).
+      \item
+        Skup slova pi\v semo izme\d u {\tt[} i {\tt]} tako \v sto nabrojimo
+        znakove za koje \v zelimo da pripadaju skupu.
+        Opseg unutar skupa opsujemo crticom ({\tt-}) izme\d u prvog i
+        poslednjeg znaka.
+        Ako \v zelimo komplement skupa posle {\tt[} navodimo {\tt\^\ }.
+      \item
+        Konkatenaciju ne obele\v zavamo, ve\'c jednostavno spojimo regularne
+        izraze.
+      \item
+        {\tt?} ozna\v cava opciono pojavljivanje regularnog izraza.
+      \item
+        {\tt*} ozna\v cava ponavljanje regularnog izraza, uklju\v cuju\'ci i
+        0 puta.
+      \item
+        {\tt+} ozna\v cava ponavljanje regularnog izraza od 1 put i vi\v se.
+      \item
+        {\tt\{n\}} ozna\v cava ponavljanje regularnog izrzaza ta\v cno $n$
+        puta.
+      \item
+        {\tt\{n,\}} ozna\v cava ponavljanje regularnog izrzaza bar $n$ puta.
+      \item
+        {\tt\{,n\}} ozna\v cava ponavljanje regularnog izrzaza najvi\v se $n$
+        puta.
+      \item
+        {\tt\{n,m\}} ozna\v cava ponavljanje regularnog izrzaza izmdeju $n$ i
+        $m$ puta.
+      \item
+        {\tt|} ozna\v cava opciju izme\d u dva regularna izraza.
+      \item
+        {\tt\^\ } ozna\v cava meta-znak koji obele\v zava po\v cetak reda.
+      \item
+        {\tt\$} oznza\v cava meta-znak koji obele\v zava kraj reda.
+      \item
+        Zagradama {\tt(} i {\tt)} mo\v zemo menjati prioritet operatora.
+      \end{itemize}
+
+      Na ovom mestu mo\v zemo primetiti da se koristi logi\v cka podela
+      tekstualnih datoteka na redove (razdvojene znakom za kraj reda).
+      Takva logi\v cka podela ne zadovoljava realne potrebe obrade teksta
+      jer ne\'ce uvek logi\v cke celine biti razdvojene znakom za kraj reda.
+%
+    \subsection{\em uniq}
+      Komanda {\bf uniq} zibacuje sve ponovljene redove (sortirane) tekstualne
+      datoteke.
+%
+    \subsection{\em tr}
+      Komandom {\bf tr} mo\v zemo neki znak promeniti u neki drugi znak,
+      izbrisati sve pojave nekog znaka ili eliminisati uzastopna ponavljanja
+      nekog znaka.
+%
+    \subsection{\em sed}
+      Ako ve\'c i pristanemo na logi\v cku orkanizaciju po redovima, potrebna
+      nam je alatka kojom mo\v zemo menjati sadr\v zaj tekstualne datoteke.
+      Komanda {\bf sed} (akronim od stream editor) nam omogu\'cava da
+      bri\v semo, dodajemo, menjamo redove neke tekstualne datoteke.
+
+      Komandi {\bf sed} prenosimo instrukcije koja, zatim, ona obra\d uje.
+      Instrukcije su oblika: {\it adresa[,adresa] funkcija[argumenti]}.
+
+      Adresa je:
+      \begin{itemize}
+      \item
+        Broj koji ozna\v cava broj reda;
+      \item
+        Regularni izraz (opisan u \ref{sub:grep});
+      \item
+        Znak {\tt\$} koji ozna\v cava poslednji red tekstualne datoteke.
+      \end{itemize}
+
+      Adresom odre\d umo dejstvo funkcije, ako nije navedena adresa tada je
+      dejstvo funkcije cela tekstualna datoteka.
+
+      Funkcije su:
+      \begin{itemize}
+      \item
+        {\tt a\bs}\\
+        {\it tekst}\\
+        Dodajemo {\it tekst} posle adresirane linije, zahteva samo jednu
+        adresu;
+      \item
+        {\tt c\bs}\\
+        {\it tekst}\\
+        Menjamo adresirano podru\v cje {\it tekstom};
+      \item
+        {\tt d}\\
+        Bri\v semo adresirano podru\v cje;
+      \item
+        {\tt i\bs}\\
+        {\it tekst}\\
+        Dodajemo {\it tekst} pre adresirane linije, zahteva samo jednu adresu;
+      \item
+        {\tt p}\\
+        Ispi\v se adresirano podru\v cje;
+      \item
+        {\tt r {\it datoteka}}\\
+        Iskopira sadr\v zaj {\it dototeke} posle adrese, zahteva samo jednu
+        adresu;
+      \item
+        {\tt s/{\it regularni-izraz}/{\it zamena}/{\it zastavica}}\\
+        Menja u adresiranom podru\v cju prvu pojavu {\it regularnog-izraza}
+        tekstom {\it zamene}.
+
+        {\it regularni-izraz} je zapisan u skladu sa opisom u \ref{sub:grep}
+        ali uz dodatak: delove regularnog izraza mo\v zemo ozna\v citi sa
+        {\tt\bs(} i {\tt\bs)}.
+        Naime tako ozna\v cene delove regularnog izraza mo\v zemo uvrstiti u
+        {\it zamenu}.
+        Svaka pojava {\tt\bs o} u tekstu zamene, gde je {\tt o} cifra, se
+        menja $o$-tim ozn\v cenim delom regularnog izraza.
+        Svaka pojava {\tt\&} u tekstu zamene se menja celim prepoznatim
+        regularnim izrazom.
+
+        {\it Zastavica} mo\v ze biti broj (tada se vr\v si menjanje samo na
+        tom mestu) ili slovo {\tt g} (tada se vr\v se sve zamene)
+      \item
+        {\tt w {\it datoteka}}\\
+        Snima adresirano podru\v cje u {\it datoteku};
+      \item
+        {\tt y/{\it niska-1}/{\it niska-2}/}\\
+        Menja, u adresiranom podru\v cju, svaki znak iz {\it niske-1} u
+        odgovaraju\'ci znak {\t niske-2};
+      \item
+        {\tt!{\it funkcija}}\\
+        {\it Funkciju} izvr\v sava samo za redove koji ne pripadaju
+        adresiranom prostoru.
+      \end{itemize}
+
+      \begin{primer}\ \label{primer:sed}\end{primer}
+      \begin{verbatim}
+/%/s/%\(.*\)$/\{\1\}/
+/Swap(.*,.*)/s/Swap(\(.*\),\(.*\))/\2 \1/
+/./!d
+\end{verbatim}
+
+      Ovaj {\bf sed} program radi slede\'ce:
+      \begin{enumerate}
+      \item
+        U svakom redu koji sadr\v zi {\tt\%}, stavlja u viti\v caste zagrade
+        {\tt\{} i {\tt\}} tekst iza {\tt\%} pa do kraja reda;
+      \item
+        U svakom redu koji sadr\v zi poziv ``funkcije'' {\tt Swap} okrene
+        argumente funkcije {\tt Swap};
+      \item
+        Bri\v se sve redove koji ne sadr\v ze nijedan znak.
+      \end{enumerate}
+%
+    \subsection{\em cut}
+      Komandom {\bf cut} izdvajamo neko polje iz svkog reda neke tekstualne
+      datoteke.
+      Polja su deo reda koji su razdvojeni nekim, unapred definisanim, znakom.
+%
+    \subsection{\em paste}
+      Komandom {\bf paste} spajamo dve tekstulane datoteke, red po red.
+%
+    \subsection{\em join}
+      Komandom {\bf join} spajamo one redove dve tekstualne datoteke koje
+      imaju isto neko polje.
+%
+%
+  \newpage
+  \begin{thebibliography}{}
+  \bibitem{KR}
+    B. W. Kernighan, D. M. Richi\\
+    ``The C Programming Language''\\
+    Prentice-Hall (1978)
+  \bibitem{UNIX}
+    ``UNIX System V Relase 2.0''\\
+    Bell Laboratiories (1983)
+  \bibitem{MAN}
+    ``UNIX Programmer's Manual''\\
+    Berkley Software Distribution (1991)
+  \bibitem{AU}
+    A. V. Aho, J. D. Ulman\\
+    ``The Theory of Parsing, Translation and Compiling''\\
+    Addison-Wesley (1978)
+  \bibitem{LEX}
+    M. E. Lesk\\
+    ``LEX-A Lexical Analyser Generator''\\
+    Bell Laboratiories (1975)
+  \bibitem{YACC}
+    Stephen C. Johnson\\
+    ``Yet Another Compiler Compiler''\\
+    Bell Laboratiories (1975)
+  \bibitem{AGJP}
+    Goran Lazi\'c\\
+    ``Automatsko generisanje jezi\v ckih procesora''\\
+    Matemati\v cki fakultet, Beograd (1994)
+  \bibitem{AKS}
+    Goran Lazi\'c\\
+    ``Pribli\v zno upore\d ivanje niski''\\
+    Matemati\v cki fakultet, Beograd (1996)
+  \bibitem{AWK}
+    A. V. Aho, B. W. Kernighan, P. J. Weinberger\\
+    ``The AWK Programming Language''\\
+    Addison-Wesley (1988)
+  \bibitem{PERL}
+    Larry Wall\\
+    ``Learning PERL''\\
+    O'Reilly \& Associates (1991)
+  \end{thebibliography}
+\end{document}

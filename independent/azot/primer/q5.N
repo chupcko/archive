@@ -1,0 +1,12 @@
+a["mama"]:=1;
+a[2]:="test";
+a[3.4]["test"]:=a["mama"]. 5;
+a[3.4]["proba"]:=9.78;
+debug();
+b:="tdest" in a[3.4];
+c:="test" in g;
+debug();
+for i in a do debug();
+delete(a,2);
+print(lenght(a)," ",lenght(a[3.4]["test"]),"\n");
+debug();

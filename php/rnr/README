@@ -1,0 +1,17 @@
+RnR is lite PHP framework for making simple and easy request services.
+
+For install go throuth next steps:
+
+1. Download from https://github.com/chupcko/rnr/
+2. Put file in_htdocs/rnr.php into htdocs place.
+3. Put directory out_of_htdocs/rnr into some place out of htdocs.
+4. Edit rnr.php and set $rnr_dir to directory from point 3.
+5. Go to http://yourhost/yourdir/rnr.php/test/ok where yourdir is
+   relative path for rnr.php from point 2.
+6. If see:
+   {
+     "request":"/test/ok",
+     "status":"ok",
+     "result":"ok"
+   }
+   then all is ok, You are ready for reading manual, or using RnR.

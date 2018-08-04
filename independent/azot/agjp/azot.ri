@@ -1,0 +1,51 @@
+               = [\s\t\n] | {[^}]*} | \#[^\n]*\n .
+
+LA_k_and       = and .
+LA_k_begin     = begin .
+LA_k_break     = break .
+LA_k_continue  = continue .
+LA_k_do        = do .
+LA_k_else      = else .
+LA_k_end       = end .
+LA_k_false     = false .
+LA_k_for       = for .
+LA_k_function  = function .
+LA_k_if        = if .
+LA_k_in        = in .
+LA_k_is        = is .
+LA_k_loop      = loop .
+LA_k_mod       = mod .
+LA_k_not       = not .
+LA_k_or        = or .
+LA_k_procedure = procedure .
+LA_k_return    = return .
+LA_k_sfin      = sfin .
+LA_k_sfout     = sfout .
+LA_k_then      = then .
+LA_k_true      = true .
+LA_k_until     = until .
+LA_k_while     = while .
+
+LA_ime         = [a-zA-Z_][a-zA-Z_0-9]* .
+LA_integer     = [0-9]+ .
+#exp           = [Ee][\+\-]?[0-9]+ .
+LA_real        = ([0-9]+\.[0-9]* | \.[0-9]+)#exp? | [0-9]+#exp .
+LA_string      = " ([^"\\] | \\([^0]|[0-7]+) )* " .
+LA_dodela      = :\= .
+LA_l_zag       = \( .
+LA_d_zag       = \) .
+LA_l_u_zag     = \[ .
+LA_d_u_zag     = \] .
+LA_zarez       = , .
+LA_separator   = ; .
+LA_eq          = \= .
+LA_neq         = <> .
+LA_lt          = < .
+LA_le          = <\= .
+LA_gt          = > .
+LA_ge          = >\= .
+LA_plus        = \+ .
+LA_minus       = \- .
+LA_tacka       = \. .
+LA_puta        = \* .
+LA_podeljeno   = \/ .

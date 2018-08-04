@@ -1,0 +1,6 @@
+c:=regexp("Moja ma989843ma najbolje kuha.","abc",niz1);
+d:=regexp("Moja mama67898 najbolje kuha.","(<(ma)+><[0-9]+>){c}|naj{d}",niz2);
+print(substring("Moja mama najbolse kuha.",10,15),"\n");
+split("a1:::::::a2:::a3:a4",":+",niz3);
+debug();
+print(aprcmp("abcd","abcd")."\n");

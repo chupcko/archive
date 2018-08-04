@@ -1,0 +1,34 @@
+\hsize=184.6mm
+\vsize=271.6mm
+\hoffset=-.5in
+\voffset=-.5in
+\font\myrm=cmr10 scaled 24200
+\font\mysy=cmsy10 scaled 30800
+\font\mybf=cmb10 scaled 5000
+\textfont2=\mysy
+\def\MatF{\myrm M\kern-.14em\lower.4ex\hbox{a\kern-.135emt}\kern-.115emF}
+\nopagenumbers
+\noindent
+\newbox\bxa
+\setbox\bxa=\hbox{\mybf Faculty of Mathematics}
+\newbox\bxb
+\setbox\bxb=\hbox{$\heartsuit$}
+\hbox to \wd\bxa{
+  \hfil
+  \hbox{
+    \vbox to \ht\bxb{
+      \vfil
+      \hbox{\myrm I\space}
+      \vfil
+    }
+  }
+  \copy\bxb
+  \hfil
+}
+\vskip 1cm
+\hbox to \wd\bxa{\hfil\MatF\hfil}
+\vskip 2cm
+\copy\bxa
+\vskip 1cm
+\hbox to \wd\bxa{\hfil\mybf Belgrade\hfil}
+\bye

@@ -1,0 +1,8 @@
+a:=0;
+while not eof() do
+begin
+  s:=chop(input());
+  print(a,":",s,":",lenght(s),"\n");
+  a:=a+1;
+end;
+print("***Kraj\n");

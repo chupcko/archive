@@ -1,0 +1,45 @@
+#ifndef AZOT_semfje
+#define AZOT_semfje
+
+void SF_and(void);
+void SF_bool_false(void);
+void SF_bool_true(void);
+void SF_break(void);
+void SF_continue(void);
+void SF_def_func_proc(void);
+void SF_dodaj_argument(void);
+void SF_dodela(void);
+void SF_eq(void);
+void SF_funkcija(void);
+void SF_ge(void);
+void SF_gt(void);
+void SF_in(void);
+void SF_indeks(void);
+void SF_integer(void);
+void SF_iz_memorije(void);
+void SF_konkatenacija(void);
+void SF_le(void);
+void SF_lt(void);
+void SF_minus(void);
+void SF_mod(void);
+void SF_neq(void);
+void SF_not(void);
+void SF_nova_funkcije(void);
+void SF_nova_procedure(void);
+void SF_or(void);
+void SF_plus(void);
+void SF_podeljeno(void);
+void SF_poziv_funkcije(void);
+void SF_poziv_procedure(void);
+void SF_procedura(void);
+void SF_puta(void);
+void SF_real(void);
+void SF_return_func(void);
+void SF_return_proc(void);
+void SF_sfin(void);
+void SF_sfout(void);
+void SF_string(void);
+void SF_u_minus(void);
+void SF_varijabla(void);
+
+#endif

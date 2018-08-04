@@ -1,0 +1,1 @@
+ALL x p1(x) AND E x p2(x) THEN E x (NOT p1(x) AND p2(x))

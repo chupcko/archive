@@ -1,0 +1,963 @@
+\def\Title#1{\vbox to 32pt{\vfil\hbox to \hsize{\hfil#1\hfil}}}
+\def\lcirc#1{$#1^{\scriptscriptstyle\circ}$}
+\def\Proclaim#1{\noindent{\bf#1:}}
+\def\Blackbox{\noindent\vrule height .6em width .6em\par}
+\def\Proof{\halign\bgroup\hfil##&##\hfil&$##$\hfil\cr}
+\def\endProof{\egroup}
+\def\ite{\mathop{\rm ite}\nolimits}
+\def\ITE{\mathop{\bf ITE}\nolimits}
+\newcount\lenspaces\lenspaces=0
+\def\spaces{%
+  \count255=\lenspaces
+  \loop
+    \ifnum\lenspaces=0\else\quad\fi
+    \ifnum\count255>1\advance\count255 by -1
+  \repeat
+}
+\def\xite(#1,#2,#3){%
+  \ite(\cr
+  \global\advance\lenspaces by 1
+  &&\spaces#1,\cr
+  &&\spaces#2,\cr
+  &&\spaces#3\cr
+  \global\advance\lenspaces by -1
+  &&\spaces)%
+}
+%
+%
+%
+\vfootnote\dag{Ovaj rad je slo\v zen u \TeX-u.}
+\topglue 32pt
+\Title{%
+  \font\ccc=cmr10 scaled\magstep4\ccc Ra\v cun
+  \font\ccc=cmsy10 scaled\magstep4\ccc I%
+}
+\Title{\font\ccc=cmr10 scaled\magstep2\ccc Goran Lazi\'c}%
+\Title{\font\ccc=cmr10 scaled\magstep1\ccc Matemati\v cki fakultet, Beograd}%
+\vglue 32pt
+\tabskip=1em
+%
+%
+\Proclaim{Definicija}
+\item{\lcirc 1}Iskazna slova su formule ra\v cuna $\cal I$,
+\item{\lcirc 2}$0$, $1$ su formule ra\v cuna $\cal I$,
+\item{\lcirc 3}Ako su $A$, $B$ i $C$ formule ra\v cuna $\cal I$ tada je
+i $\ite(A,B,C)$ formula ra\v cuna $\cal I$,
+\item{\lcirc 4}Formule ra\v cuna $\cal I$ mogu se dobiti jedino pomo\'cu
+kona\v cnog broja primena \lcirc 1, \lcirc 2 i \lcirc 3 ove definicije.
+\par
+\bigskip
+%
+%
+\Proclaim{Definicija} $[B]_{(0=A)}$ je formula dobijena iz formule $B$ tako
+\v sto se neka pojava $0$ u formuli $B$ menja formulom $A$.
+\par
+\bigskip
+%
+%
+\Proclaim{Definicija} $[B]_{(1=A)}$ je formula dobijena iz formule $B$ tako
+\v sto se neka pojava $1$ u formuli $B$ menja formulom $A$.
+\par
+%
+%
+%~P     z.z. ite(P,0,1)
+%P an Q z.z. ite(P,Q,0)
+%P or Q z.z. ite(P,1,Q)
+%P im Q z.z. ite(P,Q,1)
+%...
+%
+%
+\bigskip
+%
+%
+\Proclaim{Aksiome {\rm(shema aksiome)}}\par
+$\hbox to 4em{Ax0:\hfil}\ite(0,A,1)$\par
+\smallskip
+$\hbox to 4em{Ax1:\hfil}\ite(1,1,A)$\par
+\bigskip
+%
+%
+\Proclaim{Pravila izvodjenja {\rm(shema pravila izvodjenja)}}\par
+\smallskip
+\vbox{$\displaystyle\hbox to 4em{PrAA:\hfil}{A,\,B\over\ite(P,A,B)}$}
+\medskip
+\vbox{$\displaystyle\hbox to 4em{PrMP:\hfil}{A,\,\ite(A,B,C)\over B}$}
+\medskip
+\vbox{$\displaystyle\hbox to 4em{PrC1:\hfil}{\ite(A,B,C)\over\ite(A,[B]_{(1=A)},C)}$}
+\medskip
+\vbox{$\displaystyle\hbox to 4em{PrC0:\hfil}{\ite(A,B,C)\over\ite(A,B,[C]_{(0=A)})}$}
+\medskip
+\vbox{$\displaystyle\hbox to 4em{PrEF:\hfil}{\ite(A,\ite(B,P,Q),\ite(C,P,Q))\over\ite(\ite(A,B,C),P,Q)}$}
+\medskip
+%
+%
+%
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThT}}
+$1$\par
+\Proof
+  1.&Ax1:      &\ite(1,1,1)\cr
+  2.&PrAA(1,1):&\ite(1,\ite(1,1,1),\ite(1,1,1))\cr
+  3.&PrEF(2):  &\ite(\ite(1,1,1),1,1)\cr
+  4.&PrMP(1,3):&1\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThA11}}
+$\ite(P,1,1)$\par
+\Proof
+  1.&ThT:      &1\cr
+  2.&PrAA(1,1):&\ite(P,1,1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThI}}
+$\ite(P,P,1)$\par
+\Proof
+  1.&ThA11:  &\ite(P,1,1)\cr
+  2.&PrC1(1):&\ite(P,P,1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThAA1}}
+$A\vdash\ite(P,A,1)$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&ThT:      &1\cr
+  3.&PrAA(1,2):&\ite(P,A,1)\cr
+\endProof
+\bigskip
+\Blackbox
+%
+%
+\Proclaim{Teorema {\rm ThA1A}}
+$A\vdash\ite(P,1,A)$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&ThT:      &1\cr
+  3.&PrAA(2,1):&\ite(P,1,A)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThAx0}}
+$A\vdash\ite(0,P,A)$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&Ax0:      &\ite(0,P,1)\cr
+  3.&ThAA1(2): &\ite(A,\ite(0,P,1),1)\cr
+  4.&PrC1(3):  &\ite(A,\ite(0,P,A),1)\cr
+  5.&PrMP(1,4):&\ite(0,P,A)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThAx1}}
+$A\vdash\ite(1,A,P)$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&Ax1:      &\ite(1,1,P)\cr
+  3.&ThAA1(2): &\ite(A,\ite(1,1,P),1)\cr
+  4.&PrC1(3):  &\ite(A,\ite(1,A,P),1)\cr
+  5.&PrMP(1,4):&\ite(1,A,P)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThMT}}
+$\ite(A,0,1),\,\ite(A,B,C)\vdash C$\par
+\Proof
+   1.&Hy:        &\ite(A,0,1)\cr
+   2.&Hy:        &\ite(A,B,C)\cr
+   3.&Ax0:       &\ite(0,\ite(\ite(A,B,C),C,1),1)\cr
+   4.&ThI:       &\ite(C,C,1)\cr
+   5.&ThAx0(4):  &\ite(0,\ite(B,C,1),\ite(C,C,1))\cr
+   6.&PrEF(5):   &\ite(\ite(0,B,C),C,1)\cr
+   7.&ThAx1(6):  &\ite(1,\ite(\ite(0,B,C),C,1),1)\cr
+   8.&PrAA(3,7): &\ite(A,\ite(0,\ite(\ite(A,B,C),C,1),1),\ite(1,\ite(\ite(0,B,C),C,1),1))\cr
+   9.&PrC0(8):   &\ite(A,\ite(0,\ite(\ite(A,B,C),C,1),1),\ite(1,\ite(\ite(A,B,C),C,1),1))\cr
+  10.&PrEF(9):   &\ite(\ite(A,0,1),\ite(\ite(A,B,C),C,1),1)\cr
+  11.&PrMP(1,10):&\ite(\ite(A,B,C),C,1)\cr
+  12.&PrMP(2,11):&C\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ???}}
+$A,\,\ite(A,0,1)\vdash P$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&Hy:       &\ite(A,0,1)\cr
+  3.&Ax0:      &\ite(0,P,1)\cr
+  4.&ThAx1(3): &\ite(1,\ite(0,P,1),\ite(1,P,1))\cr
+  5.&PrEF(4):  &\ite(\ite(1,0,1),P,1)\cr
+  6.&ThAA1(5): &\ite(A,\ite(\ite(1,0,1),P,1),1)\cr
+  7.&PrC1(6):  &\ite(A,\ite(\ite(A,0,1),P,1),1)\cr
+  8.&PrMP(1,7):&\ite(\ite(A,0,1),P,1)\cr
+  9.&PrMp(2,8):&P\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ???}}
+$0\vdash P$
+\Proof
+  1.&Hy:       &0\cr
+  2.&Ax0:      &\ite(0,P,1)\cr
+  3.&PrMP(1,2):&P\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThPrAA}}
+$\ite(A,Q,1),\,\ite(A,R,1)\vdash\ite(A,\ite(P,Q,R),1)$\par
+\Proof
+   1.&Hy:         &\ite(A,Q,1)\cr
+   2.&Hy:         &\ite(A,R,1)\cr
+   3.&ThA11:      &\ite(P,1,1)\cr
+   4.&ThAA1(3):   &\ite(A,\ite(P,1,1),1)\cr
+   5.&ThAA1(4):   &\ite(R,\ite(A,\ite(P,1,1),1),1)\cr
+   6.&PrC1(5):    &\ite(R,\ite(A,\ite(P,1,R),1),1)\cr
+   7.&ThAx1(6):   &\ite(1,\ite(R,\ite(A,\ite(P,1,R),1),1),\ite(1,\ite(A,\ite(P,1,R),1),1))\cr
+   8.&PrEF(7):    &\ite(\ite(1,R,1),\ite(A,\ite(P,1,R),1),1)\cr
+   9.&ThAA1(8):   &\ite(Q,\ite(\ite(1,R,1),\ite(A,\ite(P,1,R),1),1),1)\cr
+  10.&PrC1(9):    &\ite(Q,\ite(\ite(1,R,1),\ite(A,\ite(P,Q,R),1),1),1)\cr
+  11.&Ax0:        &\ite(0,\ite(P,Q,R),1)\cr
+  12.&ThAA1(11):  &\ite(R,\ite(0,\ite(P,Q,R),1),1)\cr
+  13.&ThAx1(11):  &\ite(1,\ite(0,\ite(P,Q,R),1),1)\cr
+  14.&PrAA(12,13):&\ite(A,\ite(R,\ite(0,\ite(P,Q,R),1),1),\ite(1,\ite(0,\ite(P,Q,R),1),1))\cr
+  15.&PrEF(14):   &\ite(\ite(A,R,1),\ite(0,\ite(P,Q,R),1),1)\cr
+  16.&ThAx1(15):  &\ite(1,\ite(\ite(A,R,1),\ite(0,\ite(P,Q,R),1),1),1)\cr
+  17.&PrAA(10,16):&\xite(%
+                     A,%
+                     {\ite(Q,\ite(\ite(1,R,1),\ite(A,\ite(P,Q,R),1),1),1)},%
+                     {\ite(1,\ite(\ite(A,R,1),\ite(0,\ite(P,Q,R),1),1),1)}%
+                   )\cr
+  18.&PrC1(17):   &\xite(%
+                     A,%
+                     {\ite(Q,\ite(\ite(A,R,1),\ite(A,\ite(P,Q,R),1),1),1)},%
+                     {\ite(1,\ite(\ite(A,R,1),\ite(0,\ite(P,Q,R),1),1),1)}%
+                   )\cr
+  19.&PrC0(18):   &\xite(%
+                     A,%
+                     {\ite(Q,\ite(\ite(A,R,1),\ite(A,\ite(P,Q,R),1),1),1)},%
+                     {\ite(1,\ite(\ite(A,R,1),\ite(A,\ite(P,Q,R),1),1),1)}%
+                   )\cr
+  20.&PrEF(19):   &\xite(%
+                     {\ite(A,Q,1)},%
+                     {\ite(\ite(A,R,1),\ite(A,\ite(P,Q,R),1),1)},%
+                     1%
+                   )\cr
+  21.&PrMP(1,20): &\ite(\ite(A,R,1),\ite(A,\ite(P,Q,R),1),1)\cr
+  22.&PrMP(2,21): &\ite(A,\ite(P,Q,R),1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThPrMP}}
+$\ite(A,P,1),\,\ite(A,\ite(P,Q,R),1)\vdash\ite(A,Q,1)$\par
+\Proof
+   1.&Hy:         &\ite(A,P,1)\cr
+   2.&Hy:         &\ite(A,\ite(P,Q,R),1)\cr
+   3.&ThA11:      &\ite(A,1,1)\cr
+   4.&ThAA1(3):   &\ite(Q,\ite(A,1,1),1)\cr
+   5.&PrC1(4):    &\ite(Q,\ite(A,Q,1),1)\cr
+   6.&ThAx1:      &\ite(1,\ite(Q,\ite(A,Q,1),1),\ite(R,\ite(A,Q,1),1))\cr
+   7.&PrEF(6):    &\ite(\ite(1,Q,R),\ite(A,Q,1),1)\cr
+   8.&ThAx1(7):   &\ite(1,\ite(\ite(1,Q,R),\ite(A,Q,1),1),\ite(R,\ite(A,Q,1),1))\cr
+   9.&PrEF(8):    &\ite(\ite(1,\ite(1,Q,R),R),\ite(A,Q,1),1)\cr
+  10.&ThAA1(9):   &\ite(P,\ite(\ite(1,\ite(1,Q,R),R),\ite(A,Q,1),1),1)\cr
+  11.&PrC1(10):   &\ite(P,\ite(\ite(1,\ite(P,Q,R),R),\ite(A,Q,1),1),1)\cr
+  12.&Ax0:        &\ite(0,Q,1)\cr
+  13.&ThAA1(12):  &\ite(\ite(A,\ite(P,Q,R),1),\ite(0,Q,1),1)\cr
+  14.&ThAx1:      &\ite(1,\ite(\ite(A,\ite(P,Q,R),1),\ite(0,Q,1),1),1)\cr
+  15.&PrAA(11,14):&\xite(%
+                     A,%
+                     {\ite(P,\ite(\ite(1,\ite(P,Q,R),R),\ite(A,Q,1),1),1)},%
+                     {\ite(1,\ite(\ite(A,\ite(P,Q,R),1),\ite(0,Q,1),1),1)}%
+                   )\cr
+  16.&PrC1(15):   &\xite(%
+                     A,%
+                     {\ite(P,\ite(\ite(A,\ite(P,Q,R),R),\ite(A,Q,1),1),1)},%
+                     {\ite(1,\ite(\ite(A,\ite(P,Q,R),1),\ite(0,Q,1),1),1)}%
+                   )\cr
+  17.&PrC0(15):   &\xite(%
+                     A,%
+                     {\ite(P,\ite(\ite(A,\ite(P,Q,R),R),\ite(A,Q,1),1),1)},%
+                     {\ite(1,\ite(\ite(A,\ite(P,Q,R),1),\ite(A,Q,1),1),1)}%
+                   )\cr
+  18.&PrEF(17):   &\xite(%
+                     {\ite(A,P,1)},%
+                     {\ite(\ite(A,\ite(P,Q,R),1),\ite(A,Q,1),1)},%
+                     1%
+                   )\cr
+  19.&PrMP(1,18): &\ite(\ite(A,\ite(P,Q,R),1),\ite(A,Q,1),1)\cr
+  20.&PrMP(2,19): &\ite(A,Q,1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThPrC1}}
+$\ite(A,\ite(P,Q,R),1)\vdash\ite(A,\ite(P,[Q]_{(1=P)},R),1)$\par
+\Proof
+     &Neka je:    &Q'=[Q]_{(1=P)}\cr
+   1.&Hy:         &\ite(A,\ite(P,Q,R),1)\cr
+   2.&Ax1:        &\ite(1,1,R)\cr
+   3.&ThAA1(2):   &\ite(A,\ite(1,1,R),1)\cr
+   4.&ThAA1(3):   &\ite(Q,\ite(A,\ite(1,1,R),1),1)\cr
+   5.&PrC1(4):    &\ite(Q,\ite(A,\ite(1,Q,R),1),1)\cr
+   6.&Ax0:        &\ite(0,Q',1)\cr
+   7.&ThAA1(6):   &\ite(A,\ite(0,Q',1),1)\cr
+   8.&ThAA1(7):   &\ite(R,\ite(A,\ite(0,Q',1),1),1)\cr
+   9.&PrC1(8):    &\ite(R,\ite(A,\ite(0,Q',R),1),1)\cr
+  10.&PrAA(5,9):  &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(1,Q,R),1),1)},%
+                     {\ite(R,\ite(A,\ite(0,Q',R),1),1)}%
+                   )\cr
+  11.&PrC1(10):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q,R),1),1)},%
+                     {\ite(R,\ite(A,\ite(0,Q',R),1),1)}%
+                   )\cr
+  12.&PrC1(11):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q',R),1),1)},%
+                     {\ite(R,\ite(A,\ite(0,Q',R),1),1)}%
+                   )\cr
+  13.&PrC0(12):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q',R),1),1)},%
+                     {\ite(R,\ite(A,\ite(P,Q',R),1),1)}%
+                   )\cr
+  14.&PrEF(13):   &\ite(\ite(P,Q,R),\ite(A,\ite(P,Q',R),1),1)\cr
+  15.&Ax0:        &\ite(0,\ite(P,Q',R),1)\cr
+  16.&ThAx1(15):  &\ite(1,\ite(0,\ite(P,Q',R),1),1)\cr
+  17.&PrAA(14,16):&\xite(%
+                     A,%
+                     {\ite(\ite(P,Q,R),\ite(A,\ite(P,Q',R),1),1)},%
+                     {\ite(1,\ite(0,\ite(P,Q',R),1),1)}%
+                   )\cr
+  18.&PrC0(17):   &\xite(%
+                     A,%
+                     {\ite(\ite(P,Q,R),\ite(A,\ite(P,Q',R),1),1)},%
+                     {\ite(1,\ite(A,\ite(P,Q',R),1),1)}%
+                   )\cr
+  19.&PrEF(18):   &\ite(\ite(A,\ite(P,Q,R),1),\ite(A,\ite(P,Q',R),1),1)\cr
+  21.&PrMP(1,19): &\ite(A,\ite(P,Q',R),1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThPrC0}}
+$\ite(A,\ite(P,Q,R),1)\vdash\ite(A,\ite(P,Q,[R]_{(0=P)}),1)$\par
+\Proof
+     &Neka je:    &R'=[R]_{(0=P)}\cr
+   1.&Hy:         &\ite(A,\ite(P,Q,R),1)\cr
+   2.&Ax1:        &\ite(1,1,R')\cr
+   3.&ThAA1(2):   &\ite(A,\ite(1,1,R'),1)\cr
+   4.&ThAA1(2):   &\ite(Q,\ite(A,\ite(1,1,R'),1),1)\cr
+   5.&PrC1(4):    &\ite(Q,\ite(A,\ite(1,Q,R'),1),1)\cr
+   6.&Ax0:        &\ite(0,Q,1)\cr
+   7.&ThAA1(6):   &\ite(A,\ite(0,Q,1),1)\cr
+   8.&ThAA1(7):   &\ite(R,\ite(A,\ite(0,Q,1),1),1)\cr
+   9.&PrC1(8):    &\ite(R,\ite(A,\ite(0,Q,R),1),1)\cr
+  10.&PrAA(5,9):  &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(1,Q,R'),1),1)},%
+                     {\ite(R,\ite(A,\ite(0,Q,R),1),1)}%
+                   )\cr
+  11.&PrC1(10):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q,R'),1),1)},%
+                     {\ite(R,\ite(A,\ite(0,Q,R),1),1)}%
+                   )\cr
+  12.&PrC0(11):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q,R'),1),1)},%
+                     {\ite(R,\ite(A,\ite(P,Q,R),1),1)}%
+                   )\cr
+  13.&PrC0(12):   &\xite(%
+                     P,%
+                     {\ite(Q,\ite(A,\ite(P,Q,R'),1),1)},%
+                     {\ite(R,\ite(A,\ite(P,Q,R'),1),1)}%
+                   )\cr
+  14.&PrEF(13):   &\ite(\ite(P,Q,R),\ite(A,\ite(P,Q,R'),1),1)\cr
+  15.&Ax0:        &\ite(0,\ite(P,Q,R'),1)\cr
+  16.&ThAx1(15):  &\ite(1,\ite(0,\ite(P,Q,R'),1),1)\cr
+  17.&PrAA(14,16):&\xite(%
+                     A,%
+                     {\ite(\ite(P,Q,R),\ite(A,\ite(P,Q,R'),1),1)},%
+                     {\ite(1,\ite(0,\ite(P,Q,R'),1),1)}%
+                   )\cr
+  18.&PrC0(17):   &\xite(%
+                     A,%
+                     {\ite(\ite(P,Q,R),\ite(A,\ite(P,Q,R'),1),1)},%
+                     {\ite(1,\ite(A,\ite(P,Q,R'),1),1)}%
+                   )\cr
+  19.&PrEF(18):   &\ite(\ite(A,\ite(P,Q,R),1),\ite(A,\ite(P,Q,R'),1),1)\cr
+  20.&PrMP(1,19): &\ite(A,\ite(P,Q,R'),1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThPrEF}}
+$\ite(A,\ite(\ite(P,Q,R),X,Y),1)\vdash\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)$\par
+\Proof
+   1.&Hy:         &\ite(A,\ite(\ite(P,Q,R),X,Y),1)\cr
+   2.&Ax1:        &\ite(1,1,Y)\cr
+   3.&ThAx1(2):   &\ite(1,\ite(1,1,Y),\ite(R,X,Y))\cr
+   4.&ThAA1(3):   &\ite(A,\ite(1,\ite(1,1,Y),\ite(R,X,Y)),1)\cr
+   5.&ThAA1(4):   &\ite(X,\ite(A,\ite(1,\ite(1,1,Y),\ite(R,X,Y)),1),1)\cr
+   6.&PrC1(5):    &\ite(X,\ite(A,\ite(1,\ite(1,X,Y),\ite(R,X,Y)),1),1)\cr
+   7.&Ax0:        &\ite(0,X,1)\cr
+   8.&ThAx1(7):   &\ite(1,\ite(0,X,1),\ite(R,X,Y))\cr
+   9.&ThAA1(8):   &\ite(A,\ite(1,\ite(0,X,1),\ite(R,X,Y)),1)\cr
+  10.&ThAA1(9):   &\ite(Y,\ite(A,\ite(1,\ite(0,X,1),\ite(R,X,Y)),1),1)\cr
+  11.&PrC1(10):   &\ite(Y,\ite(A,\ite(1,\ite(0,X,Y),\ite(R,X,Y)),1),1)\cr
+  12.&PrAA(6,11): &\xite(%
+                     Q,%
+                     {\ite(X,\ite(A,\ite(1,\ite(1,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(1,\ite(0,X,Y),\ite(R,X,Y)),1),1)}%
+                   )\cr
+  13.&PrC1(12):   &\xite(%
+                     Q,%
+                     {\ite(X,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(1,\ite(0,X,Y),\ite(R,X,Y)),1),1)}%
+                   )\cr
+  14.&PrC0(13):   &\xite(%
+                     Q,%
+                     {\ite(X,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                   )\cr
+  15.&ThAx0(2):   &\ite(0,\ite(Q,X,Y),\ite(1,1,Y))\cr
+  16.&ThAA1(15):  &\ite(A,\ite(0,\ite(Q,X,Y),\ite(1,1,Y)),1)\cr
+  17.&ThAA1(16):  &\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(1,1,Y)),1),1)\cr
+  18.&PrC1(17):   &\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(1,X,Y)),1),1)\cr
+  19.&ThAx1(7):   &\ite(0,\ite(Q,X,Y),\ite(0,X,1))\cr
+  20.&ThAA1(19):  &\ite(A,\ite(0,\ite(Q,X,Y),\ite(0,X,1)),1)\cr
+  21.&ThAA1(20):  &\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(0,X,1)),1),1)\cr
+  22.&PrC1(21):   &\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(0,X,Y)),1),1)\cr
+  23.&PrAA(19,22):&\xite(%
+                     R,%
+                     {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(1,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(0,X,Y)),1),1)}%
+                   )\cr
+  24.&PrC1(23):   &\xite(%
+                     R,%
+                     {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(0,X,Y)),1),1)}%
+                   )\cr
+  25.&PrC0(24):   &\xite(%
+                     R,%
+                     {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                   )\cr
+  26.&PrAA(14,25):&\xite(%
+                     P,%
+                     {\xite(%
+                       Q,%
+                       {\ite(X,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )},%
+                     {\xite(%
+                       R,%
+                       {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )}%
+                   )\cr
+  27.&PrC1(26):   &\xite(%
+                     P,%
+                     {\xite(%
+                       Q,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(1,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )},%
+                     {\xite(%
+                       R,%
+                       {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )}%
+                   )\cr
+  28.&PrC1(27):   &\xite(%
+                     P,%
+                     {\xite(%
+                       Q,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )},%
+                     {\xite(%
+                       R,%
+                       {\ite(X,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )}%
+                   )\cr
+  29.&PrC0(28):   &\xite(%
+                     P,%
+                     {\xite(%
+                       Q,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )},%
+                     {\xite(%
+                       R,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(0,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )}%
+                   )\cr
+  30.&PrC0(29):   &\xite(%
+                     P,%
+                     {\xite(%
+                       Q,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )},%
+                     {\xite(%
+                       R,%
+                       {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                       {\ite(Y,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                     )}%
+                   )\cr
+  31.&PrEF(30):   &\xite(%
+                     {\ite(P,Q,R)},%
+                     {\ite(X,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)},%
+                     {\ite(Y,\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1),1)}%
+                   )\cr
+  32.&PrEF(31):   &\xite(%
+                     {\ite(\ite(P,Q,R),X,Y)},%
+                     {\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                     1%
+                   )\cr
+  33.&Ax0:        &\ite(0,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)\cr
+  34.&ThAx1(33):  &\xite(%
+                     1,%
+                     {\ite(0,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                     1%
+                   )\cr
+  35.&PrAA(32,34):&\xite(%
+                     A,%
+                     {\xite(%
+                       {\ite(\ite(P,Q,R),X,Y)},%
+                       {\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                       1%
+                     )},%
+                     {\xite(%
+                       1,%
+                       {\ite(0,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                       1%
+                     )}%
+                   )\cr
+  36.&PrC0(35):   &\xite(%
+                     A,%
+                     {\xite(%
+                       {\ite(\ite(P,Q,R),X,Y)},%
+                       {\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                       1%
+                     )},%
+                     {\xite(%
+                       1,%
+                       {\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                       1%
+                     )}%
+                   )\cr
+  37.&PrEF(36):   &\xite(%
+                     {\ite(A,\ite(\ite(P,Q,R),X,Y),1)},%
+                     {\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)},%
+                     1%
+                   )\cr
+  38.&PrMP(1,37): &\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Meta teorema {\rm(stav dedukcije)}}
+\item{\lcirc 1}Ako ${\cal F}\vdash\ite(A,B,1)$ tada ${\cal F},\,A\vdash B$.
+\item{\lcirc 2}Ako ${\cal F},\,A\vdash B$ tada ${\cal F}\vdash\ite(A,B,1)$.
+\par
+\Proclaim{Dokaz}
+\item{\lcirc 1}Kako va\v zi ${\cal F}\vdash\ite(A,B,1)$ to zna\v ci da
+postoji dokaz iz hipoteza $\cal F$ za $\ite(A,B,1)$, recimo:
+\smallskip
+\Proof
+    1.&Hy:   &\cal F\cr
+      &\vdots&\cr
+  (n).&      &\ite(A,B,1)\cr
+\endProof
+\smallskip
+Tada taj dokaz mo\v zemo produ\v ziti na slede\'ci na\v cin:
+\smallskip
+\Proof
+      1.&Hy:         &\cal F\cr
+        &\vdots      &\cr
+    (n).&            &\ite(A,B,1)\cr
+  (n+1).&Hy:         &A\cr
+  (n+2).&PrMP(n,n+1):&B\cr
+\endProof
+\smallskip
+Dakle va\v zi ${\cal F},\,A\vdash B$.
+\item{\lcirc 2}Kako va\v zi ${\cal F},\,A\vdash B$ to zna\v ci da
+postoji dokaz za $B$ iz hipoteza ${\cal F},\,A$. Dokaza\'cemo indukcijom
+po du\v zini tog dokaza da onda va\v zi ${\cal F}\vdash\ite(A,B,1)$:
+\itemitem{(a)}Kada je dokaz za $B$ iz hipoteza ${\cal F},\,A$ du\v zine 1
+tada je taj jedini \v clan dokaza ba\v s ta formula $B$ pa razlikujemo 3
+slu\v caja:
+\itemitem{(a1)}$B$ je neka aksioma pa onda po teoremi ThAA1 va\v zi
+${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(a2)}$B$ je neka formula iz ${\cal F}$ pa opet po teoremi ThAA1
+va\v zi ${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(a3)}$B$ je ba\v s formula $A$, tada po teoremi ThI va\v zi
+${\cal F}\vdash\ite(A,A,1)$.
+\smallskip
+\itemitem{(b)}Pretpostavimo da za sve dokaze za $B$ iz hipoteza
+${\cal F},\,A$ du\v zine $k<n$ va\v zi ${\cal F}\vdash\ite(A,B,1)$.
+Po\-smatrajmo jedan dokaz za $B$ iz hipoteza ${\cal F},\,A$ du\v zine $n$
+i neka se recimo dokaz sastoji od formula $B_1,\ldots,B_{n-1},B_n$ gde je
+$B_n=B$, tada postoji 8 slu\v caja:
+\itemitem{(b1)}$B$ je neka aksioma pa onda po teoremi ThAA1 va\v zi
+${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b2)}$B$ je neka formula iz ${\cal F}$ pa opet po teoremi ThAA1
+va\v zi ${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b3)}$B$ je ba\v s formula $A$, tada po teoremi ThI va\v zi
+${\cal F}\vdash\ite(A,A,1)$;
+\itemitem{(b4)}$B$ je dobijeno kori\v s\'cenjem pravila PrAA iz formula
+$B_i$ i $B_j$, gde je $B=\ite(P,B_i,B_j)$ za neko $P$.
+Za $B_i$ i $B_j$ znamo (po indukcijskoj pretpostavci) da va\v zi
+${\cal F}\vdash\ite(A,B_i,1)$ i ${\cal F}\vdash\ite(A,B_j,1)$, tada \'ce po
+teoremi ThPrAA va\v ziti ${\cal F}\vdash\ite(A,\ite(P,B_i,B_j),1)$ to jest
+${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b5)}$B$ je dobijeno kori\v s\'cenjem pravila PrMP iz formula
+$B_i$ i $B_j$, gde je $B_j=\ite(B_i,B,P)$ za neko $P$.
+Za $B_i$ i $B_j$ znamo (po indukcijskoj pretpostavci) da va\v zi
+${\cal F}\vdash\ite(A,B_i,1)$ i ${\cal F}\vdash\ite(A,\ite(B_i,B,P),1)$,
+tada \'ce po teoremi ThPrMP va\v ziti ${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b6)}$B$ je dobijeno kori\v s\'cenjem pravila PrC1 iz formule
+$B_i$, gde je
+$$B_i=\ite(P,Q,R)\hbox{\quad i\quad}B=\ite(P,[Q]_{(1=P)},R)$$
+za neko $P,Q,R$.
+Za $B_i$ znamo (po indukcijskoj pretpostavci) da va\v zi
+${\cal F}\vdash\ite(A,\ite(P,Q,R),1)$, tada \'ce po teoremi ThPrC1 va\v ziti
+${\cal F}\vdash\ite(A,\ite(P,[Q]_{(1=P)},R),1)$ to jest
+${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b7)}$B$ je dobijeno kori\v s\'cenjem pravila PrC1 iz formule
+$B_i$, gde je
+$$B_i=\ite(P,Q,R)\hbox{\quad i\quad}B=\ite(P,Q,[R]_{(0=P)})$$
+za neko $P,Q,R$.
+Za $B_i$ znamo (po indukcijskoj pretpostavci) da va\v zi
+${\cal F}\vdash\ite(A,\ite(P,Q,R),1)$, tada \'ce po teoremi ThPrC1 va\v ziti
+${\cal F}\vdash\ite(A,\ite(P,Q,[R]_{(0=P)}),1)$ to jest
+${\cal F}\vdash\ite(A,B,1)$;
+\itemitem{(b8)}$B$ je dobijeno kori\v s\'cenjem pravila PrEF iz formule
+$B_i$, gde je
+$$B_i=\ite(\ite(P,Q,R),X,Y)\hbox{\quad i \quad}B=\ite(P,\ite(Q,X,Y),\ite(R,X,Y))$$
+za neko $P,Q,R,X,Y$.
+Za $B_i$ znamo (po indukcijskoj pretpostavci) da va\v zi
+$${\cal F}\vdash\ite(A,\ite(\ite(P,Q,R),X,Y),1)$$
+tada \'ce po teoremi ThPrEF
+va\v ziti ${\cal F}\vdash\ite(A,\ite(P,\ite(Q,X,Y),\ite(R,X,Y)),1)$ to jest
+${\cal F}\vdash\ite(A,B,1)$.
+\par
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThS11}}
+$A,\,B\vdash\ite(A,B,C)$\par
+\Proof
+  1.&Hy:       &A\cr
+  2.&Hy:       &B\cr
+  3.&Ax1:      &\ite(1,1,C)\cr
+  4.&ThAA1(3): &\ite(B,\ite(1,1,C),1)\cr
+  5.&PrC1(4):  &\ite(B,\ite(1,B,C),1)\cr
+  6.&PrMP(2,5):&\ite(1,B,C)\cr
+  7.&ThAA1(6): &\ite(A,\ite(1,B,C),1)\cr
+  8.&PrC1(7):  &\ite(A,\ite(A,B,C),1)\cr
+  9.&PrMP(1,8):&\ite(A,B,C)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThS10}}
+$A,\,\ite(B,0,1)\vdash\ite(\ite(A,B,C),0,1)$\par
+\Proof
+   1.&Hy:        &A\cr
+   2.&Hy:        &\ite(B,0,1)\cr
+   3.&Ax0:       &\ite(0,\ite(\ite(1,B,C),0,1),1)\cr
+   4.&Ax0:       &\ite(0,0,1)\cr
+   5.&TxAx1(4):  &\ite(1,\ite(0,0,1),\ite(C,0,1))\cr
+   6.&PrEF(5):   &\ite(\ite(1,0,C),0,1)\cr
+   7.&ThAx1(6):  &\ite(1,\ite(\ite(1,0,C),0,1),1)\cr
+   8.&PrAA(3,7): &\xite(%
+                    B,%
+                    {\ite(0,\ite(\ite(1,B,C),0,1),1)},%
+                    {\ite(1,\ite(\ite(1,0,C),0,1),1)}%
+                  )\cr
+   9.&PrC0(8):   &\xite(%
+                    B,%
+                    {\ite(0,\ite(\ite(1,B,C),0,1),1)},%
+                    {\ite(1,\ite(\ite(1,B,C),0,1),1)}%
+                  )\cr
+  10.&PrEF(0):   &\xite(%
+                    {\ite(B,0,1)},%
+                    {\ite(\ite(1,B,C),0,1)},%
+                    1%
+                  )\cr
+  11.&PrMP(2,10):&\ite(\ite(1,B,C),0,1)\cr
+  12.&ThAA1(11): &\ite(A,\ite(\ite(1,B,C),0,1),1)\cr
+  13.&PrC1(12):  &\ite(A,\ite(\ite(A,B,C),0,1),1)\cr
+  14.&PrMP(1,13):&\ite(\ite(A,B,C),0,1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThS01}}
+$\ite(A,0,1),\,C \vdash\ite(A,B,C)$\par
+\Proof
+   1.&Hy:        &\ite(A,0,1)\cr
+   2.&Hy:        &C\cr
+   3.&Ax0:       &\ite(0,\ite(A,B,1),1)\cr
+   4.&Ax0:       &\ite(0,B,1)\cr
+   5.&ThAx1(4):  &\ite(1,\ite(0,B,1),1)\cr
+   6.&PrAA(3,5): &\xite(%
+                    A,%
+                    {\ite(0,\ite(A,B,1),1)},%
+                    {\ite(1,\ite(0,B,1),1)}%
+                  )\cr
+   7.&PrC1(6):   &\xite(%
+                    A,%
+                    {\ite(0,\ite(A,B,1),1)},%
+                    {\ite(1,\ite(A,B,1),1)}%
+                  )\cr
+   8.&PrEF(7):   &\ite(\ite(A,0,1),\ite(A,B,1),1)\cr
+   9.&PrMP(1,8): &\ite(A,B,1)\cr
+  10.&ThAA1(9):  &\ite(C,\ite(A,B,1),1)\cr
+  11.&PrC1(10):  &\ite(C,\ite(A,B,C),1)\cr
+  12.&PrMP(2,11):&\ite(A,B,C)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThS00}}
+$\ite(A,0,1),\,\ite(C,0,1)\vdash\ite(\ite(A,B,C),0,1)$\par
+\Proof
+   1.&Hy:        &\ite(A,0,1)\cr
+   2.&Hy:        &\ite(C,0,1)\cr
+   3.&Ax0:       &\ite(0,\ite(\ite(A,B,C),0,1),1)\cr
+   4.&Ax0:       &\ite(0,\ite(\ite(A,B,0),0,1),1)\cr
+   5.&Ax0:       &\ite(0,0,1)\cr
+   6.&ThAx0(5):  &\ite(0,\ite(B,0,1),\ite(0,0,1))\cr
+   7.&PrEF(6):   &\ite(\ite(0,B,0),0,1)\cr
+   8.&ThAx1(7):  &\ite(1,\ite(\ite(0,B,0),0,1),1)\cr
+   9.&PrAA(4,8): &\xite(%
+                    A,%
+                    {\ite(0,\ite(\ite(A,B,0),0,1),1)},%
+                    {\ite(1,\ite(\ite(0,B,0),0,1),1)}%
+                  )\cr
+  10.&PrC0(9):   &\xite(%
+                    A,%
+                    {\ite(0,\ite(\ite(A,B,0),0,1),1)},%
+                    {\ite(1,\ite(\ite(A,B,0),0,1),1)}%
+                  )\cr
+  11.&PrEF(10):  &\ite(\ite(A,0,1),\ite(\ite(A,B,0),0,1),1)\cr
+  12.&PrMP(1,11):&\ite(\ite(A,B,0),0,1)\cr
+  13.&ThAx1(12): &\ite(1,\ite(\ite(A,B,0),0,1),1)\cr
+  14.&PrAA(3,13):&\xite(%
+                    C,%
+                    {\ite(0,\ite(\ite(A,B,C),0,1),1)},%
+                    {\ite(1,\ite(\ite(A,B,0),0,1),1)}%
+                  )\cr
+  15.&PrC0(14):  &\xite(%
+                    C,%
+                    {\ite(0,\ite(\ite(A,B,C),0,1),1)},%
+                    {\ite(1,\ite(\ite(A,B,C),0,1),1)}%
+                  )\cr
+  16.&PrEF(15):  &\ite(\ite(C,0,1),\ite(\ite(A,B,C),0,1),1)\cr
+  17.&PrMP(2,16):&\ite(\ite(A,B,C),0,1)\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Teorema {\rm ThCC}}
+$\ite(A,B,1),\,\ite(\ite(A,0,1),B,1)\vdash B$\par
+\Proof
+   1.&Hy:        &\ite(A,B,1)\cr
+   2.&Hy:        &\ite(\ite(A,0,1),B,1)\cr
+   3.&ThA11:     &\ite(\ite(\ite(A,0,1),B,1),1,1)\cr
+   4.&ThAA1(3):  &\ite(B,\ite(\ite(\ite(A,0,1),B,1),1,1),1)\cr
+   5.&PrC1(4):   &\ite(B,\ite(\ite(\ite(A,0,1),B,1),B,1),1)\cr
+   6.&ThI:       &\ite(B,B,1)\cr
+   7.&ThAx1(6):  &\ite(1,\ite(B,B,1),\ite(1,B,1))\cr
+   8.&ThAx0(7):  &\xite(%
+                    0,%
+                    {\ite(0,\ite(B,B,1),\ite(1,B,1))},%
+                    {\ite(1,\ite(B,B,1),\ite(1,B,1))}%
+                  )\cr
+   9.&PrEF(8):   &\ite(\ite(0,0,1),\ite(B,B,1),\ite(1,B,1))\cr
+  10.&PrEF(9):   &\ite(\ite(\ite(0,0,1),B,1),B,1)\cr
+  11.&ThAx1(10): &\ite(1,\ite(\ite(\ite(0,0,1),B,1),B,1),1)\cr
+  12.&PrAA(5,11):&\xite(%
+                    A,%
+                    {\ite(B,\ite(\ite(\ite(A,0,1),B,1),B,1),1)},%
+                    {\ite(1,\ite(\ite(\ite(0,0,1),B,1),B,1),1)}%
+                  )\cr
+  13.&PrC0(12):  &\xite(%
+                    A,%
+                    {\ite(B,\ite(\ite(\ite(A,0,1),B,1),B,1),1)},%
+                    {\ite(1,\ite(\ite(\ite(A,0,1),B,1),B,1),1)}%
+                  )\cr
+  14.&PrEF(13):  &\xite(%
+                    {\ite(A,B,1)},%
+                    {\ite(\ite(\ite(A,0,1),B,1),B,1)},%
+                    1%
+                  )\cr
+  15.&PrMP(1,14):&\ite(\ite(\ite(A,0,1),B,1),B,1)\cr
+  16.&PrMP(2,15):&B\cr
+\endProof
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Definicija} Operacija $\ITE$ nad skupom ${\bf 2}=\{{\bf 1},{\bf 0}\}$
+se defini\v se na slede\'ci na\v cin:
+$$\ITE({\bf 1},X,Y)=X\hbox{\quad i \quad}\ITE({\bf 0},X,Y)=Y.$$
+\par
+\bigskip
+%
+%
+\Proclaim{Definicija} Valuacija iskaznih slova $\mu$ je preslikavanje
+skupa iskaznih slova u skup $\bf 2$ ($\mu[u]\in{\bf 2}$).
+\par
+\bigskip
+%
+%
+\Proclaim{Definicija} Valuacija formula $\nu_\mu$ je preslikavanje skupa
+formula u skup $\bf 2$ i zavisi od konkretne valuacije iskaznih slova $\mu$:
+\item{\lcirc 1}$\nu_\mu[0]={\bf 0}$ i $\nu_\mu[1]={\bf 1}$,
+\item{\lcirc 2}$\nu_\mu[u]=\mu[u]$ za sva iskazna slova $u$,
+\item{\lcirc 3}$\nu_\mu[\ite(P,Q,R)]=\ITE(\nu_\mu[P],\nu_\mu[Q],\nu_\mu[R])$.
+\par
+\bigskip
+%
+%
+\Proclaim{Definicija} Za formulu $A$ ka\v zemo da je ite-tautoloogija (i
+pi\v semo $\models A$) ako za svaku valuaciju iskaznih slova $\mu$ va\v zi
+$\nu_\mu[A]={\bf 1}$.
+\par
+\bigskip
+%
+%
+\Proclaim{Meta teorema {\rm(stav korektnosti)}} Ako $\vdash A$ tada $\models A$.
+\par
+\Proclaim{Dokaz} ``Lako'' se pokazuje da su aksiome ite-tautologije i da
+pravila izvodjenja \v cuvaju osobinu ite-tautologi\v cnosti.
+\par
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Definicija} Za fiksiranu valuaciju iskaznih slova
+$\mu$ defini\v semo izvod formule $A$ (u oznaci $A'$) kao:
+$$A'=\cases{%
+  A,          &ako je $\nu_\mu[A]={\bf 1}$\cr
+  \ite(A,0,1),&ako je $\nu_\mu[A]={\bf 0}$.\cr
+}$$
+\par
+\bigskip
+%
+%
+\Proclaim{Meta teorema} Za svaku valuaciju iskaznih slova $\mu$ va\v zi
+$A',\,B',\,C'\vdash\ite(A,B,C)'$.
+\par
+\Proclaim{Dokaz} U zavisnosti od valuacije $\mu$ svodimo
+$A',\,B',\,C'\vdash\ite(A,B,C)'$ na jedan od slede\'cih 4 slu\v caja:
+\item{(a)}$\nu_\mu[A]={\bf 1}$
+\item{(a1)}$\nu_\mu[B]={\bf 1}$ tada je
+$\nu_\mu[\ite(A,B,C)]=\ITE({\bf 1},{\bf 1},\nu_\mu[C])={\bf 1}$ pa
+$$A'=A\hbox{;\quad}B'=B\hbox{;\quad}\ite(A,B,C)'=\ite(A,B,C)$$
+a po teoremi ThS11 va\v zi $A,\,B\vdash\ite(A,B,C)$
+\item{(a2)}$\nu_\mu[B]={\bf 0}$ tada je
+$\nu_\mu[\ite(A,B,C)]=\ITE({\bf 1},{\bf 0},\nu_\mu[C])={\bf 0}$ pa
+$$A'=A\hbox{;\quad}B'=\ite(B,0,1)\hbox{;\quad}\ite(A,B,C)'=\ite(\ite(A,B,C),0,1)$$
+a po teoremi ThS10 va\v zi $A,\,\ite(B,0,1)\vdash\ite(\ite(A,B,C),0,1)$
+\smallskip
+\item{(b)}$\nu_\mu[A]={\bf 0}$
+\item{(b1)}$\nu_\mu[C]={\bf 1}$ tada je
+$\nu_\mu[\ite(A,B,C)]=\ITE({\bf 0},\nu_\mu[B],{\bf 1})={\bf 1}$ pa
+$$A'=\ite(A,0,1)\hbox{;\quad}C'=C\hbox{;\quad}\ite(A,B,C)'=\ite(A,B,C)$$
+a po teoremi ThS01 va\v zi $\ite(A,0,1),\,C\vdash\ite(A,B,C)$
+\item{(b2)}$\nu_\mu[C]={\bf 0}$ tada je
+$\nu_\mu[\ite(A,B,C)]=\ITE({\bf 0},\nu_\mu[B],{\bf 0})={\bf 0}$ pa
+$$A'=\ite(A,0,1)\hbox{;\quad}C'=\ite(C,0,1)\hbox{;\quad}\ite(A,B,C)'=\ite(\ite(A,B,C),0,1)$$
+a po teoremi ThS11 va\v zi $\ite(A,0,1),\,\ite(C,0,1)\vdash\ite(\ite(A,B,C),0,1)$
+\par
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Meta teorema} Za svaku valuaciju iskaznih slova $\mu$ i svaku
+formulu $A$ va\v zi $u_1',\,\ldots,\,u_k'\vdash A'$ gde se medju iskaznim
+slovima $u_1,\ldots,u_k$ nalaze sva iskazna slova formule $A$.
+\par
+\Proclaim{Dokaz} Indukcijom po broju pojavljivanja $\ite$ u formuli $A$:
+\item{(a)}U formuli $A$ se ne pojavljuje $\ite$ pa tada razlikujemo 3 slu\v caja:
+\item{(a1)}$A=0$, tada je $A'=\ite(0,0,1)$ \v sto je Ax0;
+\item{(a2)}$A=1$, tada je $A'=1$ \v sto je Th1;
+\item{(a3)}$A$ je neko iskazno slovo $u_i$ gde je $1\le i\le k$, tada je
+$A'=u_i'$ pa \'ce va\v ziti $u_1',\,\ldots,\,u_k'\vdash u_i'$.
+\smallskip
+\item{(b)}U formuli $A$ se pojavljuje $n>0$ puta $\ite$ pa je $A=\ite(P,Q,R)$
+i po indukcijskoj pretpostavci va\v zi:
+$$u_1',\,\ldots,\,u_k'\vdash P'\hbox{;\quad}
+u_1',\,\ldots,\,u_k'\vdash Q'\hbox{\quad i\quad}
+u_1',\,\ldots,\,u_k'\vdash R'$$
+kako po prethodnoj meta teoremi va\v zi $P',\,Q',\,R'\vdash\ite(P,Q,R)'$
+va\v zi\'ce $u_1',\,\ldots,\,u_k'\vdash A'$
+\par
+\Blackbox
+\bigskip
+%
+%
+\Proclaim{Meta teorema {\rm(stav potpunosti)}} Ako $\models A$ tada $\vdash A$.
+\par
+\Proclaim{Dokaz} Po prethodnoj meta teoremi, za svaku valuaciju iskaznih
+slova $\mu$ va\v zi
+$$u_1',\,\ldots,\,u_n'\vdash A'$$
+gde su $u_1,\ldots,u_n$ sva iskazna slova formule $A$.
+Kako je $\models A$ to jest $\nu_\mu[A]={\bf 1}$ za svaku valuaciju $\mu$,
+va\v zi\'ce $A'=A$ to jest
+$$u_1',\,\ldots,\,u_n'\vdash A.$$
+Kako va\v zi za sve valuacije, va\v zi\'ce i za onu valuaciju gde je
+$\mu[u_n]={\bf 1}$ i za onu valuaciju gde je $\mu[u_n]={\bf 0}$ pa \'ce
+va\v ziti
+$$u_1',\,\ldots,\,u_{n-1}',\,u_n\vdash A\hbox{\quad i\quad}u_1',\,\ldots,\,u_{n-1}',\,\ite(u_n,0,1)\vdash A.$$
+Po stavu dedukcije va\v zi\'ce
+$$u_1',\,\ldots,\,u_{n-1}'\vdash\ite(u_n,A,1)\hbox{\quad i\quad}u_1',\,\ldots,\,u_{n-1}'\vdash\ite(\ite(u_n,0,1),A,1)$$
+pa po teoremi ThCC izvodimo
+$$u_1',\,\ldots,\,u_{n-1}'\vdash A.$$
+Ovaj postupak ponovimo jo\v s $n-1$ put ($n$ je kona\v cno) i dobi\'cemo
+$\vdash A$.
+\par
+\Blackbox
+\bye

@@ -1,0 +1,37 @@
+$
+  <S> ::= <S> "+" <K> @+ |
+          <S> "-" <K> @- |
+          <K> .
+
+  <K> ::= <K> "*" <L> @* |
+          <K> "/" <L> @/ |
+          <L> .
+
+  <L> ::= <N> "^" <L> @^ |
+          <N> .
+
+  <N> ::= "-" <N> @n |
+          funkcija @f "(" <S> ")" @p |
+          broj @b |
+          x @x |
+          "(" <S> ")" .
+$
+
+<P> ::= @Finit <N> <L> <K> <S> .
+
+<S> ::= Lplus <N> <L> <K> @Fplus |
+        Lminus <N> <L> <K> @Fminus |
+        .
+
+<K> ::= Lputa <N> <L> @Fputa |
+        Lpodeljeno <N> <L> @Fpodeljeno |
+        .
+
+<L> ::= Lna <N> <L> @Fna |
+        .
+
+<N> ::= Lminus <N> @Fznak |
+        Lfunkcija @Ffunkcija Llz <N> <L> <K> <S> Ldz @Fpoziv |
+        Lbroj @Fbroj |
+        Lx @Fx |
+        Llz <N> <L> <K> <S> Ldz .

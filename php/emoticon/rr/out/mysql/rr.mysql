@@ -1,0 +1,100 @@
+DROP DATABASE IF EXISTS rr;
+CREATE DATABASE rr CHARACTER SET utf8 COLLATE utf8_bin;
+GRANT ALL PRIVILEGES ON rr.* TO 'rr'@'localhost' IDENTIFIED BY 'rr';
+FLUSH PRIVILEGES;
+USE rr;
+
+DROP TABLE IF EXISTS rr_users;
+CREATE TABLE rr_users
+(
+  id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  username        CHAR(64)        NOT NULL DEFAULT '',
+  password        CHAR(64)        NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY rr_users__username (username)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS rr_sessions;
+CREATE TABLE rr_sessions
+(
+  id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id        BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  value          CHAR(40)        NOT NULL DEFAULT '',
+  expire_time    TIMESTAMP       NOT NULL DEFAULT NOW(),
+  remote_address CHAR(64)        NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES rr_users (id) ON DELETE CASCADE,
+  UNIQUE KEY rr_sessions__value (value)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS rr_licenses;
+CREATE TABLE rr_licenses
+(
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name          CHAR(64)        NOT NULL DEFAULT '',
+  default_value BOOLEAN         NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id),
+  UNIQUE KEY rr_licenses__name (name)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS rr_permissions;
+CREATE TABLE rr_permissions
+(
+  id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id    BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  license_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  value      BOOLEAN         NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id),
+  UNIQUE KEY rr_permissions__user_id__license_id (user_id, license_id),
+  FOREIGN KEY (user_id) REFERENCES rr_users (id) ON DELETE CASCADE,
+  FOREIGN KEY (license_id) REFERENCES rr_licenses (id) ON DELETE CASCADE
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS rr_requests;
+CREATE TABLE rr_requests
+(
+  id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name       CHAR(128)       NOT NULL DEFAULT '',
+  filename   CHAR(128)       NOT NULL DEFAULT '',
+  license_id BIGINT UNSIGNED     NULL DEFAULT NULL,
+  developing BOOLEAN         NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id),
+  UNIQUE KEY rr_requests__name (name),
+  UNIQUE KEY rr_requests__filename (filename),
+  FOREIGN KEY (license_id) REFERENCES rr_licenses (id) ON DELETE CASCADE
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS rr_arguments;
+CREATE TABLE rr_arguments
+(
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  request_id    BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  name          CHAR(64)        NOT NULL DEFAULT '',
+  type          ENUM
+  (
+    'MANDATORY',
+    'OPTIONAL',
+    'FILE'
+  )                             NOT NULL DEFAULT 'MANDATORY',
+  default_value CHAR(128)       NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY rr_arguments__request_id__name (request_id, name),
+  FOREIGN KEY (request_id) REFERENCES rr_requests (id) ON DELETE CASCADE
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO rr_users VALUES (0, 'admin', 'admin');
+SET @ADMIN_USER_ID = LAST_INSERT_ID();
+
+SET @ADMIN_LICENSE_ID = 1;
+SET @ALL_LICENSE_ID = 2;
+
+INSERT INTO rr_licenses VALUES (@ADMIN_LICENSE_ID, 'rr_admin', FALSE);
+INSERT INTO rr_licenses VALUES (@ALL_LICENSE_ID,   'rr_all',   TRUE);
+
+INSERT INTO rr_permissions VALUES (0, @ADMIN_USER_ID, @ADMIN_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'authentication/login', 'authentication/login.php', NULL, FALSE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'username', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'password', 'MANDATORY', '');
+INSERT INTO rr_requests VALUES (0, 'authentication/logout', 'authentication/logout.php', @ALL_LICENSE_ID, FALSE);

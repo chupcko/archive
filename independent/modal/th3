@@ -1,0 +1,1 @@
+L(a OR b) THEN (L a OR L b)

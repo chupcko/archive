@@ -1,0 +1,9 @@
+print("Radim: ",eof(),"\n");
+opena(dat,"qqq");
+write(dat,"tekst\n\nMoja mama najbolje kuha.\n",89,"\n");
+close(dat);
+a:=898;
+debug();
+print(unknown(mika)," ",unknown(a),"\n");
+error("Moja mama najbolje kuha.");
+debug();

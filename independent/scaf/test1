@@ -1,0 +1,1 @@
+Y ( # m n s. cond (= n 1) (hd s) (m (- n 1) (tl s)))

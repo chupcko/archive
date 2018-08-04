@@ -1,0 +1,1 @@
+ALL x (a(x) THEN b(x)) AND E x a(x) THEN E x b(x)

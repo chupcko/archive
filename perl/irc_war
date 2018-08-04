@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+
+($nick,$them1,$them2,$port)=@ARGV;
+$port=6667 unless $port;
+$them1='irc.funet.fi' unless $them1;
+$them2='irc1.inet.fi' unless $them2;
+
+use Socket;
+
+$sockaddr='S n a4 x8';
+chop($hostname=`hostname`);
+
+($name,$aliases,$proto)=getprotobyname('tcp');
+($name,$aliases,$port)=getservbyname($port,'tcp') unless $port=~/^\d+$/;
+($name,$aliases,$type,$len,$thisaddr)=gethostbyname($hostname);
+($name,$aliases,$type,$len,$thataddr1)=gethostbyname($them1);
+($name,$aliases,$type,$len,$thataddr2)=gethostbyname($them2);
+
+$this=pack($sockaddr,AF_INET,0,$thisaddr);
+$that1=pack($sockaddr,AF_INET,$port,$thataddr1);
+$that2=pack($sockaddr,AF_INET,$port,$thataddr2);
+
+socket(S1,PF_INET,SOCK_STREAM,$proto) || die "socket: $!";
+bind(S1,$this) || die "bind: $!";
+connect(S1,$that1) || die "connect: $!";
+socket(S2,PF_INET,SOCK_STREAM,$proto) || die "socket: $!";
+bind(S2,$this) || die "bind: $!";
+connect(S2,$that2) || die "connect: $!";
+
+select(S1);
+$|=1;
+select(S2);
+$|=1;
+select(stdout);
+
+print S1 "NICK MatF1\n";
+print S1 "USER ja ja 0 :ja\n";
+print S2 "NICK MatF2\n";
+print S2 "USER ja ja 0 :ja\n";
+
+sleep 5;
+for($i=1;$i<40;$i++)
+{
+  print S1 "PRIVMSG $nick :\001ACTION je gladan\001";
+  print S2 "PRIVMSG $nick :\001ACTION je gladan\001";
+}
+
+sleep 60;
+print S1 "QUIT";
+print S2 "QUIT";

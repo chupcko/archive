@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>Switch Div</title>
+    <script type="text/javascript" language="javascript">
+      function all_off()
+      {
+        var cells = document.getElementsByTagName("div"); 
+        for(i = 0; i < cells.length; i++)
+          if(cells[i].className == 'invisible')
+            cells[i].style.display = 'none';
+      }
+
+      function on(a)
+      {
+        all_off();
+        document.getElementById(a).style.display = 'block';
+      }
+    </script>
+    <style type="text/css">
+      body
+      {
+        background: white;
+        color: blue;
+      }
+
+      .invisible
+      {
+        display: none;
+        z-index: 1;
+        border-style: solid;
+        color: black;
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <span style="cursor:pointer; text-decoration:underline" onclick="on('n1');" title="n1">n1</span>
+    &nbsp;
+    <span style="cursor:pointer; text-decoration:underline" onclick="on('n2');" title="n2">n3</span>
+    &nbsp;
+    <span style="cursor:pointer; text-decoration:underline" onclick="on('n3');" title="n2">n3</span>
+    <hr>
+    <div class="invisible" id="n1">
+      N1
+    </div>
+    <div class="invisible" id="n2">
+      N2
+    </div>
+    <div class="invisible" id="n3">
+      N3
+    </div>
+    <div class="invisible" style="display:block;">
+      INIT
+    </div>
+    <hr>
+  </body>
+</html>

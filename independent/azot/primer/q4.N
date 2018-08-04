@@ -1,0 +1,7 @@
+function succ(a) is
+return a+1;
+
+a:=1;
+debug();
+b:=succ(10);
+debug();

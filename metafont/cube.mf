@@ -1,0 +1,1174 @@
+mode_setup;
+vi#:=10*pt#;
+
+p#:=vi#/5;
+define_pixels(p);
+
+def nz(expr a,b)=(b*sqrt(a*a+b*b-1)-a)/(b*b-1) enddef;
+def kr(expr a,b)=sqrt(a*a+b*b)/b enddef;
+q:=sqrt(2)/2;
+
+def pomerioznaci(expr c)=
+  for n:=1 upto c:
+    x[n]:=x[n]+p/2;
+  endfor;
+  labels(range 1 thru c);
+enddef;
+
+%
+% Simboli
+%
+
+beginchar("!",6p#,6p#,0); "Simbol !";
+  x1=x4=x5=x8=0p;
+  x2=x3=x6=x7=1p;
+  y1=y2=0p;
+  y3=y4=1p;
+  y5=y6=2p;
+  y7=y8=6p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("#",6p#,5p#,0); "Simbol #";
+  x22=x23=x26=x27=0p;
+  x1=x20=x21=x24=x25=x28=1p;
+  x2=x3=x18=x19=x29=x32=2p;
+  x4=x5=x16=x17=x30=x31=3p;
+  x6=x7=x10=x11=x14=x15=4p;
+  x8=x9=x12=x13=5p;
+  y1=y2=y5=y6=0p;
+  y3=y4=y7=y8=y27=y28=1p;
+  y9=y10=y25=y26=y29=y30=2p;
+  y11=y12=y23=y24=y31=y32=3p;
+  y13=y14=y17=y18=y21=y22=4p;
+  y15=y16=y19=y20=5p;
+  pomerioznaci(32);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--
+       z13--z14--z15--z16--z17--z18--z19--z20--z21--z22--
+       z23--z24--z25--z26--z27--z28--cycle;
+  unfill z29--z30--z31--z32--cycle;
+endchar;
+
+beginchar("$",6p#,6p#,1p#); "Simbol $";
+  x17=x18=x22=0p;
+  x16=x19=x23=x29=x32=1p;
+  x1=x14=x15=x20=x21=x24=x30=x31=2p;
+  x2=x3=x8=x9=x12=x13=x25=x28=3p;
+  x4=x7=x11=x26=x27=4p;
+  x5=x6=x10=5p;
+  y1=y2=-1p;
+  y3=y4=y23=y24=0p;
+  y5=y21=y22=y25=y26=1p;
+  y6=y19=y20=y27=y28=2p;
+  y7=y8=y18=y29=y30=3p;
+  y9=y10=y17=y31=y32=4p;
+  y11=y12=y15=y16=5p;
+  y13=y14=6p;
+  pomerioznaci(32);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--
+       z15--z16--z17--z18--z19--z20--z21--z22--z23--z24--cycle;
+  unfill z25--z26--z27--z28--cycle;
+  unfill z29--z30--z31--z32--cycle;
+endchar;
+
+beginchar("%",6p#,5p#,0); "Simbol %";
+  x1=x9=x12=0p;
+  x10=x11=1p;
+  x2=x3-x4=nz(5,5)*p;
+  x5=x8=4p;
+  x3=x6=x7=5p;
+  y1=y2=y5=y6=0p;
+  y7=y8=1p;
+  y9=y10=4p;
+  y3=y4=y11=y12=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--cycle;
+  fill z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("&",6p#,5p#,1p#); "Simbol &";
+  x16=x17=0p;
+  x15=x18=x20=x23=1p;
+  x1=x13=x14=x19=x21=x22=2p;
+  x2=x3=x6=x7=x12=x24=x27=3p;
+  x5=x8=x11=x25=x26=4p;
+  x4=x9=x10=5p;
+  y1=y2=-1p;
+  y3=y4=y18=y19=0p;
+  y5=y6=y17=y20=y21=1p;
+  y7=y8=y16=y22=y23=2p;
+  y9=y14=y15=y24=y25=3p;
+  y10=y13=y26=y27=4p;
+  y11=y12=5p;
+  pomerioznaci(27);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--
+       z12--z13--z14--z15--z16--z17--z18--z19--cycle;
+  unfill z20--z21--z22--z23--cycle;
+  unfill z24--z25--z26--z27--cycle;
+endchar;
+
+beginchar("'",2p#,5p#,0); "Simbol '";
+  x3=x4=0p;
+  x1=x2=1p;
+  y1=3p;
+  y4=4p;
+  y2=y3=5p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("(",3p#,5p#,0); "Simbol (";
+  x9=x10=0p;
+  x1=x4=x5=x8=1p;
+  x2=x3=x6=x7=2p;
+  y1=y2=0p;
+  y3=y4=y10=1p;
+  y5=y6=y9=4p;
+  y7=y8=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar(")",3p#,5p#,0); "Simbol )";
+  x1=x6=x7=x10=0p;
+  x2=x5=x8=x9=1p;
+  x3=x4=2p;
+  y1=y2=0p;
+  y3=y9=y10=1p;
+  y4=y7=y8=4p;
+  y5=y6=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("*",4p#,4p#,0); "Simbol *";
+  x1=x14=x16=x17=0p;
+  x2=x13=x5-x4=x10-x11=nz(3,3)*p;
+  x5=x7=x8=x10=3p;
+  y1=y2=y4=y5=1p;
+  y6=y7=y17=y18=2p;
+  y8=y9=y15=y16=3p;
+  y10=y11=y13=y14=4p;
+  z3=whatever[z2,z10]=whatever[z4,z14];
+  z12=whatever[z1,z11]=whatever[z5,z13];
+  z6=whatever[z5,z13];
+  z9=whatever[z2,z10];
+  z15=whatever[z4,z14];
+  z18=whatever[z1,z11];
+  pomerioznaci(18);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--
+       z12--z13--z14--z15--z16--z17--z18--cycle;
+endchar;
+
+beginchar("+",4p#,4p#,0); "Simbol +";
+  x10=x11=0p;
+  x1=x8=x9=x12=1p;
+  x2=x3=x6=x7=2p;
+  x4=x5=3p;
+  y1=y2=1p;
+  y3=y4=y11=y12=2p;
+  y5=y6=y9=y10=3p;
+  y7=y8=4p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar(",",2p#,1p#,1p#); "Simbol ,";
+  x3=x4=0p;
+  x1=x2=1p;
+  y1=-1p;
+  y4=0p;
+  y2=y3=1p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("-",4p#,3p#,0); "Simbol -";
+  x1=x4=0p;
+  x2=x3=3p;
+  y1=y2=2p;
+  y3=y4=3p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar(".",2p#,1p#,0); "Simbol .";
+  x1=x4=0p;
+  x2=x3=1p;
+  y1=y2=0p;
+  y3=y4=1p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("/",6p#,5p#,0); "Simbol /";
+  x1=0p;
+  x2=x3-x4=nz(5,5)*p;
+  x3=5p;
+  y1=y2=0p;
+  y3=y4=5p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar(":",2p#,3p#,0); "Simbol :";
+  x1=x4=x5=x8=0p;
+  x2=x3=x6=x7=1p;
+  y1=y2=0p;
+  y3=y4=1p;
+  y5=y6=2p;
+  y7=y8=3p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar(";",2p#,3p#,1p#); "Simbol ;";
+  x3=x4=x5=x8=0p;
+  x1=x2=x6=x7=1p;
+  y1=-1p;
+  y4=0p;
+  y2=y3=1p;
+  y5=y6=2p;
+  y7=y8=3p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("=",4p#,4p#,0); "Simbol =";
+  x1=x4=x5=x8=0p;
+  x2=x3=x6=x7=3p;
+  y1=y2=1p;
+  y3=y4=2p;
+  y5=y6=3p;
+  y7=y8=4p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("?",6p#,6p#,0); "Simbol ?";
+  x13=x14=0p;
+  x12=x15=x16=1p;
+  x1=x4=x5=x20=2p;
+  x2=x3=x6=x7=x19=3p;
+  x8=x11=x17=x18=4p;
+  x9=x10=5p;
+  y1=y2=0p;
+  y3=y4=1p;
+  y5=y6=2p;
+  y7=y8=y20=3p;
+  y9=y14=y15=y18=y19=4p;
+  y10=y13=y16=y17=5p;
+  y11=y12=6p;
+  pomerioznaci(20);
+  fill z1--z2--z3--z4--cycle;
+  fill z5--z6--z7--z8--z9--z10--z11--z12--z13--
+       z14--z15--z16--z17--z18--z19--z20--cycle;
+endchar;
+
+beginchar("\",6p#,5p#,0); "Simbol \";
+  x4=0p;
+  x3=x2-x1=nz(5,5)*p;
+  x2=5p;
+  y1=y2=0p;
+  y3=y4=5p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("`",2p#,5p#,0); "Simbol `";
+  x1=x4=0p;
+  x2=x3=1p;
+  y1=3p;
+  y2=4p;
+  y3=y4=5p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("~",6p#,4p#,0); "Simbol ~";
+  x11=x12=0p;
+  x10=x13=x14=1p;
+  x9=x15=x16=2p;
+  x1=x7=x8=3p;
+  x2=x5=x6=4p;
+  x3=x4=5p;
+  y1=y2=1p;
+  y3=y6=y7=y12=y13=y16=2p;
+  y4=y5=y8=y11=y14=y15=3p;
+  y9=y10=4p;
+  pomerioznaci(16);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--cycle;
+endchar;
+
+%
+% Cifre
+%
+
+beginchar("0",6p#,5p#,0); "Cifra 0";
+% x7=x8=0p;
+% x1=x6=x12=x14=1p;
+% x9-x12=x11-x13=q*p;
+% x2=x5=x10=x11=4p;
+% x3=x4=5p;
+% y1=y2=0p;
+% y3=y8=y9=y10=1p;
+% y12-y9=y13-y11=q*p;
+% y4=y7=y13=y14=4p;
+% y5=y6=5p;
+% pomerioznaci(14);
+% fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+% unfill z9--z10--z11--cycle;
+% unfill z12--z13--z14--cycle;
+  x1=x15=x16=x18=0p;
+  x2=x10-x11=q*p;
+  x4=x14=x22=x24=1p;
+  x5=x13=x20=x21=4p;
+  x6=x7=x9=x10=5p;
+  y1=y2=y4=y5=0p;
+  y18=y10-y9=q*p;
+  y6=y16=y19=y20=1p;
+  y7=y15=y23=y24=4p;
+  y10=y11=y13=y14=5p;
+  z19=whatever[z2,z9];
+  z21=whatever[z2,z9];
+  z22=whatever[z11,z18];
+  z23=whatever[z11,z18];
+  z3=whatever[z2,z9]=whatever[z4,z16];
+  z8=whatever[z2,z9]=whatever[z7,z13];
+  z12=whatever[z11,z18]=whatever[z7,z13];
+  z17=whatever[z11,z18]=whatever[z4,z16];
+  pomerioznaci(24);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--
+       z12--z13--z14--z15--z16--z17--z18--cycle;
+  unfill z19--z20--z21--cycle;
+  unfill z22--z23--z24--cycle;
+endchar;
+
+beginchar("1",3p#,5p#,0); "Cifra 1";
+  x5=x6=0p;
+  x1=x4=x7=1p;
+  x2=x3=2p;
+  y1=y2=0p;
+  y6=y7=3p;
+  y5=4p;
+  y3=y4=5p;
+  pomerioznaci(7);
+  fill z1--z2--z3--z4--z5--z6--z7--cycle;
+endchar;
+
+beginchar("2",6p#,5p#,0); "Cifra 2";
+  x1=x11=x15=0p;
+  x4=x5=x10=x14=1p;
+  x6=x9=x12=x13=4p;
+  x2=x3=x7=x8=5p;
+  y1=y2=0p;
+  y3=y4=1p;
+  y5=y6=y15=2p;
+  y7=y13=y14=3p;
+  y8=y11=y12=4p;
+  y9=y10=5p;
+  pomerioznaci(15);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--
+       z10--z11--z12--z13--z14--z15--cycle;
+endchar;
+
+beginchar("3",6p#,5p#,0); "Cifra 3";
+  x10=x17=0p;
+  x1=x9=1p;
+  x13=x14=2p;
+  x2=x8=x11=x12=x15=x16=4p;
+  x3=x4=x6=x7=5p;
+  y1=y2=0p;
+  y3=y16=y17=1p;
+  y4=y14=y15=2p;
+  y6=y12=y13=3p;
+  y7=y10=y11=4p;
+  y8=y9=5p;
+  z5=whatever[z4,z12]=whatever[z6,z15];
+  pomerioznaci(17);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--z17--cycle;
+endchar;
+
+beginchar("4",6p#,5p#,0); "Cifra 4";
+  x9=x10=0p;
+  x8=1p;
+  x6=x7-x8=kr(1,2)*p;
+  x1=x4=x5=x11=4p;
+  x2=x3=5p;
+  y1=y2=0p;
+  y10=y11=2p;
+  y5=y6=y9=3p;
+  y3=y4=y7=y8=5p;
+  pomerioznaci(11);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--cycle;
+endchar;
+
+beginchar("5",6p#,5p#,0); "Cifra 5";
+  x10=x11=x14=0p;
+  x1=x6=x7=1p;
+  x2=x5=x12=x13=4p;
+  x3=x4=x8=x9=5p;
+  y1=y2=0p;
+  y3=y13=y14=1p;
+  y4=y11=y12=2p;
+  y5=y6=3p;
+  y7=y8=4p;
+  y9=y10=5p;
+  pomerioznaci(14);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--cycle;
+endchar;
+
+beginchar("6",6p#,5p#,0); "Cifra 6";
+  x11=x12=0p;
+  x1=x6=x7=x10=x13=x16=1p;
+  x2=x5=x9=x14=x15=4p;
+  x3=x4=x8=5p;
+  y1=y2=0p;
+  y3=y12=y13=y14=1p;
+  y4=y15=y16=2p;
+  y5=y6=3p;
+  y7=y8=y11=4p;
+  y9=y10=5p;
+  pomerioznaci(16);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+  unfill z13--z14--z15--z16--cycle;
+endchar;
+
+beginchar("7",6p#,5p#,0); "Cifra 7";
+  x5=x6=0p;
+  x1=1p;
+  x2-x1=x3-x7=nz(4,4)*p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y6=y7=4p;
+  y4=y5=5p;
+  pomerioznaci(7);
+  fill z1--z2--z3--z4--z5--z6--z7--cycle;
+endchar;
+
+beginchar("8",6p#,5p#,0); "Cifra 8";
+  x10=x11=x13=x14=0p;
+  x1=x9=x15=x18=x19=x22=1p;
+  x2=x8=x16=x17=x20=x21=4p;
+  x3=x4=x6=x7=5p;
+  y1=y2=0p;
+  y3=y14=y15=y16=1p;
+  y4=y13=y17=y18=2p;
+  y6=y11=y19=y20=3p;
+  y7=y10=y21=y22=4p;
+  y8=y9=5p;
+  z5=whatever[z4,z20]=whatever[z6,z17];
+  z12=whatever[z11,z18]=whatever[z13,z19];
+  pomerioznaci(22);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--cycle;
+  unfill z15--z16--z17--z18--cycle;
+  unfill z19--z20--z21--z22--cycle;
+endchar;
+
+beginchar("9",6p#,5p#,0); "Cifra 9";
+  x7=x8=x12=0p;
+  x1=x6=x9=x13=x16=1p;
+  x2=x5=x10=x11=x14=x15=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y11=y12=1p;
+  y9=y10=2p;
+  y8=y13=y14=3p;
+  y4=y7=y15=y16=4p;
+  y5=y6=5p;
+  pomerioznaci(16);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+  unfill z13--z14--z15--z16--cycle;
+endchar;
+
+%
+% Slova
+%
+
+beginchar("A",6p#,5p#,0); "Slovo A";
+  x1=x10=0p;
+  x2=x3=x9=x11=x14=1p;
+  x4=x5=x8=x12=x13=4p;
+  x6=x7=5p;
+  y1=y2=y5=y6=0p;
+  y3=y4=1p;
+  y11=y12=2p;
+  y7=y10=y13=y14=4p;
+  y8=y9=5p;
+  pomerioznaci(14);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+  unfill z11--z12--z13--z14--cycle;
+endchar;
+
+beginchar("B",6p#,5p#,0); "Slovo B";
+  x1=x8=0p;
+  x9=x12=x13=x16=1p;
+  x7=x14=x15=3p;
+  x2=x5=x6=x10=x11=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y9=y10=1p;
+  y4=y11=y12=2p;
+  y5=y13=y14=3p;
+  y6=y15=y16=4p;
+  y7=y8=5p;
+  pomerioznaci(16);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+  unfill z9--z10--z11--z12--cycle;
+  unfill z13--z14--z15--z16--cycle;
+endchar;
+
+beginchar("C",6p#,5p#,0); "Slovo C";
+  x9=x10=0p;
+  x1=x4=x5=x8=1p;
+  x2=x7=4p;
+  x3=x6=5p;
+  y1=y2=0p;
+  y3=y4=y10=1p;
+  y5=y6=y9=4p;
+  y7=y8=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("D",6p#,5p#,0); "Slovo D";
+  x1=x6=0p;
+  x7=x10=1p;
+  x2=x5=x8=x9=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y7=y8=1p;
+  y4=y9=y10=4p;
+  y5=y6=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--cycle;
+  unfill z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("E",6p#,5p#,0); "Slovo E";
+  x13=x14=0p;
+  x1=x4=x5=x8=x9=x12=1p;
+  x6=x7=3p;
+  x2=x11=4p;
+  x3=x10=5p;
+  y1=y2=0p;
+  y3=y4=y14=1p;
+  y5=y6=2p;
+  y7=y8=3p;
+  y9=y10=y13=4p;
+  y11=y12=5p;
+  pomerioznaci(14);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--cycle;
+endchar;
+
+beginchar("F",6p#,5p#,0); "Slovo F";
+  x1=x10=0p;
+  x2=x3=x6=x7=1p;
+  x4=x5=3p;
+  x8=x9=5p;
+  y1=y2=0p;
+  y3=y4=2p;
+  y5=y6=3p;
+  y7=y8=4p;
+  y9=y10=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("G",6p#,5p#,0); "Slovo G";
+  x13=x14=0p;
+  x1=x8=x9=x12=1p;
+  x4=x5=2p;
+  x6=x7=x11=4p;
+  x2=x3=x10=5p;
+  y1=y2=0p;
+  y7=y8=y14=1p;
+  y5=y6=2p;
+  y3=y4=3p;
+  y9=y10=y13=4p;
+  y11=y12=5p;
+  pomerioznaci(14);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--cycle;
+endchar;
+
+beginchar("H",6p#,5p#,0); "Slovo H";
+  x1=x12=0p;
+  x2=x3=x10=x11=1p;
+  x4=x5=x8=x9=4p;
+  x6=x7=5p;
+  y1=y2=y5=y6=0p;
+  y3=y4=2p;
+  y9=y10=3p;
+  y7=y8=y11=y12=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("I",2p#,5p#,0); "Slovo I";
+  x1=x4=0p;
+  x2=x3=1p;
+  y1=y2=0p;
+  y3=y4=5p;
+  pomerioznaci(4);
+  fill z1--z2--z3--z4--cycle;
+endchar;
+
+beginchar("J",6p#,5p#,0); "Slovo J";
+  x5=x6=x11=x12=0p;
+  x1=x9=x10=1p;
+  x2=x7=x8=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y8=y9=y12=1p;
+  y10=y11=2p;
+  y6=y7=4p;
+  y4=y5=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("K",6p#,5p#,0); "Slovo K";
+  x1=x11=0p;
+  x2=x9=x10=1p;
+  x4=x8=x5-kr(4,5)*p;
+  x5=x7=5p;
+  y1=y2=y4=y5=0p;
+  y7=y8=y10=y11=5p;
+  z6=whatever[z2,z7]=whatever[z5,z10];
+  z3=whatever[z2,z7]=whatever*(z6-z5)+z4;
+  z9-z8=whatever*(z2-z7);
+  pomerioznaci(11);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--cycle;
+endchar;
+
+beginchar("L",6p#,5p#,0); "Slovo L";
+  x1=x6=0p;
+  x4=x5=1p;
+  x2=x3=5p;
+  y1=y2=0p;
+  y3=y4=1p;
+  y5=y6=5p;
+  pomerioznaci(6);
+  fill z1--z2--z3--z4--z5--z6--cycle;
+endchar;
+
+beginchar("M",6p#,5p#,0); "Slovo M";
+  x1=x12=0p;
+  x2=x3=x11=1p;
+  x4=x10;
+  x5=x6=x9=4p;
+  x7=x8=5p;
+  y1=y2=y6=y7=0p;
+  y3=y5=y11-kr(3,3)*p;
+  y8=y9=y11=y12=5p;
+  z10=whatever[z9,(x11,2p)]=whatever[z11,(x9,2p)];
+  z4-z3=whatever*(z10-z11);
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("N",6p#,5p#,0); "Slovo N";
+  x1=x10=0p;
+  x2=x3=x9=1p;
+  x4=x7=x8=4p;
+  x5=x6=5p;
+  y1=y2=y4=y5=0p;
+  y8=y9-y3=nz(5,3)*p;
+  y6=y7=y9=y10=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("O",6p#,5p#,0); "Slovo O";
+  x7=x8=0p;
+  x1=x6=x9=x12=1p;
+  x2=x5=x10=x11=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y8=y9=y10=1p;
+  y4=y7=y11=y12=4p;
+  y5=y6=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+  unfill z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("P",6p#,5p#,0); "Slovo P";
+  x1=x8=0p;
+  x2=x3=x9=x12=1p;
+  x4=x7=x10=x11=4p;
+  x5=x6=5p;
+  y1=y2=0p;
+  y3=y4=2p;
+  y5=y9=y10=3p;
+  y6=y11=y12=4p;
+  y7=y8=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+  unfill z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("Q",6p#,5p#,0); "Slovo Q";
+  x12=x13=0p;
+  x1=x11=x14=x21=1p;
+  x16=x17=3p;
+  x18-x17=x5-x4=q*p;
+  x2=x10=x19=x20=4p;
+  x5=x6=x8=x9=5p;
+  y1=y2=y4=y5=0p;
+  y6=y17-y16=q*p;
+  y8=y13=y14=y15=1p;
+  y17=y18=2p;
+  y9=y12=y20=y21=4p;
+  y10=y11=5p;
+  z15=whatever[z4,z16];
+  z19=whatever[z6,z18];
+  z3=whatever[z2,z8]=whatever[z4,z16];
+  z7=whatever[z2,z8]=whatever[z6,z18];
+  pomerioznaci(21);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--cycle;
+  unfill z14--z15--z16--z17--z18--z19--z20--z21--cycle;
+endchar;
+
+beginchar("R",6p#,5p#,0); "Slovo R";
+  x1=x11=0p;
+  x2=x3=x12=x15=1p;
+  x7-x4=x6-x5=kr(1,2)*p;
+  x7=x10=x13=x14=4p;
+  x6=x8=x9=5p;
+  y1=y2=y5=y6=0p;
+  y3=y4=y7=2p;
+  y8=y12=y13=3p;
+  y9=y14=y15=4p;
+  y10=y11=5p;
+  pomerioznaci(15);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--cycle;
+  unfill z12--z13--z14--z15--cycle;
+endchar;
+
+beginchar("S",6p#,5p#,0); "Slovo S";
+  x11=x12=x16=0p;
+  x1=x6=x7=x10=x13=1p;
+  x2=x5=x9=x14=x15=4p;
+  x3=x4=x8=5p;
+  y1=y2=0p;
+  y3=y15=y16=1p;
+  y4=y13=y14=2p;
+  y5=y6=y12=3p;
+  y7=y8=y11=4p;
+  y9=y10=5p;
+  pomerioznaci(16);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--cycle;
+endchar;
+
+beginchar("T",6p#,5p#,0); "Slovo T";
+  x6=x7=0p;
+  x1=x8=2p;
+  x2=x3=3p;
+  x4=x5=5p;
+  y1=y2=0p;
+  y3=y4=y7=y8=4p;
+  y5=y6=5p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("U",6p#,5p#,0); "Slovo U";
+  x9=x10=0p;
+  x1=x7=x8=1p;
+  x2=x5=x6=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y6=y7=y10=1p;
+  y4=y5=y8=y9=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("V",6p#,5p#,0); "Slovo V";
+  x7=0p;
+  x6=x3-x4=kr(2,5)*p;
+  x1=2p;
+  x2=3p;
+  x3=5p;
+  y1=y2=0p;
+  y3=y4=y6=y7=5p;
+  z5=whatever*(z1-z7)+z6=whatever*(z2-z3)+z4;
+  pomerioznaci(7);
+  fill z1--z2--z3--z4--z5--z6--z7--cycle;
+endchar;
+
+beginchar("W",6p#,5p#,0); "Slovo W";
+  x1=x12=0p;
+  x2=x10=x11=1p;
+  x3=x9;
+  x4=x7=x8=4p;
+  x5=x6=5p;
+  y1=y2=y4=y5=0p;
+  y8=y10=kr(3,3)*p;
+  y6=y7=y11=y12=5p;
+  z3=whatever[z2,(x4,3p)]=whatever[z4,(x2,3p)];
+  z9-z8=whatever*(z3-z4);
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("X",6p#,5p#,0); "Slovo X";
+  x1=x11=0p;
+  x2=x10=x5-x4=x7-x8=nz(5,5)*p;
+  x5=x7=5p;
+  y1=y2=y4=y5=0p;
+  y7=y8=y10=y11=5p;
+  z3=whatever[z2,z7]=whatever[z4,z11];
+  z6=whatever[z2,z7]=whatever[z5,z10];
+  z9=whatever[z1,z8]=whatever[z5,z10];
+  z12=whatever[z1,z8]=whatever[z4,z11];
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("Y",6p#,5p#,0); "Slovo Y";
+  x8=0p;
+  x7=x4-x5=nz(5,5)*p;
+  x1=x9=2p;
+  x2=x3=3p;
+  x4=5p;
+  y1=y2=0p;
+  y4=y5=y7=y8=5p;
+  z6=whatever[z5,(x8,y1)]=whatever[z7,(x4,y2)];
+  z3-z4=whatever*(z6-z5);
+  z9-z8=whatever*(z6-z7);
+  pomerioznaci(9);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--cycle;
+endchar;
+
+beginchar("Z",6p#,5p#,0); "Slovo Z";
+  x1=x7=x8=x10=0p;
+  x4=x5-x9=nz(5,3)*p;
+  x2=x3=x5=x6=5p;
+  y1=y2=0p;
+  y3=y4=y10=1p;
+  y5=y8=y9=4p;
+  y6=y7=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+%
+% CyrSlova
+%
+
+beginchar("b",6p#,5p#,0); "CyrSlovo B";
+  x1=x10=0p;
+  x6=x7=x11=x14=1p;
+  x9=3p;
+  x2=x5=x8=x12=x13=4p;
+  x3=x4=5p;
+  y1=y2=0p;
+  y3=y11=y12=1p;
+  y4=y13=y14=2p;
+  y5=y6=3p;
+  y7=y8=4p;
+  y9=y10=5p;
+  pomerioznaci(14);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+  unfill z11--z12--z13--z14--cycle;
+endchar;
+
+beginchar("c",7p#,5p#,1p#); "CyrSlovo C";
+  x10=x11=0p;
+  x8=x9=1p;
+  x6=x7=4p;
+  x1=x4=x5=x12=5p;
+  x2=x3=6p;
+  y1=y2=-1p;
+  y11=y12=0p;
+  y3=y4=y7=y8=1p;
+  y5=y6=y9=y10=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("d",8p#,6p#,1p#); "CyrSlovo D";
+  x1=x14=0p;
+  x2=x3=x12=x13=1p;
+  x11=x15=x18=2p;
+  x10=x16=x17=5p;
+  x4=x5=x8=x9=6p;
+  x6=x7=7p;
+  y1=y2=y5=y6=-1p;
+  y3=y4=0p;
+  y7=y8=y13=y14=y15=y16=1p;
+  y9=y12=y17=y18=4p;
+  y10=y11=5p;
+  pomerioznaci(18);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--z13--z14--cycle;
+  unfill z15--z16--z17--z18--cycle;
+endchar;
+
+beginchar("e",6p#,5p#,1p#); "CyrSlovo DZH";
+  x10=x11=0p;
+  x8=x9=1p;
+  x1=x12=2p;
+  x2=x3=3p;
+  x6=x7=4p;
+  x4=x5=5p;
+  y1=y2=-1p;
+  y3=y4=y11=y12=0p;
+  y7=y8=1p;
+  y5=y6=y9=y10=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("f",6p#,6p#,1p#); "CyrSlovo F";
+  x15=x16=0p;
+  x1=x14=x17=x20=1p;
+  x2=x3=x12=x13=x18=x19=2p;
+  x4=x5=x10=x11=x21=x24=3p;
+  x6=x9=x22=x23=4p;
+  x7=x8=5p;
+  y3=y4=-1p;
+  y1=y2=y5=y6=0p;
+  y7=y16=y17=y18=y21=y22=1p;
+  y8=y15=y19=y20=y23=y24=4p;
+  y9=y10=y13=y14=5p;
+  y11=y12=6p;
+  pomerioznaci(24);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--cycle;
+  unfill z17--z18--z19--z20--cycle;
+  unfill z21--z22--z23--z24--cycle;
+endchar;
+
+beginchar("g",6p#,5p#,0); "CyrSlovo G";
+  x1=x6=0p;
+  x2=x3=1p;
+  x4=x5=5p;
+  y1=y2=0p;
+  y3=y4=4p;
+  y5=y6=5p;
+  pomerioznaci(6);
+  fill z1--z2--z3--z4--z5--z6--cycle;
+endchar;
+
+beginchar("h",6p#,5p#,0); "CyrSlovo CH";
+  x8=x9=0p;
+  x6=x7=x10=1p;
+  x1=x4=x5=x11=4p;
+  x2=x3=5p;
+  y1=y2=0p;
+  y10=y11=2p;
+  y5=y6=y9=3p;
+  y3=y4=y7=y8=5p;
+  pomerioznaci(11);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--cycle;
+endchar;
+
+beginchar("i",6p#,5p#,0); "CyrSlovo I";
+  x1=x10=0p;
+  x2=x8=x9=1p;
+  x3=x4=x7=4p;
+  x5=x6=5p;
+  y1=y2=y4=y5=0p;
+  y8=y7-y3=nz(5,3)*p;
+  y6=y7=y9=y10=5p;
+  pomerioznaci(10);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--cycle;
+endchar;
+
+beginchar("j",7p#,5p#,0); "CyrSlovo DJ";
+  x16=x17=0p;
+  x1=x18=1p;
+  x2=x3=x12=x13=2p;
+  x6=x7=x15=3p;
+  x14=4p;
+  x4=x5=x8=x11=5p;
+  x9=x10=6p;
+  y1=y2=y7=y8=0p;
+  y5=y6=y9=1p;
+  y3=y4=y10=2p;
+  y11=y12=3p;
+  y13=y14=y17=y18=4p;
+  y15=y16=5p;
+  pomerioznaci(18);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--
+       z12--z13--z14--z15--z16--z17--z18--cycle;
+endchar;
+
+beginchar("l",7p#,5p#,0); "CyrSlovo L";
+  x1=x12=0p;
+  x2=x10=x11=1p;
+  x3=x4=x9=2p;
+  x5=x6=5p;
+  x7=x8=6p;
+  y1=y2=y6=y7=0p;
+  y3=y11=y12=1p;
+  y4=y5=y10=4p;
+  y8=y9=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("m",9p#,5p#,0); "CyrSlovo LJ";
+  x1=x16=0p;
+  x2=x14=x15=1p;
+  x3=x4=x13=2p;
+  x5=x6=5p;
+  x11=x12=x17=x20=6p;
+  x7=x10=x18=x19=7p;
+  x8=x9=8p;
+  y1=y2=y6=y7=0p;
+  y3=y8=y15=y16=y17=y18=1p;
+  y9=y19=y20=2p;
+  y10=y11=3p;
+  y4=y5=y14=4p;
+  y12=y13=5p;
+  pomerioznaci(20);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--cycle;
+  unfill z17--z18--z19--z20--cycle;
+endchar;
+
+beginchar("n",8p#,5p#,0); "CyrSlovo NJ";
+  x1=x16=0p;
+  x2=x3=x14=x15=1p;
+  x4=x5=x12=x13=4p;
+  x10=x11=x17=x20=5p;
+  x6=x9=x18=x19=6p;
+  x7=x8=7p;
+  y1=y2=y5=y6=0p;
+  y7=y17=y18=1p;
+  y3=y4=y8=y19=y20=2p;
+  y9=y10=y13=y14=3p;
+  y11=y12=y15=y16=5p;
+  pomerioznaci(20);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--
+       z11--z12--z13--z14--z15--z16--cycle;
+  unfill z17--z18--z19--z20--cycle;
+endchar;
+
+beginchar("p",6p#,5p#,0); "CyrSlovo P";
+  x1=x8=0p;
+  x2=x3=1p;
+  x4=x5=4p;
+  x6=x7=5p;
+  y1=y2=y5=y6=0p;
+  y3=y4=4p;
+  y7=y8=5p;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("s",6p#,5p#,0); "CyrSlovo SH";
+  x1=x12=0p;
+  x10=x11=1p;
+  x8=x9=2p;
+  x6=x7=3p;
+  x5=x4=4p;
+  x2=x3=5p;
+  y1=y2=0p;
+  y5=y6=y9=y10=1p;
+  y7=y8=3p;
+  y3=y4=y11=y12=5p;
+  pomerioznaci(12);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--cycle;
+endchar;
+
+beginchar("t",7p#,5p#,0); "CyrSlovo CJ";
+  x13=x14=0p;
+  x1=x15=1p;
+  x2=x3=x9=x10=2p;
+  x12=3p;
+  x11=4p;
+  x4=x5=x8=5p;
+  x6=x7=6p;
+  y1=y2=y5=y6=0p;
+  y3=y4=y7=2p;
+  y8=y9=3p;
+  y10=y11=y14=y15=4p;
+  y12=y13=5p;
+  pomerioznaci(15);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--
+       z10--z11--z12--z13--z14--z15--cycle;
+endchar;
+
+beginchar("u",6p#,5p#,0); "CyrSlovo U";
+  x1=x7=0p;
+  x2=x6=x3-x4=nz(5,5)*p;
+  x3=5p;
+  y1=y2=0p;
+  y3=y4=y6=y7=5p;
+  z5=whatever[z1,z4]=whatever[z6,(x3,y1)];
+  z8=whatever[z1,z4]=whatever*(z5-z6)+z7;
+  pomerioznaci(8);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--cycle;
+endchar;
+
+beginchar("z",8p#,5p#,0); "CyrSlovo ZH";
+  x1=x28=x29=x32=0p;
+  x2=x27=x30=x31=1p;
+  x3=x4=x25=x26=2p;
+  x5=x6=x23=x24=3p;
+  x7=x8=x21=x22=4p;
+  x9=x10=x19=x20=5p;
+  x11=x14=x15=x18=6p;
+  x12=x13=x16=x17=7p;
+  y1=y2=y6=y7=y11=y12=0p;
+  y3=y10=y13=y14=y31=y32=1p;
+  y4=y5=y8=y9=2p;
+  y20=y21=y24=y25=3p;
+  y15=y16=y19=y26=y29=y30=4p;
+  y17=y18=y22=y23=y27=y28=5p;
+  pomerioznaci(32);
+  fill z1--z2--z3--z4--z5--z6--z7--z8--z9--z10--z11--z12--
+       z13--z14--z15--z16--z17--z18--z19--z20--z21--z22--z23--
+       z24--z25--z26--z27--z28--z29--z30--z31--z32--cycle;
+endchar;
+
+%
+% Ligature
+%
+
+ligtable "7": "F": "P": "T": "V": "Y": "g": "u":
+  "d" kern -p#,
+  "l" kern -p#,
+  "m" kern -p#;
+ligtable "B": "b":
+  "7" kern -p#,
+  "T" kern -p#,
+  "V" kern -p#,
+  "Y" kern -p#,
+  "j" kern -p#,
+  "t" kern -p#;
+ligtable "L": "j": "m": "n": "t":
+  "7" kern -p#,
+  "T" kern -2p#,
+  "V" kern -p#,
+  "Y" kern -2p#,
+  "h" kern -4p#,
+  "j" kern -p#,
+  "t" kern -p#;
+ligtable "c": "d":
+  "7" kern -p#,
+  "T" kern -p#,
+  "V" kern -p#,
+  "Y" kern -p#,
+  "h" kern -p#,
+  "j" kern -p#,
+  "t" kern -p#;
+
+font_quad=9p#;
+font_normal_space=4p#;
+font_identifier="CUBE";
+font_coding_scheme="ASCII";
+end.

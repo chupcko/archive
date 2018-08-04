@@ -1,0 +1,28 @@
+.main
+{
+  background-color: rgb(80%, 80%, 80%);
+  color: rgb(0%, 0%, 0%);
+  font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+}
+
+.left
+{
+  float: left;
+}
+
+.clear
+{
+  clear: both;
+}
+
+.padding
+{
+  padding-left: 1em;
+}
+
+.link
+{
+  cursor: pointer;
+  text-decoration: underline;
+}

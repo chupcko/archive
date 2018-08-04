@@ -1,0 +1,10 @@
+              = [\s\t\n] .
+plus          = \+ .
+minus         = \- .
+puta          = \* .
+podeljeno     = \/ .
+oct_broj      = 0 [0-7]* .
+dec_broj      = [0-9]+ .
+hex_broj      = 0 [xX] [0-9a-fA-F]+ .
+leva_zagrada  = \( .
+desna_zagrada = \) .

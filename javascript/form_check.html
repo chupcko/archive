@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <title>naslov</title>
+    <script type="text/javascript">
+      function validate_form1()
+      {
+        var r = true;
+
+        if(/^123$/.exec(document.getElementById("form1").name1.value) == null)
+        {
+          document.getElementById("form1name1").style.backgroundColor = "#FFECCE";
+          document.getElementById("form1name1s").style.display = "";
+          r = false;
+        }
+        else
+        {
+          document.getElementById("form1name1").style.backgroundColor = "";
+          document.getElementById("form1name1s").style.display = "none";
+        }
+        if(/^abc$/.exec(document.getElementById("form1").name2.value) == null)
+        {
+          document.getElementById("form1name2").style.backgroundColor = "#FFECCE";
+          document.getElementById("form1name2s").style.display = "";
+          r = false;
+        }
+        else
+        {
+          document.getElementById("form1name2").style.backgroundColor = "";
+          document.getElementById("form1name2s").style.display = "none";
+        }
+        return r;
+      }
+
+      function validate_form2()
+      {
+        var r = true;
+
+        if(/^123$/.exec(document.getElementById("form2").name1.value) == null)
+        {
+          document.getElementById("form2name1").style.backgroundColor = "#FFECCE";
+          document.getElementById("form2name1s").style.display = "";
+          r = false;
+        }
+        else
+        {
+          document.getElementById("form2name1").style.backgroundColor = "";
+          document.getElementById("form2name1s").style.display = "none";
+        }
+        if(/^abc$/.exec(document.getElementById("form2").name2.value) == null)
+        {
+          document.getElementById("form2name2").style.backgroundColor = "#FFECCE";
+          document.getElementById("form2name2s").style.display = "";
+          r = false;
+        }
+        else
+        {
+          document.getElementById("form2name2").style.backgroundColor = "";
+          document.getElementById("form2name2s").style.display = "none";
+        }
+        return r;
+      }
+
+      function submit_form1()
+      {
+        if(validate_form1())
+          document.getElementById("form1").submit();
+      }
+
+      function submit_form2()
+      {
+        if(validate_form2())
+          document.getElementById("form2").submit();
+      }
+    </script>
+  </head>
+  <body onload="validate_form1(); validate_form2();">
+    <form id="form1" action="/" method="GET" onsubmit="return validate_form1();">
+    <table>
+      <tr>
+        <td><label>Name1:</label></td>
+        <td><input type="text" id="form1name1" name="name1" value="" onchange="validate_form1();"></td>
+        <td><span id="form1name1s">Enter "123"</span></td>
+      </tr>
+      <tr>
+        <td><label>Name2:</label></td>
+        <td><input type="text" id="form1name2" name="name2" value="" onchange="validate_form1()"></td>
+        <td><span id="form1name2s">Enter "abc"</span></td>
+      </tr>
+      <tr>
+        <td><a href="javascript:submit_form1();">enter</a></td>
+        <td>&nbsp</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    </form>
+    <hr>
+    <form id="form2" action="/" method="GET" onsubmit="return validate_form2();">
+    <table>
+      <tr>
+        <td><label>Name1:</label></td>
+        <td><input type="text" id="form2name1" name="name1" value="" onchange="validate_form2();"></td>
+        <td><span id="form2name1s">Enter "123"</span></td>
+      </tr>
+      <tr>
+        <td><label>Name2:</label></td>
+        <td><input type="text" id="form2name2" name="name2" value="" onchange="validate_form2();"></td>
+        <td><span id="form2name2s">Enter "abc"</span></td>
+      </tr>
+      <tr>
+        <td><a href="javascript:submit_form2();">enter</a></td>
+        <td>&nbsp</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    </form>
+  </body>
+<html>

@@ -1,0 +1,15 @@
+RE_lex_ILI      = \| .
+RE_lex_ZVEZDICA = \* .
+RE_lex_PLUS     = \+ .
+RE_lex_OPCIJA   = \? .
+RE_lex_KAPA     = \^ .
+RE_lex_DOLAR    = \$ .
+RE_lex_L_U_ZAG  = \[ .
+RE_lex_D_U_ZAG  = \] .
+RE_lex_L_ZAG    = \( .
+RE_lex_D_ZAG    = \) .
+RE_lex_MANJE    = < .
+RE_lex_VECE     = > .
+RE_lex_MINUS    = \- .
+RE_lex_AKCIJA   = { ([^\/}] | \/ [^])+ } .
+RE_lex_SLOVO    = [^\|\*\+\?\^\$\[\]\(\)<>\-\/{] | \/ [^] .

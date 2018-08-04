@@ -1,0 +1,15 @@
+a:=1;
+b:="";
+
+do
+begin
+
+  a:=a+1;
+  b:=b."*";
+  debug();
+
+end
+until a=10;
+
+debug();
+print(substitute("Moooooooja mamaaaaaa najbolje kuha","[oai]+","1"),"\n");

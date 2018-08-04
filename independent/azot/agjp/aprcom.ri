@@ -1,0 +1,6 @@
+AC_lex_L_U_ZAG = \[ .
+AC_lex_D_U_ZAG = \] .
+AC_lex_OPCIJA  = \? .
+AC_lex_MINUS   = \- .
+AC_lex_AKCIJA  = { [cCdDiImMsS] \= [\+\-]? [0-9]+ } .
+AC_lex_SLOVO   = [^\[\]\-\?\/{] | \/ [^] .

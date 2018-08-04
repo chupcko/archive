@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+
+sub citajred
+{
+  my $timeout;
+  my $reci;
+  my $brojreci=1;
+  my $red="";
+  my $i;
+  $timeout=shift(@_);
+  foreach $i (@_)
+  {
+    $reci[$brojreci]=$i;
+    $brojreci++;
+  }
+  eval
+  {
+    local $SIG{ALRM}=sub
+      {
+        die "alarm\n";
+      };
+    alarm $timeout;
+    system "stty","-icanon","eol","\001";
+    OUT:while(1)
+    {
+      $red=$red.getc(STDIN);
+      for($i=1;$i<$brojreci;$i++)
+      {
+        last OUT if $red =~ $reci[$i];
+      }
+    }
+    system "stty","icanon","eol","^@";
+    alarm 0;
+  };
+  if($@)
+  {
+    die unless $@ eq "alarm\n";
+    return 0;
+  }
+  else
+  {
+    return $i;
+  }
+}
+
+print "AT&FM1L3S0=0S2=255S7=60S11=50X3\r";
+exit 1 unless citajred(10,"OK","ERROR")==1;
+for($i=0;$i<10;$i++)
+{
+  print "ATD3060606\r";
+  exit 0 if citajred(75,"CONNECT","ERROR","BUSY","NO CARRIER","NO DIALTONE")==1;
+  sleep 5;
+}
+
+exit 1;

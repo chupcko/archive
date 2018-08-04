@@ -1,0 +1,9 @@
+USE rr;
+
+INSERT INTO rr_requests VALUES (0, 'ep/search', 'ep/search.php', NULL, FALSE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'query', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'ep/emoticon/view', 'ep/emoticon/view.php', NULL, FALSE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');

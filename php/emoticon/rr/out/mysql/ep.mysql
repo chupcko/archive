@@ -1,0 +1,25 @@
+DROP DATABASE IF EXISTS ep;
+CREATE DATABASE ep CHARACTER SET utf8 COLLATE utf8_bin;
+GRANT ALL PRIVILEGES ON ep.* TO 'ep'@'localhost' IDENTIFIED BY 'ep';
+FLUSH PRIVILEGES;
+USE ep;
+
+DROP TABLE IF EXISTS ep_emoticon;
+CREATE TABLE ep_emoticon
+(
+  id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  emoticon CHAR(128)       NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY ep_emoticon__emoticon (emoticon)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS ep_description;
+CREATE TABLE ep_description
+(
+  id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  emoticon_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  description CHAR(128)       NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  FOREIGN KEY (emoticon_id) REFERENCES ep_emoticon (id) ON DELETE CASCADE,
+  UNIQUE KEY ep_description__id__description (id, description)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;

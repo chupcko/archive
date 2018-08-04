@@ -1,0 +1,36 @@
+#!/home/chupcko/bin/azot
+
+function korisnik(name) is
+begin
+  openr(dat,"/etc/passwd");
+  while not eof(dat) do
+  begin
+    s:=read(dat,"\n");
+    if s<>"" then
+    begin
+      split(s,":",N);
+      if N[1]=name then
+        return N[5];
+    end
+  end;
+  close(dat);
+end;
+
+while not eof() do
+begin
+  s:=input("\n");
+  if regexp(s,"stil logged in$") then continue;
+  if regexp(s,"^runlevel") then continue;
+  if regexp(s,"^reboot$") then continue;
+  if regexp(s,"^shutdown") then continue;
+  if regexp(s,"^wtmp begins") then continue;
+  if s="" then continue;
+  if regexp(s,"^<[a-z0-9_]+>][*/(<[0-9][0-9]>:<[0-9][0-9]>/)$",n) then
+  begin
+    vreme[n[1]]:=60*n[2]+n[3]+vreme[n[1]];
+    puta[n[1]]:=1+puta[n[1]];
+  end;
+end;
+
+for i in vreme do
+  print(korisnik(i)," je radio ",puta[i]," puta i ",vreme[i]," minuta\n");

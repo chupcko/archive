@@ -1,0 +1,4 @@
+ite(
+ite(A,P,1),
+ite(ite(A,ite(P,Q,R),1),ite(A,Q,1),1),1
+)

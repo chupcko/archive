@@ -1,0 +1,64 @@
+#!/bin/sh
+
+echo -n "Host:		[localhost]	= "
+read HOST
+if [ "$HOST" = "" ]
+then
+  HOST=localhost
+fi
+
+echo -n "User:		[root]		= "
+read USER
+if [ "$USER" = "" ]
+then
+  USER=root
+fi
+
+echo -n "Password:	[]		= "
+read PASSWORD
+
+echo -n "Database:	[session]	= "
+read DATABASE
+if [ "$DATABASE" = "" ]
+then
+  DATABASE=session
+fi
+
+echo -n "Table:		[session]	= "
+read TABLE
+if [ "$TABLE" = "" ]
+then
+  TABLE=session
+fi
+
+echo
+echo "Host:		"\'$HOST\'
+echo "User:		"\'$USER\'
+echo "Password:	"\'$PASSWORD\'
+echo "Database:	"\'$DATABASE\'
+echo "Table:		"\'$DATABASE\'
+echo
+echo "Press <ENTER> to continue or <CTRL>+<C>"
+read ANSWER
+
+echo "=== Initializion MySQL ==="
+cat init.mysql |\
+sed "s/{{host}}/$HOST/g" |\
+sed "s/{{user}}/$USER/g" |\
+sed "s/{{password}}/$PASSWORD/g" |\
+sed "s/{{database}}/$DATABASE/g" |\
+sed "s/{{table}}/$TABLE/g" |\
+mysql -h$HOST -u$USER -p$PASSWORD
+
+echo "=== Initializion session.php ==="
+TMPFILE=/tmp/MSESSION.$$
+umask 022
+cat msession.php |\
+sed "s/{{host}}/$HOST/g" |\
+sed "s/{{user}}/$USER/g" |\
+sed "s/{{password}}/$PASSWORD/g" |\
+sed "s/{{database}}/$DATABASE/g" |\
+sed "s/{{table}}/$TABLE/g" > $TMPFILE
+mv -f $TMPFILE msession.php
+
+echo "=== DONE ==="

@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+
+($them,$port)=@ARGV;
+$port=6667 unless $port;
+$them='irc.bt.net' unless $them;
+
+$SIG{'INT'}='dokill';
+sub dokill
+{
+  kill 9,$child if $child;
+}
+
+use Socket;
+
+$sockaddr='S n a4 x8';
+chop($hostname=`hostname`);
+
+($name,$aliases,$proto)=getprotobyname('tcp');
+($name,$aliases,$port)=getservbyname($port,'tcp') unless $port=~/^\d+$/;
+($name,$aliases,$type,$len,$thisaddr)=gethostbyname($hostname);
+($name,$aliases,$type,$len,$thataddr)=gethostbyname($them);
+
+$this=pack($sockaddr,AF_INET,0,$thisaddr);
+$that=pack($sockaddr,AF_INET,$port,$thataddr);
+
+socket(S,PF_INET,SOCK_STREAM,$proto) || die "socket: $!";
+bind(S,$this) || die "bind: $!";
+connect(S,$that) || die "connect: $!";
+
+select(S);
+$|=1;
+select(stdout);
+
+sub ssend
+{
+  ($s)=@_;
+  print S $s;
+  print "***".$s;
+}
+
+ssend("NICK MatF\n");
+ssend("USER chupcko alas.matf.bg.ac.yu 0 :Matematicki Fakultet\n");
+ssend("JOIN #matf\n");
+
+if($child=fork)
+{
+  while(<>)
+  {
+    print S;
+  }
+  sleep 3;
+  do dokill();
+}
+else
+{
+  while (<S>)
+  {
+    ssend("PONG :$1\n")
+      if(/PING :(.*)/);
+
+    ssend("PRIVMSG $1 :Dobro dosli\n")
+      if(/:(.*)!.* JOIN .*/);
+
+    if(/:(.*)!.* PRIVMSG [mM][aA][tT][fF] .*/)
+    {
+      $s=$1;
+      ssend("PRIVMSG $1 :Ne odogovaram na privatne poruke\n")
+        if($s!~/[mM][aA][tT][fF]/)
+    }
+
+    print;
+  }
+}

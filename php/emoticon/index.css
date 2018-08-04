@@ -1,0 +1,179 @@
+.body
+{
+  background-color: rgb(100%, 80%, 100%);
+  color: rgb(20%, 10%, 20%);
+  font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+}
+
+.center
+{
+  text-align: center;
+}
+
+.frame
+{
+  background-color: rgb(100%, 90%, 100%);
+  border-color: rgb(20%, 10%, 20%);
+  border-radius: 5px;
+  border-style: double;
+  border-width: 6px;
+  margin: 5px;
+  padding: 5px;
+}
+
+.main
+{
+  display: inline-block;
+  text-align: left;
+}
+
+.shadow
+{
+  text-shadow: 0px 0px 5px rgb(100%, 0%, 0%);
+}
+
+.title
+{
+  font-size: 24pt;
+  font-weight:bold;
+}
+
+.input
+{
+  background-color: rgb(100%, 90%, 100%);
+  border-color: rgb(20%, 10%, 20%);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  color: rgb(20%, 10%, 20%);
+  font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+  margin: 5px;
+  padding: 5px;
+}
+
+.input:focus
+{
+  border-color: rgb(100%, 0%, 0%);
+}
+
+.submit
+{
+  background-color: rgb(100%, 70%, 100%);
+  border-color: rgb(20%, 10%, 20%);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  color: rgb(20%, 10%, 20%);
+  font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+  margin-bottom: 5px;
+  margin-left: 0px;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.submit:active,
+.submit:link,
+.submit:visited
+{
+  color: rgb(20%, 10%, 20%);
+}
+
+.submit:focus
+{
+  border-color: rgb(100%, 0%, 0%);
+  outline-style: none;
+}
+
+.submit:hover
+{
+  text-decoration: underline;
+}
+
+.signature
+{
+  font-size: 10pt;
+}
+
+.status
+{
+  background-color: rgb(100%, 80%, 100%);
+  border-color: rgb(20%, 10%, 20%);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: rgb(100%, 0%, 0%);
+  margin: 5px;
+  padding: 5px;
+  width: 100em;
+}
+
+.hidden
+{
+  display: none;
+}
+
+.padding
+{
+  padding: 5px;
+}
+
+.searchItem
+{
+  border-bottom-width: 1px;
+  border-color: rgb(20%, 10%, 20%);
+  border-left-width: 1px;
+  border-radius: 5px;
+  border-right-width: 0px;
+  border-style: solid;
+  border-top-width: 1px;
+  display: inline-block;
+  margin: 5px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+  padding-right: 0px;
+  padding-top: 6px;
+}
+
+.searchEmoticon
+{
+  display: inline-block;
+  width: 10em
+}
+
+.searchView
+{
+  background-color: rgb(100%, 70%, 100%);
+  border-color: rgb(20%, 10%, 20%);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  color: rgb(20%, 10%, 20%);
+  font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+  margin: 0px;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.searchView:active,
+.searchView:link,
+.searchView:visited
+{
+  color: rgb(20%, 10%, 20%);
+}
+
+.searchView:focus
+{
+  border-color: rgb(100%, 0%, 0%);
+  outline-style: none;
+}
+
+.searchView:hover
+{
+  text-decoration: underline;
+}

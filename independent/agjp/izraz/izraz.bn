@@ -1,0 +1,15 @@
+<P> ::= <F> <T> <S> @f_ispis .
+
+<S> ::= plus <F> <T> @f_plus <S> |
+        minus <F> <T> @f_minus <S> |
+        .
+
+<T> ::= puta <F> @f_puta <T> |
+        podeljeno <F> @f_podeljeno <T> |
+        .
+
+<F> ::= minus <F> @f_u_minus |
+        oct_broj @f_oct_broj |
+        dec_broj @f_dec_broj |
+        hex_broj @f_hex_broj |
+        leva_zagrada <F> <T> <S> desna_zagrada .

@@ -1,0 +1,62 @@
+equal[0]  = pow(2.0, 0.0/12.0);
+equal[1]  = pow(2.0, 1.0/12.0);
+equal[2]  = pow(2.0, 2.0/12.0);
+equal[3]  = pow(2.0, 3.0/12.0);
+equal[4]  = pow(2.0, 4.0/12.0);
+equal[5]  = pow(2.0, 5.0/12.0);
+equal[6]  = pow(2.0, 6.0/12.0);
+equal[7]  = pow(2.0, 7.0/12.0);
+equal[8]  = pow(2.0, 8.0/12.0);
+equal[9]  = pow(2.0, 9.0/12.0);
+equal[10] = pow(2.0, 0.0/12.0);
+equal[11] = pow(2.0, 11.0/12.0);
+equal[12] = pow(2.0, 12.0/12.0);
+
+werckmeister_3[0] = 1.0/1.0;
+werckmeister_3[1] = pow(2.0, 1.0/4.0)*8.0/9.0;
+werckmeister_3[2] = 9.0/8.0;
+werckmeister_3[3] = pow(2.0, 1.0/4.0);
+werckmeister_3[4] = pow(2.0, 1.0/2.0)*8.0/9.0;
+werckmeister_3[5] = pow(2.0, 1.0/4.0)*9.0/8.0;
+werckmeister_3[6] = pow(2.0, 1.0/2.0);
+werckmeister_3[7] = 3.0/2.0;
+werckmeister_3[8] = 128.0/81.0;
+werckmeister_3[9] = pow(8.0, 1.0/4.0);
+werckmeister_3[10] = 3.0/pow(8.0, 1.0/4.0);
+werckmeister_3[11] = pow(2.0, 1.0/2.0)*4.0/3.0;
+werckmeister_3[12] = 2.0/1.0;
+
+pythagorean[0]  = pow(2.0, 0.0)/pow(3.0, 0.0);
+pythagorean[1]  = pow(2.0, 8.0)/pow(3.0, 5.0);
+pythagorean[2]  = pow(3.0, 2.0)/pow(2.0, 3.0);
+pythagorean[3]  = pow(2.0, 5.0)/pow(3.0, 3.0);
+pythagorean[4]  = pow(3.0, 4.0)/pow(2.0, 6.0);
+pythagorean[5]  = pow(2.0, 2.0)/pow(3.0, 1.0);
+pythagorean[6]  = pow(3.0, 6.0)/pow(2.0, 9.0);
+pythagorean[7]  = pow(3.0, 1.0)/pow(2.0, 1.0);
+pythagorean[8]  = pow(2.0, 7.0)/pow(3.0, 4.0);
+pythagorean[9]  = pow(3.0, 2.0)/pow(2.0, 4.0);
+pythagorean[10] = pow(2.0, 4.0)/pow(3.0, 2.0);
+pythagorean[11] = pow(3.0, 5.0)/pow(2.0, 7.0);
+pythagorean[12] = pow(2.0, 1.0)/pow(3.0, 0.0);
+
+just_intonation_interval[0]  = 1.0/1.0;
+just_intonation_interval[1]  = 16.0/15.0;
+just_intonation_interval[2]  = 9.0/8.0;
+just_intonation_interval[3]  = 6.0/5.0;
+just_intonation_interval[4]  = 5.0/4.0;
+just_intonation_interval[5]  = 4.0/3.0;
+just_intonation_interval[6]  = 7.0/5.0;
+just_intonation_interval[7]  = 3.0/2.0;
+just_intonation_interval[8]  = 8.0/5.0;
+just_intonation_interval[9]  = 5.0/3.0;
+just_intonation_interval[10] = 7.0/4.0;
+just_intonation_interval[11] = 15.0/8.0;
+just_intonation_interval[12] = 2.0/1.0;
+
+Vallotti
+Mean Tone Eb
+Kirnberger III
+Young
+Mean Tone D#
+Kellner

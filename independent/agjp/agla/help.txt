@@ -1,0 +1,97 @@
+Leksika u RI formatu:
+
+#belina               = [\f \n \r \s \t \v] | \$ [^ \$]* \$ .
+#slovo                = [_ a-z A-Z] .
+#slovo_cifra          = [_ a-z A-Z 0-9] .
+#oct                  = [0-7] .
+
+                      = #belina .
+IME                   = #slovo #slovo_cifra * / #belina * \= .
+VARIJABLA             = \# #slovo #slovo_cifra * .
+SLOVO                 =
+  [^ \f \n \r \s \t \v \= \. \/ \[ \] \( \) \| \* \+ \? \^ \- \\ \$ \#] |
+  \\ ( [^ 0-7] | #oct #oct? #oct? ) .
+JEDNAKO               = \= .
+TACKA                 = \. .
+RAZLIKA               = \/ .
+LEVA_UGLASTA_ZAGRADA  = \[ .
+DESNA_UGLASTA_ZAGRADA = \] .
+LEVA_ZAGRADA          = \( .
+DESNA_ZAGRADA         = \) .
+ILI                   = \| .
+ZVEZDICA              = \* .
+PLUS                  = \+ .
+PITALICA              = \? .
+XOR                   = \^ .
+MINUS                 = \- .
+
+
+Sintaksa u BN formatu:
+
+<A> ::=
+  IME @g_ime JEDNAKO <C> <F> <E> <D> @g_dokle <B> @g_zavrsi_spoji TACKA <A> |
+  VARIJABLA @g_varijabla JEDNAKO <C> <F> <E> <D> @g_zapamti TACKA <A> |
+  JEDNAKO <C> <F> <E> <D> @g_spoji_del TACKA <A> |
+  .
+
+<B> ::=
+  RAZLIKA <C> <F> <E> <D> @r_tacka |
+  .
+
+<C> ::=
+  VARIJABLA @r_varijable |
+  SLOVO @s_slovo @r_slova |
+  LEVA_UGLASTA_ZAGRADA <G> DESNA_UGLASTA_ZAGRADA @r_slova |
+  LEVA_ZAGRADA <C> <F> <E> <D> DESNA_ZAGRADA .
+
+<D> ::=
+  ILI <C> <F> <E> @r_ili <D> |
+  .
+
+<E> ::=
+  <C> <F> @r_tacka <E> |
+  .
+
+<F> ::=
+  ZVEZDICA @r_plus @r_pitalica <F> |
+  PLUS @r_plus <F> |
+  PITALICA @r_pitalica <F> |
+  .
+
+<G> ::=
+  SLOVO @s_slovo <K> <J> <H> |
+  XOR <I> .
+
+<H> ::=
+  XOR SLOVO @s_slovo <K> <J> @s_razlika |
+  .
+
+<I> ::=
+  SLOVO @s_slovo <K> <J> @s_komplement |
+  @s_sva_slova .
+
+<J> ::=
+  SLOVO @s_slovo <K> @s_unija <J> |
+  .
+
+<K> ::=
+  MINUS SLOVO @s_slovo @s_od_do |
+  .
+
+
+Skracenice u imenu promenljivih:
+
+br BRoj
+du DUzina
+im IMe
+ss Skup Slova
+ko KOpija
+lx LeXema
+pp stek (Push Pop)
+pr PRelazak
+sl SLovo
+so skup (Set Of)
+st STanje
+va VArijabla
+vl VeLicina
+za ZAvrsno

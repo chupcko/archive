@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>RnR Manual</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+      body
+      {
+        background-color: rgb(100%, 100%, 100%);
+        color: rgb(0%, 0%, 0%);
+        font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+        font-size: 12pt;
+      }
+
+      a,
+      a:active,
+      a:link,
+      a:visited
+      {
+        color: rgb(0%, 0%, 0%);
+        text-decoration: none;
+      }
+
+      a:focus,
+      a:hover
+      {
+        background-color: rgb(90%, 90%, 90%);
+        outline-style: none;
+      }
+
+      pre
+      {
+        background-color: rgb(90%, 90%, 90%);
+        border-color: rgb(0%, 0%, 0%);
+        border-style: solid;
+        border-width: 2px;
+        border-radius: 4px;
+        font-size: 10pt;
+        padding: 1em;
+      }
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    <h1>RnR</h1>
+    RnR is lite PHP framework for making simple and easy request services.<br/>
+    Writen by Goran "<a href="http://www.chupcko.org/">CHUPCKO</a>" Lazic,
+    published with MIT license.
+    <h3>Instaliranje</h3>
+    ...
+    <h3>Osnove</h3>
+    Glavni koncept RnR su zahtevi. Svaki zahtev se indetifikuje pathom, tako sto se okida
+    rnr.php sa pathom zahteva poslat kao PATH_INFO. Na primer zahtev /foo/bar se okida sledecim URL-om:
+    http://yourhost/dir/rnr.php/foo/bar.
+    Zahtev treba da vrati JSON oblika:
+    <pre>
+{
+  "request":"/test/increment",
+  "status":"ok",
+  "result":{
+    "value":1,
+    "extra":0
+  }
+}
+</pre>
+    ili oblika:
+    <pre>
+{
+  "request":"/auth/info",
+  "status":"error",
+  "code":402,
+  "message":"First authenticate"
+}
+</pre>
+    request je string sa zahtevom, status moze biti "ok", "bad", "error" ili "fatal".
+    "ok" i "bad" odgovor ima result koji moze biti bilo sta.
+    "error" i "fatal" odgovor imaju code i  message koji je uvek string.
+    <h3>Struktura</h3>
+    ...
+    <h3>Zahtev</h3>
+    Za novi zahtev /foo/bar u classes direktorijumu se napravi direktorijum foo i u njemu
+    fajl bar.php koji treba da bude sledeceg oblika:
+    <pre>
+namespace foo\bar
+{
+
+  if(isset($rnr_pass) === false or $rnr_pass !== true)
+    exit();
+
+  class main implements \rnr\main
+  {
+    public function run()
+    {
+      #
+      # Do something
+      #
+
+      if($have_error)
+        return "Error";
+
+      #
+      # Do something
+      #
+
+      return \rnr\out::ok();
+    }
+  }
+
+}
+</pre>
+    unutar namespacea foo\bar deklarise se klasa main implementacije \rnr\main koja ima
+    obevznu metodu run bez argumenata.<br/>
+    Kada se pozove zahtev /foo/bar izvrsava se ova run metoda, koja mora da vrati true, ili neki string.
+    Ako je vracen string, onda se taj string prikaze kao greska.
+    U slucaju da je vracen true, ispis mora da odradi metoda run. Metode \rnd\out::ok i \rnd\out::ok_json
+    ujedno vracaju true, tako da se moze iskoristiti oblik return \rnd\out::ok().
+    <p/>
+    Dakle svaki zahtev ima svoj php fajl, sa odgovarajucim namespace-om, i klasom main, koja ima metodu run.
+    <h3>Argumenti</h3>
+
+
+
+
+
+    \rnr\in::register_mandatory_server(&$variable, $name)
+    \rnr\in::register_mandatory_get(&$variable, $name)
+    \rnr\in::register_mandatory_post(&$variable, $name)
+    \rnr\in::register_mandatory_cookie(&$variable, $name)
+    \rnr\in::register_mandatory_argument(&$variable, $name)
+    \rnr\in::register_mandatory_file(&$variable, $name)
+    \rnr\in::register_server(&$variable, $name, $default = false)
+    \rnr\in::register_get(&$variable, $name, $default = false)
+    \rnr\in::register_post(&$variable, $name, $default = false)
+    \rnr\in::register_cookie(&$variable, $name, $default = false)
+    \rnr\in::register_argument(&$variable, $name, $default = false)
+    \rnr\in::register_file(&$variable, $name, $default = false)
+
+
+
+
+
+
+
+
+
+    ...
+    <h3>mysql</h3>
+    <h3>auth</h3>
+
+    $auth = new \rnr\auth(\rnr\conf::AUTH);
+    $auth->register($username, $password)
+    $auth->allow($license = true)
+    $auth->unregister()
+    $auth->user_id
+    $auth->username
+    $auth->session
+
+
+
+
+  </body>
+</html>

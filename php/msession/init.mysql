@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS {{database}};
+USE {{database}};
+DROP TABLE IF EXISTS {{table}};
+CREATE TABLE {{table}}
+(
+  name varchar(32) NOT NULL default '',
+  id varchar(32) NOT NULL default '',
+  data blob NOT NULL,
+  date datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (name,id)
+)

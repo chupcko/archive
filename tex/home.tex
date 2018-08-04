@@ -1,0 +1,26 @@
+%
+% \home 1|2|3|4|5|6|7|8|9|0 \endhome
+%
+\catcode`@=11
+\def\@vr{\vrule height .5em depth .3em}
+{%
+  \catcode`|=\active
+  \gdef\home{%
+    \bgroup
+      \catcode`|=\active
+      \def|##1{\hbox to 1em{\hfil\tt##1\hfil}\@vr}%
+      \lower.3em\hbox\bgroup
+        \vbox\bgroup
+          \hbox\bgroup
+            \@vr
+            |
+  }%
+}%
+  \def\endhome{%
+          \egroup
+          \hrule
+        \egroup
+      \egroup
+    \egroup
+  }%
+\catcode`@=12

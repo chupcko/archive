@@ -1,0 +1,4 @@
+-Napravi primer telefonskog imenika
+-Napisi dokumentaciju
+-Napravi vise modela autorizacije i ostalog
+...

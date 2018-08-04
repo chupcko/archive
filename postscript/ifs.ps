@@ -1,0 +1,53 @@
+%!
+
+% x y n
+/ifs_tacke
+{
+  8 dict begin
+  /n exch def
+  /y exch def
+  /x exch def
+  n
+  {
+    newpath
+    x y moveto
+    1 72 div dup rlineto
+    stroke
+    /i rand VMatrice mod def
+    /x1 Matrice i get 0 get x mul Matrice i get 1 get y mul add Matrice i get 4 get add def
+    /y1 Matrice i get 2 get x mul Matrice i get 3 get y mul add Matrice i get 5 get add def
+    /x x1 def
+    /y y1 def
+  }
+  repeat
+  end
+} def
+
+/ifs
+{
+  2 dict begin
+  /Matrice exch def
+  /VMatrice Matrice length def
+  0 0 10000 ifs_tacke
+  end
+} def
+
+0.005 setlinewidth
+72 72 scale
+2 2 scale
+2 2 translate
+
+%[
+%  [ 0.5 0 0 0.5 0    0   33 ]
+%  [ 0.5 0 0 0.5 0.5  0   33 ]
+%  [ 0.5 0 0 0.5 0.25 0.5 34 ]
+%] ifs showpage
+
+[
+  [  0     0     0    0.16 0 0    1  ]
+  [  0.85  0.04 -0.04 0.85 0 0.6  85 ]
+  [  0.2  -0.26  0.23 0.22 0 0.6  7  ]
+  [ -0.15  0.28  0.26 0.24 0 0.44 7  ]
+] ifs showpage
+
+quit

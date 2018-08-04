@@ -1,0 +1,40 @@
+#!/usr/bin/wish
+
+label .counter -text "stop 0" -relief raised -width 20
+
+set igra 1
+set broj 0
+set brojim 0
+
+button .druck -text DRUK -width 10 -height 10 -command {
+  if $igra {
+    if {! $broj} {
+      set brojim 1
+      set posao [after 1000 {
+        set igra 0
+        set brojim 0
+       .counter config -text [format "stop %d" $broj]
+      }]
+    }
+    set broj [expr $broj + 1]
+    .counter config -text [format "play %d" $broj]
+  }
+}
+
+button .reset -text Reset -command {
+  set igra 1
+  set broj 0
+  if $brojim {
+    set brojim 0
+    after cancel $posao
+  }
+  .counter config -text "stop 0"
+}
+
+pack .druck -side top -fill both -expand yes
+pack .reset -side left  -fill both -expand yes
+pack .counter -side right -fill both
+
+bind . <Control-c> {destroy .}
+bind . <Control-q> {destroy .}
+focus .

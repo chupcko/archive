@@ -1,0 +1,711 @@
+\documentstyle[11pt,a4]{article}
+
+  \def\d{d\kern-0.4em\char"16\kern-0.1em}
+  \def\hs{\hspace*{1em}}
+  \def\s{\hspace*{0.55em}}
+  \def\t#1{{\tt #1}}
+  \def\x{\^\space}
+
+  \title{Pribli\v{z}no upore{\d}ivanje niski}
+  \author{Goran Lazi\'c}
+  \date{Matemati\v{c}ki fakultet, BEOGRAD}
+
+\begin{document}
+%
+%
+  \maketitle
+  \noindent
+%
+%
+  \section{Uvod}
+    Za razliku od ``obi\v{c}nog'' upore{\d}ivanja, \v{c}iji je rezultat
+    informacija o identi\v{c}nosti dva objekta, rezultat pribli\v{z}nog
+    upore{\d}ivanja je neka procena razlike izme{\d}u dva objekta.
+    Na primer, ako je upore{\d}ivanje jednakost u metri\v{c}kom prostoru
+    funkcija, pribli\v{z}no upore{\d}ivanje je neka funkija koja ra\v{c}una
+    razliku izme{\d}u dve funkcije (recimo
+    $\int_{-\infty}^{+\infty}|f(x)-g(x)|dx$).\\
+    Vo{\d}eni idejom koju mo\v{z}emo primeniti na funkcijama, uvodimo opis
+    pribli\v{z}nog upore{\d}ivanja niski preko bilo koje funkcije razlike
+    dve niske.
+    Dakle glavni problem se sastoju u tome da prona{\d}emo takvu funkciju
+    i da opi\v{s}emo njeno izra\v{c}unavanje.
+    Pre svega uvodimo objekte kojima baratamo.\\
+    \\
+    Neki kona\v{c}an, neprazan skup zva\'cemo {\bf azbukom}.\\
+    Elemente azbuke zva\'cemo {\bf slovima}.\\
+    {\bf Niskom $x$} nad odre{\d}enom azbukom $\Sigma$ zva\'cemo bilo koju
+    kona\v{c}nu sekvenciju ele\-menata iz $\Sigma$.
+    Za tu sekvenciju ka\v{z}emo da je pridru\v{z}ena niski $x$ i obrnuto,
+    za nisku $x$ ka\v{z}emo da je pridru\v{z}ena toj sekvenciji.\\
+    {\bf Du\v{z}ina niske $x$} (u oznaci $|x|$) je broj elemenata sekvencije
+    koju smo pridru\v{z}ili toj niski.\\
+    {\bf Prazna niska} je niska koja se ne sastoji ni od jednog slova,
+    du\v{z}ina prazne niske je $0$.\\
+    {\bf Prostor niski} nad azbukom $\Sigma$ (u oznaci $\Sigma^*$) je skup
+    svih niski nad tom azbukom.\\
+    {\bf $i$-ti element niske $x$} (u oznaci $x_i$) je $i$-ti elemenat
+    sekvencije pridru\v{z}ene niski~$x$.\\
+    {\bf Pre-niska niske $x$ du\v{z}ine $i$} (u oznaci $x$:$i$) je
+    niska pridru\v{z}ena sekvenciji prvih $i$ elemenata sekvencije
+    pridru\v{z}ene niski $x$.
+    Dodefini\v{s}imo da je $x$:$0$ prazna niska i da za $i\ge|x|$
+    va\v{z}i $x$:$i=x$.\\
+    Niske $x$ i $y$ su {\bf jednake} ako su nad istom azbukom, $|x|=|y|$
+    i $x_i=y_i$ za svaki $0<i\le|x|$.\\
+    \\
+    Uvedimo jo\v{s} pojam skupovnih niski:\\
+    {\bf Skupovnom niskom $x$} nad odre{\d}enom azbukom $\Sigma$ zva\'cemo
+    bilo koju kona\v{c}nu sekvenciju elemenata iz
+    ${\cal P}(\Sigma)\setminus\emptyset$.
+    Analogno se uvode: {\bf du\v{z}ina skupovne niske{\rm,} prazna skupovna
+    niska{\rm,} prostor skupovnih niski{\rm,} $i$-ti element skupovne
+    niske{\rm,} pre-niska skupovne niske $x$ du\v{z}ine $i${\rm,} jednakost}.
+%
+%
+  \section{Prva verzija (umetanje, brisanje, menjanje)}
+    Zadatak je definisati funkciju $df\colon\Sigma^*\times\Sigma^*\to N^+$
+    koja izra\v{c}unava neki kva\-ntitet razlike izme{\d}u dve niske.
+    Prvu nisku zva\'cemo {\bf niskom uzorka} a drugu nisku
+    {\bf originalnom niskom}.
+    Uvodimo pojam elementarne promene kako bi mogli izraziti kvantitet
+    razlike izme{\d}u dve niske.
+    {\bf Elementarne promene} niske uzorka $x$ u originalnu nisku $y$ su
+    slede\'ci slu\v{c}ajevi:
+    \begin{itemize}
+      \item
+        Ako se $y$ mo\v{z}e dobiti iz $x$ umetanjem jednog slova.\\
+        $|x|+1=|y|$ i postoji neko $0\le k\le |x|$ tako da $x_i=y_i$ za
+        $0<i\le k$ i $x_i=y_{i+1}$ za $k< i\le|x|$.\\
+        Ovu elementarnu promenu \'cemo zvati {\bf umetanje} (na mestu $k$).
+        \\
+        Primer: \t{ABC} $\longrightarrow$ \t{ABXC} (umetanje \t{X})
+      \item
+        Ako se $y$ mo\v{z}e dobiti iz $x$ brisanjem jednog slova.\\
+        $|x|-1=|y|$ i postoji neko $0< k\le|x|$ tako da $x_i=y_i$ za
+        $0<i<k$ i $x_i=y_{i-1}$ za $k<i\le|x|$.\\
+        Ovu elementarnu promenu \'cemo zvati {\bf brisanje} (sa mesta $k$).
+        \\
+        Primer: \t{ABC} $\longrightarrow$ \t{AC} (brisanje \t{B})
+      \item
+        Ako se $y$ mo\v{z}e dobiti iz $x$ menjanjem jednog slova.\\
+        $|x|=|y|$ i postoji neko $0<k\le|x|$ tako da $x_i=y_i$ za
+        $0<i<k$ i za $k<i\le|x|$.\\
+        Ovu elementarnu promenu \'cemo zvati {\bf menjanje} (na mestu $k$).
+        \\
+        Primer: \t{ABC} $\longrightarrow$ \t{AXC} (menjanje \t{B} u \t{X})\\
+        \\
+        Menjanje se mo\v{z}e izraziti pomo\'cu jednog umetanja i jednog
+        brisanja:\\
+        \t{ABC} $\longrightarrow$ \t{AXBC} $\longrightarrow$ \t{AXC}
+        (jedan od na\v{c}ina).
+    \end{itemize}
+    Za bilo koje dve niske $x$ i $y$ postoji niz elementarnih promena
+    (koji mo\v{z}e da se sastoji i samo od umetanja i brisanja) kojim nisku
+    $x$ transformi\v{s}emo u nisku $y$.
+    Neophodno je definisati funkcija $df(x,y)$ koja izra\v{c}unava
+    minimalni broj potrebnih elementarnih promena niske uzorka $x$ u
+    originalnu nisku $y$.\\
+    \\
+    Defini\v{s}imo funkciju $t\colon N^+\times N^+\to N^+$ sa:\\
+    \\
+    $t(i,j)=
+    \left\{
+    \begin{array}{ll}
+      i                                                 & \mbox{, ako je } j=0\\
+      j                                                 & \mbox{, ako je } j>0,\;i=0\\
+      \min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j}) & \mbox{, ina\v{c}e}\\
+    \end{array}
+    \right.$\\
+    \\
+    Gde $O_{i,j}$, $I_{i,j}$, $D_{i,j}$, $C_{i,j}$ za $i>0$ i $j>0$
+    defini\v{s}emo sa:\\
+    \\
+    $O_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)\} & \mbox{, ako je } x_i=y_j\\
+        \emptyset      & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $I_{i,j}=\{t(i,j-1)+1\}$\\
+    \\
+    $D_{i,j}=\{t(i-1,j)+1\}$\\
+    \\
+    $C_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)+1\} & \mbox{, ako je } x_i\ne y_j\\
+        \emptyset        & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    Lako mo\v{z}emo indukcijom dokazati da $t(i,j)$ predstavlja minimalni
+    broj potre\-bnih elementarnih promena pre-niske $x$:$i$ u pre-nisku
+    $y$:$j$.\\
+    Sada funkciju $df$ mo\v{z}emo definisati sa $df(x,y)=t(|x|,|y|)$.
+    Primetimo da ako su niske $x$ i $y$ jednake tada je $df(x,y)=0$.\\
+    Funkcija $df(x,y)$ ra\v{c}una minimalni broj elementarnih promena niske
+    uzorka $x$ u originalnu nisku $y$.
+    Ovako definisana funkcija $df$ jeste rastojanje (u smislu metrike)
+    i naziva se edit rastojanje ili Leven\v{s}tajnovo rastojanje.
+    \\
+    Jedan algoritam izra\v{c}unavanja funkcije $df$ moglo bi ovako te\'ci
+    (ulaz: niska uzorka $x$, originalna niska $y$; izlaz: vrednost
+    $df(x,y)$):\\
+    \\
+    \hs Za $i=0, \ldots, |x|$ radimo:\\
+    \hs\hs$t(i,0)=i$\\
+    \hs Za $j=1, \ldots, |y|$ radimo: Blok\\
+    \hs\hs$t(0,j)=j$\\
+    \hs\hs Za $i=1, \ldots, |x|$ radimo: Blok:\\
+    \hs\hs\hs Ra\v{c}unamo $O_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $I_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $D_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $C_{i,j}$ po definiciji.\\
+    \hs\hs\hs$t(i,j)=\min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j})$\\
+    \hs\hs Kraj bloka.\\
+    \hs Kraj bloka.\\
+    \hs$df(x,y)=t(|x|,|y|)$\\
+    \\
+    Vreme rada algoritma je reda $|x|*|y|$, a zauze\'ce dodatnih resursa je
+    reda $|x|$ (pamtimo samo poslednje dve vrste ``tabele'' $t$).
+%
+%
+  \section{Druga verzija (zamena)}
+    Ako \v{z}elimo da iskoristimo pribli\v{z}no upore{\d}ivanje niski za
+    eliminaciju okaziona\-lnih\footnote{slu\v{c}ajnih} elemenata moramo
+    definisati jo\v{s} neke elementarane promene koje se mogu desiti
+    (niska uzorka $x$ i originalna niska $y$):
+    \begin{itemize}
+      \item
+        Ako se $y$ mo\v{z}e dobiti iz $x$ zamenom mesta dva susedna slova.\\
+        $|x|=|y|$ i postoji neko $0<k<|x|$ tako da $x_k=y_{k+1}$,
+        $x_{k+1}=y_k$ i $x_i=y_i$ za $0<i<k$ i za $k+1<i\le|x|$.\\
+        Ovu elementarnu promenu \'cemo zvati {\bf zamena-2} (na mestu $k$).
+        \\
+        Primer: \t{ABCD} $\longrightarrow$ \t{ACBD} (zamena-2 \t{B} i \t{C})\\
+        \\
+        Zamena-2 se mo\v{z}e predstaviti nekim drugim elementarnim promenama\\
+        \t{ABCD} $\longrightarrow$ \t{ACD}  $\longrightarrow$ \t{ACBD}
+        (jedan od na\v{c}ina).
+      \item
+        Ako se $y$ mo\v{z}e dobiti iz $x$ zamenom mesta dva slova koji imaju
+        istog suseda (dva slova izme{\d}u kojih se nalazi ta\v{c}no jedno
+        slovo).\\
+        $|x|=|y|$ i postoji neko $0<k<|x|-1$ tako da $x_k=y_{k+2}$,
+        $x_{k+2}=y_k$ i $x_i=y_i$ za $0<i<k$ i za $k+2<i\le|x|$.\\
+        Ovu elementarnu promenu \'cemo zvati {\bf zamena-3} (na mestu $k$).
+        \\
+        Primer: \t{ABCDE} $\longrightarrow$ \t{ADCBE} (zamena-3 \t{B} i \t{D})\\
+        \\
+        Zamena-3 se mo\v{z}e predstaviti nekim drugim elementarnim promenama\\
+        \t{ABCDE} $\longrightarrow$ \t{ADCDE}  $\longrightarrow$ \t{ADCBE}
+        (jedan od na\v{c}ina).
+    \end{itemize}
+    Definicuju funkcije $t$ menjamo sa:\\
+    \\
+    $t(i,j)=
+    \left\{
+    \begin{array}{ll}
+      i                                                                             & \mbox{, ako je } j=0\\
+      j                                                                             & \mbox{, ako je } j>0,\;i=0\\
+      \min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j}\cup S^2_{i,j}\cup S^3_{i,j}) & \mbox{, ina\v{c}e}\\
+    \end{array}
+    \right.$\\
+    \\
+    Pored ve\'c definisanih skupova defini\v{s}imo i skupove $S^2_{i,j}$,
+    $S^3_{i,j}$:\\
+    \\
+    $S^2_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-2,j-2)+1\} & \mbox{, ako je } i-2\ge 0,\;j-2\ge 0,\\
+                         & \hphantom{\mbox{, ako je }}x_i=y_{j-1},\;x_{i-1}=y_j\\
+        \emptyset        & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $S^3_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-3,j-3)+1\} & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                         & \hphantom{\mbox{, ako je }}x_i=y_{j-2},\;x_{i-2}=y_j,\\
+                         & \hphantom{\mbox{, ako je }}x_{i-1}=y_{j-1}\\
+        \{t(i-3,j-3)+2\} & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                         & \hphantom{\mbox{, ako je }}x_i=y_{j-2},\;x_{i-2}=y_j,\\
+                         & \hphantom{\mbox{, ako je }}x_{i-1}\ne y_{j-1}\\
+        \emptyset        & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$
+%
+%
+  \section{Te\v{z}inski faktori}
+    Vrednost funkcije $df$ prestavlja minimalan broj potrebnih elementarnih
+    pro\-mena tako da od niske uzorka dobijemo originalnu nisku.
+    Ta vrednost predtavlja na neki na\v{c}in i broj gre\v{s}aka u
+    upore{\d}ivanju te dve niske.
+    Me{\d}utim, ponekad nisu sve gre\v{s}ke iste te\v{z}ine.
+    Gre\v{s}ke mo\v{z}emo razlikovati po mestu gde se desila elementarna
+    promena i po vrsti elementarne promene.
+    Zato se uvode te\v{z}inski faktori kojim mo\v{z}emo favorizovati neke
+    elementarne promene i favorizovati ele\-mentarne promene na nekom
+    odre{\d}enom mestu.\\
+    {\bf Apsolutne te\v{z}ine elementarnih promena} su realni brojevi ve\'ci
+    od $0$ koje \'cemo ozna\v{c}avati: $t_I$, $t_D$, $t_C$, $t_{S^2}$,
+    $t_{S^3}$ a koje odgovaraju slede\'cim elementarnim pro\-menama:
+    umetanju, brisanju, menjanju, zameni-2, zameni-3.\\
+    {\bf Prava te\v{z}ina elementarne promene na mestu $i$} (koju \'cemo
+    nazivati samo te\v{z}ina elementarne promene) je proizvod apsolutne
+    te\v{z}ine te elementarne pro\-mene i faktora uve\'canja te\v{z}ine
+    $p(i)$ gde je $p\colon N^+\to R^+$ neka funkcija koja odre{\d}uje
+    uve\'canje te\v{z}ine elementarne promene na $i$-tom mestu niske
+    uzorka.\\
+    {\bf Te\v{z}ina promene} je sada zbir te\v{z}ina elementarnih
+    promena koje u\v{c}estvuju u toj promeni.\\
+    Sada zahtevamo da funkcija $df(x,y)$ izra\v{c}unava minimalnu te\v{z}inu
+    promene niske uzorka $x$ u originalnu nisku $y$.
+    I dalje va\v{z}i da ako su niske jednake tade je $df(x,y)=0$ (obrnuto ne
+    va\v zi, na primer ako su svi te\v zinski faktori $0$).\\
+    \\
+    Definicija funkcije $t\colon\Sigma^*\times\Sigma^*\to R^+$ sada izgleda
+    ovako:\\
+    \\
+    $t(i,j)=
+    \left\{
+    \begin{array}{ll}
+      i*t_D*p(i)                                                                    & \mbox{, ako je } j=0\\
+      j*t_I*p(0)                                                                    & \mbox{, ako je } j>0,\;i=0\\
+      \min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j}\cup S^2_{i,j}\cup S^3_{i,j}) & \mbox{, ina\v{c}e}\\
+    \end{array}
+    \right.$\\
+    \\
+    Gde skupove $O_{i,j}, \ldots, S^3_{i,j}$ defini\v{s}emo sa:\\
+    \\
+    $O_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)\} & \mbox{, ako je } x_i=y_j\\
+        \emptyset      & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $I_{i,j}=\{t(i,j-1)+t_I*p(i)\}$\\
+    \\
+    $D_{i,j}=\{t(i-1,j)+t_D*p(i)\}$\\
+    \\
+    $C_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)+t_C*p(i)\} & \mbox{, ako je } x_i\ne y_j\\
+        \emptyset               & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $S^2_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-2,j-2)+t_{S^2}*p(i)\} & \mbox{, ako je } i-2\ge 0,\;j-2\ge 0,\\
+                                    & \hphantom{\mbox{, ako je }}x_i=y_{j-1},\;x_{i-1}=y_j\\
+        \emptyset                   & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $S^3_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-3,j-3)+t_{S^3}*p(i)\}       & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                                          & \hphantom{\mbox{, ako je }}x_i=y_{j-2},\;x_{i-2}=y_j,\\
+                                          & \hphantom{\mbox{, ako je }}x_{i-1}=y_{j-1}\\
+        \{t(i-3,j-3)+(t_{S^3}+t_C)*p(i)\} & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                                          & \hphantom{\mbox{, ako je }}x_i=y_{j-2},\;x_{i-2}=y_j,\\
+                                          & \hphantom{\mbox{, ako je }}x_{i-1}\ne y_{j-1}\\
+        \emptyset                         & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    Lako mo\v{z}emo indukcijom dokazati da $t(i,j)$ predtavlja minimalu
+    zbir te\v{z}ina potrebnih elementarnih promena pre-niske $x$:$i$
+    u pre-nisku $y$:$j$.
+    I dalje defini\-\v{s}emo funkciju $df\colon\Sigma^*\times\Sigma^*\to R^+$
+    sa $df(x,y)=t(|x|,|y|)$.\\
+    \\
+    A sada nekoliko re\v{c}i o uslovima za te\v{z}inske faktore.
+    Ako ne \v{z}elimo da favorizujemo ni jednu elementarnu promenu,
+    te\v{z}inski faktori moraju zadovoljavati slede\'ce nejednakosti:\\
+    \hs$\begin{array}{lll}
+      t_C<t_I+t_D  & t_{S^2}<t_I+t_D     & t_{S^2}<2t_C\\
+      t_{S^3}<2t_C & t_{S^3}<t_I+t_D+t_C & t_{S^3}<2(t_I+t_D)\\
+    \end{array}$\\
+    \\
+    Ovi uslovi proizlaze iz mogu\'cnosti predstavljanja jedne elementrane
+    promene drugim elementarnim promenama.\\
+    \\
+    Valja jo\v{s} napomenuti da ako su svi te\v{z}inski faktori $1$, i ako je
+    faktor uve\-\'canja te\v{z}ine uvek $1$, tada dobijamo varijantu funkcije
+    $df$ koja prebrojava gre\v{s}ke.
+%
+%
+  \section{Skupovi slova i opcionalnost}
+    U dosada\v{s}njem upore{\d}ivanju smo koristili jednakost dva slova i
+    na toj je\-dnakosti smo izgradili pribli\v{z}no upore{\d}ivanje niski.
+    Radi dopu\v{s}tanja ve\'ce ``slobode'' u pribli\v{z}nom upore{\d}ivanju
+    niski posmatra\'cemo umesto jednakosti dva slova pripadanje nekog slova
+    nekom skupu slova.
+    Zna\v{c}i dopusti\'cemo da neko slovo mo\v{z}emo uporediti sa nekim slovom iz
+    nekog skupa slova.
+    Zato \'cemo za nisku uzorka koristiti skupovnu nisku.
+    Tada \'ce $i$-ti elemenat skupovne niske predsta\-vljati skup dopustivih
+    slova.\\
+    Konkretno ako za nisku uzorka uzmemo skupovnu nisku a za originalnu
+    nisku i dalje ostane obi\v{c}na niska, moramo predefinisati
+    elementarne promene tako da umesto jednakosti $i$-tog elemenata
+    niske uzorka i $j$-tog elementa originalne niske posmatramo
+    pripadanje $j$-tog elementa originalne niske $i$-tom elementu
+    skupovne niske uzorka (koji je skup nad azbukom).
+    Nove definicije elementarnih promena su ($x$ je skupovna niska uzorka,
+    a $y$ originalna niska):
+    \begin{itemize}
+      \item
+        {\bf Umetanje}:\\
+        $|x|+1=|y|$ i postoji neko $0\le k\le |x|$ tako da $x_i\ni y_i$ za
+        $0<i\le k$ i $x_i\ni y_{i+1}$ za $k< i\le|x|$.\\
+      \item
+        {\bf Brisanje}:\\
+        $|x|-1=|y|$ i postoji neko $0< k\le|x|$ tako da $x_i\ni y_i$ za
+        $0<i<k$ i $x_i\ni y_{i-1}$ za $k<i\le|x|$.\\
+      \item
+        {\bf Menjanje}:\\
+        $|x|=|y|$ i postoji neko $0<k\le|x|$ tako da $x_i\ni y_i$ za
+        $0<i<k$ i za $k<i\le|x|$.\\
+      \item
+        {\bf Zamena-2}:\\
+        $|x|=|y|$ i postoji neko $0<k<|x|$ tako da $x_k\ni y_{k+1}$,
+        $x_{k+1}\ni y_k$ i $x_i\ni y_i$ za $0<i<k$ i za $k+1<i\le|x|$.\\
+      \item
+        {\bf Zamena-3}:\\
+        $|x|=|y|$ i postoji neko $0<k<|x|-1$ tako da $x_k\ni y_{k+2}$,
+        $x_{k+2}\ni y_k$ i $x_i\ni y_i$ za $0<i<k$ i za $k+2<i\le|x|$.\\
+    \end{itemize}
+    Smisao funkcije $df$ se ne menja (menja se samo tip prvog arumenta
+    koji sada postaje skupovna niska), i sli\v{c}no se ne menja smisao funkcije
+    $t$ (isto je prvi argumet sada tipa skupovne niske).\\
+    Menjaju se samo definicije skupova $O_{i,j}, \ldots, S^3_{i,j}$:\\
+    \\
+    $O_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)\} & \mbox{, ako je } x_i\ni y_j\\
+        \emptyset      & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $I_{i,j}=\{t(i,j-1)+t_I*p(i)\}$\\
+    \\
+    $D_{i,j}=\{t(i-1,j)+t_D*p(i)\}$\\
+    \\
+    $C_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j-1)+t_C*p(i)\} & \mbox{, ako je } x_i\not\ni y_j\\
+        \emptyset               & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $S^2_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-2,j-2)+t_{S^2}*p(i)\} & \mbox{, ako je } i-2\ge 0,\;j-2\ge 0,\\
+                                    & \hphantom{\mbox{, ako je }}x_i\ni y_{j-1},\;x_{i-1}\ni y_j\\
+        \emptyset                   & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    $S^3_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-3,j-3)+t_{S^3}*p(i)\}       & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                                          & \hphantom{\mbox{, ako je }}x_i\ni y_{j-2},\;x_{i-2}\ni y_j,\\
+                                          & \hphantom{\mbox{, ako je }}x_{i-1}\ni y_{j-1}\\
+        \{t(i-3,j-3)+(t_{S^3}+t_C)*p(i)\} & \mbox{, ako je } i-3\ge 0,\;j-3\ge 0,\\
+                                          & \hphantom{\mbox{, ako je }}x_i\ni y_{j-2},\;x_{i-2}\ni y_j,\\
+                                          & \hphantom{\mbox{, ako je }}x_{i-1}\not\ni y_{j-1}\\
+        \emptyset                         & \mbox{, ina\v{c}e}\\
+      \end{array}
+    \right.$\\
+    \\
+    Ono \v{s}to je preostalo ugraditi u funkciju $t$ je opcionalnost nekih
+    slova.
+    To zna\v{c}i da za neko slovo nismo sigurni da li je navedeno ili ne i
+    ne \v{z}elimo da eventualno brisanje tog slova bude propra\'ceno
+    nekom te\v{z}inom $t_D$ (ili gre\v{s}kom).
+    Uvedimo niz oznaka, du\v{z}ine kao i du\v{z}ina skupovne niske uzorka,
+    \v{c}iji $i$-ti element ozna\v{c}ava da li \'ce brisanje $i$-tog elementa
+    skupovne niske nositi kaznu ili ne.
+    Taj niz ozna\-ka \'cemo ozna\v{c}avati sa $f$ a $i$-ti element \'cemo
+    ozna\v{c}avati sa $f_i$.\\
+    Neophodna je mala izmena definicije funkcije $t$:\\
+    \\
+    $t(i,j)=
+    \left\{
+    \begin{array}{ll}
+      0                                                                             & \mbox{, ako je } j=0,\;\;i=0\\
+      t(i-1,0)+t_D*p(i)                                                             & \mbox{, ako je } j=0,\;\;i>0,\\
+                                                                                    & \hphantom{\mbox{, ako je }} \neg f_i\\
+      t(i-1,0)                                                                      & \mbox{, ako je } j=0,\;\;i>0,\\
+                                                                                    & \hphantom{\mbox{, ako je }} f_i\\
+      t(0,j-1)+t_I*p(0)                                                             & \mbox{, ako je } j>0,\;\;i=0\\
+      \min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j}\cup S^2_{i,j}\cup S^3_{i,j}) & \mbox{, ina\v{c}e}\\
+    \end{array}
+    \right.$\\
+    \\
+    Gde je promenjena i definicija skupa $D_{i,j}$:\\
+    \\
+    $D_{i,j}=
+    \left\{
+      \begin{array}{ll}
+        \{t(i-1,j)+t_D*p(i)\} & \mbox{, ako nije } f_i\\
+        \{t(i-1,j)\}          & \mbox{, ako je } f_i\\
+      \end{array}
+    \right.$\\
+    \\
+    Prime\'cujemo da te\v{z}inski faktor dodajemo samo ako je $f_i$
+    neta\v{c}no.\\
+    Algoritam izra\v{c}unavanja funkcije $df$ sada mo\v{z}e izgledati ovako
+    (ulaz: sku\-povna niska uzorka $x$, originalna niska $y$, niz oznaka $f$;
+    izlaz: vrednost $df(x,y)$):\\
+    \\
+    \hs$t(0,0)=0$\\
+    \hs Za $i=1, \ldots, |x|$ radimo: Blok\\
+    \hs\hs\hs$t(i,0)=t(i-1,0)$.\\
+    \hs\hs Ako $f_i$ nije ta\v{c}no tada $t(i,0)=t(i,0)+t_D*p(i)$\\
+    \hs Kraj bloka.\\
+    \hs Za $j=1, \ldots, |y|$ radimo: Blok\\
+    \hs\hs$t(0,j)=t(0,j-1)+t_I*p(0)$\\
+    \hs\hs Za $i=1, \ldots, |x|$ radimo: Blok:\\
+    \hs\hs\hs Ra\v{c}unamo $O_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $I_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $D_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $C_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $S^2_{i,j}$ po definiciji.\\
+    \hs\hs\hs Ra\v{c}unamo $S^3_{i,j}$ po definiciji.\\
+    \hs\hs\hs$t(i,j)=\min(O_{i,j}\cup I_{i,j}\cup D_{i,j}\cup C_{i,j}\cup S^2_{i,j}\cup S^3_{i,j})$\\
+    \hs\hs Kraj bloka.\\
+    \hs Kraj bloka.\\
+    \hs$df(x,y)=t(|x|,|y|)$\\
+    \\
+    Vreme rada algoritma je reda $|x|*|y|$, a zauze\'ce dodatnih resursa je
+    reda $|x|$.
+%
+%
+  \section{Realizacija algoritma}
+    Konkretna realizacija ovog algoritma je ralizovana u programskom jeziku
+    ``C'' i to u obliku zaglavlja ``{\bf AKS.H}''.
+    Jedan od problema je implementacija skupo\-vnih niski pa je zato
+    izra\v{c}unavanje funkcije $df$ podeljeno na dva dela.
+    U prvom delu \v{c}itamo skupovnu nisku uzorka iz odgovaraju\'ce sintaksne
+    forme, a u drugom delu vr\v{s}imo pribli\v{z}no upore{\d}ivanje neke
+    originalne niske sa ve\'c u\v{c}itanom skupovnom niskom uzorka.\\
+    \\
+    Sintaksa opisa skupovne niske uzorka je slede\'ca:
+    \begin{itemize}
+      \item
+        Svaki karakter razli\v{c}it od \t{'['}, \t{']'}, \t{'-'}, \t{'?'},
+        \t{'\x'}, \t{'/'} predstavlja samog sebe, dok ove karaktere pi\v{s}emo
+        sa \t{'/'} ispred.
+        \t{/x} u su\v{s}tini predstavlja sam karakter \t{x}, dok \t{/ooo}
+        (gde je \t{o} oktalna cifra) predstavlja karakter sa {\bf ASCII} kodom
+        \t{ooo}.
+      \item
+        Unutar uglastih zagrada (\t{'['} i \t{']'}) opisijemo skup karaktera
+        (\v{s}to je karakteristi\v{c}no za skupovne niske) navo{\d}enjem onih
+        karaktera za koja \v{z}elimo da u{\d}u u sastav skupa, stim \v{s}to
+        mo\v{z}emo koristiti \t{'-'} za ozna\v{c}a\-vanje opsega karaktera
+        (\t{[a-z]} ozna\v{c}ava skup svih malih slova).
+        Ako iza \t{'['} neposredno sledi \t{'\x'} tada opisujemo skup koji
+        ne sadr\v{z}i date karaktere (\t{[{\x}a-z]} ozna\v{c}ava skup svih
+        slova koja nisu mala slova).
+        \t{'\x'} se koristi i za ozna\v{c}avanje onih karaktera koja ne
+        \v{z}elimo u opisanom skupu (\t{[a-z{\x}ik]} ozna\v{c}ava skup svih
+        malih slova ali ne i slova \t{i} i \t{k}).
+        Skup svih karaktera se ozna\v{c}ava sa \t{[\x]}.\\
+        Napomena: karakter \t{/0} u skupovnoj niski se ne\'ce tuma\v{c}iti kao
+        kraj skupovne niske ve\'c kao obi\v{c}an karakter koji po\v{s}to ne
+        mo\v{z}e da se na{\d}e u obi\v{c}noj niski rezultova\'ce jednim brisanjem.
+      \item
+        Ako iza karaktera ili skupa karaktera navedemo \t{'?'} to zna\v{c}i
+        da je taj karakter (ili skup karaktera) opcionalan, to jest eventualno
+        brisanje tog karaktera (skupa karaktera) ne\'ce nositi kaznu.
+    \end{itemize}
+    Funkcijom \t{AKS\_parser}, kojoj prosledimo ``C'' nisku sa opisiom
+    skupovne niske uzorka, pripremamo skupovnu nisku uzorka za pribli\v{z}no
+    upore{\d}ivanje.
+    Funkcija \t{AKS\_parser} vra\'ca $1$ ako je do\v{s}lo do bilo kakve
+    gre\v{s}ke (u smislu sintakse ili semantike) i u ``C'' niski
+    \t{AKS\_error} na\'ci \'ce se opis nastale gre\v{s}ke a \t{int}
+    promenljiva \t{AKS\_old\_pos} \'ce sadr\v{z}ati poziciju untar niske gde
+    je nastala gre\v{s}ka.
+    Ako funkcija \t{AKS\_parser} vrati 0 tada nije do\v{s}lo do gre\v{s}ke i
+    popunjene su slede\'ci objekti:
+    \begin{itemize}
+      \item
+        \t{AKS\_len\_str} je \t{int} promenljiva koja sadr\v{z}i du\v{z}inu
+        skupovne niske uzorka.
+      \item
+        \t{AKS\_opc} je niz \t{int} promenljivih od \t{AKS\_len\_str} elementa
+        koji sadr\v{z}i $1$ na $i$-tom mestu ako je $i$-ti karakter (skup
+        karaktera) skupovne niske uzorka opcionalno, a u suprotnom sadr\v{z}i
+        $0$.
+      \item
+        \t{AKS\_str} je niz skupova (tipa \t{AKS\_set}) od \t{AKS\_len\_str}
+        elemenata koji sadr\v{z}e koji se sve karakteri nalaze u nekom od
+        elementu skupovne niske uzorka.\\
+        Realizovane su slede\'ce funkcije za rad sa skupovima:
+        \begin{itemize}
+          \item
+             \t{AKS\_set\_set\_all(x)} postavlja u \t{x} sve karaktere.
+          \item
+             \t{AKS\_set\_reset\_all(x)} bri\v{s}e iz \t{x} sve karaktere.
+          \item
+             \t{AKS\_set\_union(x,y)} postavlja u \t{x} uniju skupova \t{x} i
+             \t{y}.
+          \item
+             \t{AKS\_set\_intersec(x,y)} postavlja u \t{x} presek skupova
+             \t{x} i \t{y}.
+          \item
+             \t{AKS\_set\_minus(x,y)} postavlja u \t{x} razliku skpova \t{x} i
+             \t{y}.
+          \item
+             \t{AKS\_set\_complement(x)} postavlja u \t{x} komplement skupa \t{x}.
+          \item
+             \t{AKS\_set\_copy(x,y)} kopira skup \t{y} u skup \t{x}.
+          \item
+             \t{AKS\_set\_set(x,n)} postavlja u skup \t{x} karakter \t{n}.
+          \item
+             \t{AKS\_set\_reset(x,n)} bri\v{z}e iz skupa \t{x} karakter \t{n}.
+          \item
+             \t{AKS\_set\_in(x,n)} vra\'ca $1$ ako se karakter \t{n} nalazi u
+             skupu \t{x}, a u suprotnom vra\'ca $0$.
+        \end{itemize}
+    \end{itemize}
+    Posle poziva funkcije \t{AKS\_parser} i njenog uspe\v{s}nog zavr\v{s}etka
+    ili ``ru\v{c}nog'' posta\-vljanja gore pomenutih objekata mo\v{z}emo
+    pozvati funkciju \t{AKS\_df} koja za prosle\-{\d}enu nisku (originalnu
+    nisku) ra\v{c}una te\v{z}inu gre\v{s}ke u pribli\v{z}nom upore{\d}ivanju
+    sa skupovnom niskom uzorka (argument funkcije \t{AKS\_parser}).
+    Funkcija vra\'ca vrednost tipa \t{AKS\_type} (koji odre{\d}uje tip
+    te\v{z}ine gre\v{s}ke, a inicijalno je posta\-vljen na \t{long int})
+    koja predstavlja te\v{z}inu gre\v{s}ke u pribli\v{z}nom upore{\d}ivanju.
+    Pre samog pozivanja funkcije \t{AKS\_df} mogu se promeniti neke
+    promeniljive (kojima uti\v{c}emo na pribli\v{z}no upore{\d}ivanje niski):
+    \begin{itemize}
+      \item
+        \t{AKS\_ti} je promenljiva tipa \t{AKS\_type} i predstavlja te\v{z}inu
+        umetanja.
+        Inicijalno je postavljena na $1$.
+      \item
+        \t{AKS\_td} je promenljiva tipa \t{AKS\_type} i predstavlja te\v{z}inu
+        brisanja.
+        Inicijalno je postavljena na $1$.
+      \item
+        \t{AKS\_tc} je promenljiva tipa \t{AKS\_type} i predstavlja te\v{z}inu
+        menjanja.
+        Inicijalno je postavljena na $1$.
+      \item
+        \t{AKS\_ts2} je promenljiva tipa \t{AKS\_type} i predstavlja te\v{z}inu
+        zamene-2.
+        Inicijalno je postavljena na $1$.
+      \item
+        \t{AKS\_ts3} je promenljiva tipa \t{AKS\_type} i predstavlja te\v{z}inu
+        zamene-3.
+        Inicijalno je postavljena na $1$.
+      \item
+        \t{AKS\_p} je promenljiva tipa pokaziva\v{c} na funkciju sa argumentom
+        tipa \t{int} koja vra\'ca tip \t{AKS\_type} i predstavlja funkciju
+        koja izra\v{c}unava faktor uve\'canja elementarne promene na mestu koje
+        je prosle{\d}eno kao argument.
+        Ako je \t{AKS\_p} postavljeno na \t{NULL} tada se ne koristi faktor
+        uve\'canja elementarne promene (to jest $p(x)=1$ za sve $x$).
+        Inicijalno je postavljena na \t{NULL}.
+    \end{itemize}
+    Potrebno je pomenuti jo\v{s} konstantu \t{AKS\_MAX\_LEN\_STR} koja
+    predstavlja maksimalnu du\v{z}inu i skupovne niske uzorka i originalne
+    niske.
+    Ako je skupovna niska uzprka du\v{z}a od \t{AKS\_MAX\_LEN\_STR} to \'ce
+    biti gre\v{s}ka koju \'ce prijaviti \t{AKS\_parser}, a ako je originalna
+    niska du\v{z}a od \t{AKS\_MAX\_LEN\_STR} bi\'ce posmatrano samo prvih
+    \t{AKS\_MAX\_LEN\_STR} karaktera.
+    \t{AKS\_MAX\_LEN\_STR} je inicijalno postavljeno na $64$ i slobodno se
+    mo\v{z}e promeniti.\\
+    \\
+    Dakle za obi\v{c}no kori\v{s}\'cenje zaglavlja ``{\bf AKS.H}'' neophodno je
+    postupiti na slede\'ci na\v{c}in:
+    \begin{enumerate}
+      \item
+        Pozovemo \t{AKS\_parser} sa opisom skupovne niske uzorka.
+        Ako je vra\'ceno $1$ tada prijavimo gre\v{s}ku uz eventualno prikazivanje
+        sadr\v{z}aja \t{AKS\_error} i \t{AKS\_old\_pos}.
+      \item
+        Eventualno promenimo \t{AKS\_ti}, \t{AKS\_td}, \t{AKS\_tc},
+        \t{AKS\_ts2}, \t{AKS\_ts3}, \t{AKS\_p} ako ne \v{z}elimo samo
+        prebrojavanje gre\v{s}aka.
+      \item
+        Pozovemo \t{AKS\_df} sa originalnom niskom.
+        Kao rezultat dobi\'cemo ukupnu te\v{z}inu gre\v{s}ke pri pribli\v{z}nom
+        upore{\d}ivanju skupovne niske uzorka i origi\-nalne niske.
+        Funkciju \t{AKS\_df} mo\v{z}emo pozivati vi\v{s}e puta za jednom
+        u\v{c}ita\-nu skupovno nisku uzorka.
+    \end{enumerate}
+    Neophodno je jo\v{s} ukazati na mogu\'ce probleme.
+    Problem mo\v{z}e nastati ako predefini\v{s}emo neki od objekata koji je
+    ve\'c definisani u ``{\bf AKS.H}'' (lepa oso\-bina svih objekata definisanih
+    u ``{\bf AKS.H}'' je da imena po\v{c}inju sa \t{AKS\_}).
+    Ovu vrstu problema prijavljuje sam prevodilac kao neku od gre\v{s}aka.
+    Ako nam \t{AKS\_parser} vrati gre\v{s}ku da je mnogo duga\v{c}ka niska
+    potrebno je promeniti definiciju \t{AKS\_MAX\_LEN\_STR} i staviti
+    dovoljno veliki broj.
+%
+%
+  \section{Zaklju\v{c}ak}
+    Zaglavlje {\bf AKS.H} se mo\v{z}e iskoristiti svuda gde je neophodno
+    pribli\v{z}no upore{\d}i\-vanje niski.\\
+    Konkretno, recimo za pronala\v{z}enje neke odrednice u elektronskom
+    re\v{c}niku onda kada nismo sigurni da znamo kako se ta\v{c}no pi\v{s}e
+    ta odrednica.
+    Jedna primena je i pronala\v{z}enje imena datoteke, koje najvi\v{s}e
+    ``li\v{c}i'' unetom imenu, u ljusci nekog operativnog sistema.\\
+    \\
+    Ovaj rad je slo\v{z}en u \LaTeX-u.
+%
+%
+  \section{Literatura}
+  \begin{itemize}
+    \item[{[1]}]
+    {
+      Ricardo Baeza-Yates, Gaston H. Gonnet\\
+      ``A New Approach to Text Searching''\\
+      Communication of the ACM (October 1992)
+    }
+    \item[{[2]}]
+    {
+      Sun Wu, Udi Manber\\
+      ``Fast Text Searching Allowing Errors''\\
+      Communication of the ACM (October 1992)
+    }
+    \item[{[3]}]
+    {
+      Brian Kernighan, Dennis Ritchie\\
+      ``The C Programming Language''\\
+      Prentiece-Hall (1988)
+    }
+    \item[{[4]}]
+    {
+      Goran Lazi\'c\\
+      ``Generisanje LL(1) sintaksnih analizatora''\\
+      Matemati\v{c}ki fakultet Beograd (1995)
+    }
+  \end{itemize}
+%
+%
+\end{document}

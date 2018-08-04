@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>Menu</title>
+    <style type="text/css">
+      .menu
+      {
+        font-family: verdana, sans-serif;
+        position: relative;
+        margin-bottom: 220px;
+      }
+
+      .menu ul
+      {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+      }
+
+      .menu ul li
+      {
+        position: relative;
+        float: left;
+      }
+
+      .menu ul li a, .menu ul li a:visited
+      {
+        display: block;
+        text-decoration: none;
+        width: 25px;
+        height: 100px;
+        font-weight: bold;
+        background: transparent top right no-repeat;
+        text-indent: -999px;
+      }
+
+      .menu ul li ul
+      {
+        visibility: hidden;
+        position: absolute;
+        width: 190px;
+        top: 0;
+        left: 0;
+        border: 1px solid #444;
+      }
+
+      table
+      {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-collapse: collapse;
+        font-size:1em;
+      }
+
+      .menu ul li:hover a
+      {
+        color: #fff;
+        width: 215px;
+      }
+
+      .menu ul li:hover ul
+      {
+        visibility: visible;
+      }
+
+      .menu ul li:hover ul li a
+      {
+        display: block;
+        background: #eee;
+        border: 0;
+        margin: 0;
+        text-indent: 0;
+        color: #333;
+        font-weight: normal;
+        font-size: 0.9em;
+        height: auto;
+        line-height: 1em;
+        padding: 5px;
+        width: 180px;
+        text-align: left;
+      }
+
+      .menu ul li:hover ul li a:hover
+      {
+        background: #888;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <p>begin</p>
+    <div class="menu" style="background-color: red;">
+      <ul>
+        <li>
+          <a href="/">MENU
+            <table>
+              <tr>
+                <td>
+                  <ul>
+                    <li><a href="/">link 1</a></li>
+                    <li><a href="/">link 2</a></li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <p>end</p>
+  </body>
+</html>

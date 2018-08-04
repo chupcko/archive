@@ -1,0 +1,90 @@
+
+<program> ::=
+  <naredba> <naredbe> .
+
+<naredba> ::=
+| "if" <izraz> "then" <naredba> "else" <naredba> @SF_special
+| "while" <izraz> "do" <naredba> @SF_special
+| "do" <naredba> "until" <izraz> @SF_special
+| "loop" <naredba> @SF_special
+| "for" <varijabla> <niz> "in" <varijabla> <niz> @SF_iz_memorije "do" <naredba> @SF_special
+
+| <varijabla> <niz> ":=" <izraz> @SF_dodela
+| <varijabla> "(" @SF_procedura <argumenti> ")" @SF_poziv_procedure
+
+| "procedure" ime @SF_nova_procedure "(" <imena> ")" "is" @SF_def_func_proc <naredba>
+
+| "function" ime @SF_nova_funkcije "(" <imena> ")" "is" @SF_def_func_proc <naredba>
+
+| "begin" <naredba> <naredbe> "end"
+
+| "break" @SF_break
+| "continue" @SF_continue
+| "return" <mozda_izraz>
+| .
+
+<varijabla> ::=
+  ime @SF_varijabla .
+
+<niz> ::=
+  "[" <izraz> @SF_indeks "]" <niz>
+| .
+
+<mozda_izraz> ::=
+  <izraz> @SF_return_func
+| @SF_return_proc .
+
+<argumenti> ::=
+  <izraz> <o_argumenti>
+|.
+
+<o_argumenti> ::=
+  "," <izraz> <o_argumenti>
+|.
+
+<imena> ::=
+  ime @SF_dodaj_argument <o_imena>
+| .
+
+<o_imena> ::=
+  "," ime @SF_dodaj_argument <o_imena>
+|.
+
+<naredbe> ::=
+  ";" <naredba> <naredbe>
+|.
+
+<izraz> ::=
+  <izraz> "or" <izraz> @SF_or
+| <izraz> "and" <izraz> @SF_and
+
+| <izraz> "=" <izraz> @SF_eq
+| <izraz> "<>" <izraz> @SF_neq
+
+| <izraz> "<" <izraz> @SF_lt
+| <izraz> "<=" <izraz> @SF_le
+| <izraz> ">" <izraz> @SF_gt
+| <izraz> ">=" <izraz> @SF_ge
+| <izraz> "in" <izraz> @SF_in
+
+| <izraz> "+" <izraz> @SF_plus
+| <izraz> "-" <izraz> @SF_minus
+| <izraz> "." <izraz> @SF_konkatenacija
+
+| <izraz> "*" <izraz> @SF_puta
+| <izraz> "/" <izraz> @SF_podeljeno
+| <izraz> "mod" <izraz> @SF_mod
+
+| "not" <izraz> @SF_not
+| "-" <izraz> @SF_u_minus
+
+| "true" @SF_bool_true
+| "false" @SF_bool_false
+| "sfin" @SF_sfin
+| "sfout" @SF_sfout
+| integer @SF_integer
+| real @SF_real
+| string @SF_string
+| <varijabla> <niz> @SF_iz_memorije
+| <varijabla> "(" @SF_funkcija <argumenti> ")" @SF_poziv_funkcije
+| "(" <izraz> ")" .

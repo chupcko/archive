@@ -1,0 +1,10 @@
+
+void SDK_postscript_head(FILE *file)
+{
+  fprintf(file, "%s", SDK_postscript_head_string);
+}
+
+void SDK_postscript_tail(FILE *file)
+{
+  fprintf(file, "%s", SDK_postscript_tail_string);
+}

@@ -1,0 +1,35 @@
+#!/bin/sh
+
+BASE=$(dirname $(readlink -f ${0}))
+
+ANDROID_SDK_PATH_DEFAULT=$(readlink -f ~/app/android-sdk-linux)
+ANDROID_NDK_PATH_DEFAULT=$(readlink -f ~/app/android-ndk-r9d)
+JAVA_SDK_PATH_DEFAULT=$(readlink -f ~/app/java)
+
+MAKE_PATHS=${BASE}/etc/paths.mk
+
+echo
+echo -n "Android SDK path (${ANDROID_SDK_PATH_DEFAULT}) "
+read ANDROID_SDK_PATH
+: ${ANDROID_SDK_PATH:=${ANDROID_SDK_PATH_DEFAULT}}
+
+echo
+echo -n "Android NDK path (${ANDROID_NDK_PATH_DEFAULT}) "
+read ANDROID_NDK_PATH
+: ${ANDROID_NDK_PATH:=${ANDROID_NDK_PATH_DEFAULT}}
+
+echo
+echo -n "Java SDK path (${JAVA_SDK_PATH_DEFAULT}) "
+read JAVA_SDK_PATH
+: ${JAVA_SDK_PATH:=${JAVA_SDK_PATH_DEFAULT}}
+
+cat << EOI > ${MAKE_PATHS}
+ANDROID_SDK_PATH := ${ANDROID_SDK_PATH}
+ANDROID_NDK_PATH := ${ANDROID_NDK_PATH}
+JAVA_SDK_PATH    := ${JAVA_SDK_PATH}
+EOI
+echo
+echo "Created file ${MAKE_PATHS} with this content:"
+echo
+cat ${MAKE_PATHS}
+echo

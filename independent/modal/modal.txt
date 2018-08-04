@@ -1,0 +1,110 @@
+Program MODAL je dokazivac za neke sisteme modalne logike.
+Racuni modalne logike koji su podrzani su : T, B, S4 i S5.
+Formule (za sve racune su) :
+-ime (slovo) je formula,
+-ako je A formula tada su formule i NOT A, L A.
+-ako su A i B formule tada je formula i (A THEN B).
+Uvodimo zamene:
+(A OR B) z.z. (NOT A THEN B),
+(A AND B) z.z. NOT(A THEN NOT B),
+(A EQ B) z.z. ((A THEN B) AND (B THEN A)),
+M A z.z. NOT L NOT A.
+Normalno vazi dogovor oko brisanja zgrada.
+Formalno zasnovan racun T :
+Shema aksiome :
+  A THEN (B THEN A),
+  (NOT B THEN NOT A) THEN (A THEN B),
+  (A THEN (B THEN C)) THEN ((A THEN B) THEN (A THEN C)),
+  L A THEN A,
+  L(A THEN B) THEN (L A THEN L B).
+Pravila izvodjenja :
+  A, A THEN B => B,
+  A => L A.
+Formalno zasnovan racun B :
+Shema aksiome :
+  A THEN (B THEN A),
+  (NOT B THEN NOT A) THEN (A THEN B),
+  (A THEN (B THEN C)) THEN ((A THEN B) THEN (A THEN C)),
+  L A THEN A,
+  L(A THEN B) THEN (L A THEN L B),
+  A THEN L M A.
+Pravila izvodjenja :
+  A, A THEN B => B,
+  A => L A.
+Formalno zasnovan racun S4 :
+Shema aksiome :
+  A THEN(B THEN A),
+  (NOT B THEN NOT A) THEN (A THEN B),
+  (A THEN (B THEN C)) THEN ((A THEN B) THEN (A THEN C)),
+  L A THEN A,
+  L(A THEN B) THEN (L A THEN L B),
+  L A THEN L L A.
+Pravila izvodjenja :
+  A, A THEN B => B,
+  A => L A.
+Formalno zasnovan racun S5 :
+Shema aksiome :
+  A THEN(B THEN A),
+  (NOT B THEN NOT A) THEN (A THEN B),
+  (A THEN (B THEN C)) THEN ((A THEN B) THEN (A THEN C)),
+  L A THEN A,
+  L(A THEN B) THEN (L A THEN L B),
+  M A THEN L M A.
+Pravila izvodjenja :
+  A, A THEN B => B,
+  A => L A.
+Jedna od interpretacija je interpretacija Kripke-a za racun T :
+Sastoji se od (W,R,V) gde su :
+  W skup svetova,
+  R refleksivna relacija vidljivosti izmedju svetova,
+  V valuacija imena (slova) u svim svetovima.
+V[NOT A,w]=TRUE akko V[A,w]=FALSE,
+V[A THEN B,w]=TRUE akko V[A,w]=FALSE ili V[B,w]=TRUE,
+V[L A,w]=TRUE akko za svaki x R(w,x) povlaci V[A,x]=TRUE.
+U interpretaciji za racun B zahtevamo da R bude
+i simetricna relacija.
+U interpretaciji za racun S4 zahtevamo da R bude
+i tranzitivna relacija.
+U interpretaciji za racun S5 zahtevamo da R bude
+i simetricna i tranzitivna relacija (ili svuda tacna).
+Formula je tacna u Kripke-ovoj interpretaciji ako za sve kombinacije
+imena (slova) i sve kombinacije vidljivosti uvek daje vrednost TRUE.
+Program pokusava da izgradi semanticki tablo za koji formula ima vrednost
+FALSE i to tako sto pronalazi minimalan broj svetova i minimalnu
+relaciju vidljivosti za koju formula ima vrednost FALSE.
+Ako u svakoj grani tabloa postoji kontradikcija nasa formula je
+teorema, a ako u nekoj grani nema kontradikcije ta grana daje jednu
+valuaciju za koju je formula u Kripke interpretaciji FALSE.
+Ako zelimo da radimo u racunu B trazimo simetricno zatvorenje relacije
+vidljivosti. Za racun S4 trazimo tranzitivno zatvorenje. Za racun S5
+trazimo simetricno i tranzitivno zatvorenje.
+Tabloe pravimo na sledeci nacin (neki izvodi iz svih pravila) :
+-ime =(w,n) TRUE akko ime =(x,0) TRUE
+  za svaki svet x koji vidimo iz sveta w u manje ili jednako n koraka,
+-ime =(w,n) FALSE akko ime =(x,0) FALSE
+  za svaki svet x koji vidimo iz sveta w u manje ili jednako n koraka,
+-NOT A =(w,n) TRUE akko A =(w,n) FALSE,
+-NOT A =(w,n) FALSE akko A =(w,n) TRUE,
+-A AND B =(w,n) TRUE akko A =(w,n) TRUE i B =(w,n) TRUE,
+-A AND B =(w,n) FALSE akko A =(x,0) FALSE ili B =(x,0) FALSE
+  za svaki svet x koji vidimo iz sveta w u manje ili jednako n koraka,
+-L A =(w,n) TRUE akko A =(w,n+1) TRUE,
+-L A =(w,n) FALSE akko A =(x,0) FALSE gde je x novi svet koji vidimo
+  iz svih svetova koji se vide iz sveta w u manje ili jednako n koraka.
+Dakle mi na pocetku imamo jedan svet w i pravimo tablo za nasu formulu
+tako da F =(w,0) FALSE.
+
+a -> f e d c b
+b -> EQ a
+b ->
+c -> THEN f e d c
+c ->
+d -> OR f e d
+d ->
+e -> AND f e
+e ->
+f -> M f
+f -> L f
+f -> NOT f
+f -> ( a )
+f -> ime

@@ -1,0 +1,35 @@
+\documentclass[a4paper]{article}
+  \def\d{d\kern-0.4em\char"16\kern-0.1em}
+  \begin{document}
+    \pagestyle{empty}
+    \centerline{{\bf \Large AUTOMATSKO GENERISANJE}}
+    \centerline{{\bf \Large JEZI\v{C}KIH PROCESORA}}
+    \vspace{1em}
+    \centerline{Goran Lazi\'c}
+    \centerline{Matemati\v{c}ki fakultet}
+    \centerline{Studentski trg 16, Beograd}
+    \centerline{E-mail: chupcko@matff.bg.ac.yu}
+    \vspace{1em}
+    Pri konstruisanju jezi\v ckih procesora (prevodioca i interpretatora)
+    koristimo se izgra\d enom teorijom koja se bazira na leksi\v ckoj i
+    sintaksnoj analizi.
+    Deo posla oko kodiranja automata koji obavljaju leksi\v cku i sintaksnu
+    analizu se mo\v ze auto\-matizovati.
+    Programski paket za generisanje jezi\v ckih procesora ({\bf AGJP})
+    sadr\v zi program za generisanje leksi\v ckog analizatora ({\bf AGLA})
+    i program za generisanje sintaksnog analizatora ({\bf AGSA}).
+
+    Program {\bf AGLA} iz opisa leksi\v ckih klasa (opisanih regularnim
+    izrazima) generi\v se proceduru na jeziku ``C'' koja obavlja leksi\v cku
+    analizu tih leksi\v ckih klasa.
+
+    Program {\bf AGSA} iz opisa LL(1) gramatike (opisane Bekusovom notacijom)
+    gene\-ri\v se program na jeziku ``C'' koji, koriste\'ci rezultate programa
+    {\bf AGLA}, oba\-vlja sintaksnu analizu te gramatike i eventualno
+    izvr\v sava semanti\v{c}ke funkcije (akcije).
+
+    Programski paket {\bf AGJP} se mo\v ze iskoristiti za kodiranje konkretnih
+    jezi\v ckih procesora i za neke obrade tekstualnih datoteka.
+    Kroz primer izra\v cunavanja celo\-brojnog izraza, razvijen je postupak
+    pisanja jezi\v ckog procesora programskim paketom {\bf AGJP}.
+  \end{document}

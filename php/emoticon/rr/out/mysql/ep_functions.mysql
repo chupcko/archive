@@ -1,0 +1,20 @@
+USE ep;
+
+DROP PROCEDURE IF EXISTS ep_add_emoticon;
+DELIMITER ;;
+CREATE PROCEDURE ep_add_emoticon
+(
+  IN in_emoticon CHAR(128),
+  IN in_description CHAR(128)
+)
+DETERMINISTIC
+BEGIN
+  DECLARE temp_id BIGINT UNSIGNED;
+  SELECT id INTO temp_id FROM ep_emoticon WHERE emoticon = in_emoticon;
+  IF FOUND_ROWS() != 1 THEN
+    INSERT INTO ep_emoticon (emoticon) VALUES (in_emoticon);
+    SET temp_id = LAST_INSERT_ID();
+  END IF;
+  INSERT INTO ep_description (emoticon_id, description) VALUES (temp_id, in_description);
+END ;;
+DELIMITER ;

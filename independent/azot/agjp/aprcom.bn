@@ -1,0 +1,80 @@
+$
+
+<S> ::= <C> @AC_f_opcija_false <A> .
+
+<A> ::= <A> <B> @AC_f_slovo <C> <D>
+      | .
+
+<B> ::= AC_lex_SLOVO @AC_f_znak
+      | AC_lex_L_U_ZAG <E> AC_lex_D_U_ZAG
+      | AC_lex_D_U_ZAG <F> AC_lex_L_U_ZAG .
+
+<C> ::= <C> AC_lex_AKCIJA @AC_f_akcija
+      | .
+
+<D> ::= AC_lex_OPCIJA @AC_f_opcija_true
+      | @AC_f_opcija_false .
+
+<E> ::= <E> AC_lex_SLOVO @AC_f_znak <G> @AC_f_unija
+      | AC_lex_SLOVO @AC_f_znak <G> .
+
+<F> ::= <E> @AC_f_komplement
+      | @AC_f_sva_slova .
+
+<G> ::= AC_lex_MINUS AC_lex_SLOVO @AC_f_od_do
+      | .
+
+$
+$
+
+<S>  ::= <C> @AC_f_opcija_false <A> .
+
+<A>  ::= <B> @AC_f_slovo <C> <D> <A>
+       | .
+
+<B>  ::= AC_lex_SLOVO @AC_f_znak
+       | AC_lex_L_U_ZAG <E> AC_lex_D_U_ZAG
+       | AC_lex_D_U_ZAG <F> AC_lex_L_U_ZAG .
+
+<C>  ::= AC_lex_AKCIJA @AC_f_akcija <C>
+       | .
+
+<D>  ::= AC_lex_OPCIJA @AC_f_opcija_true
+       | @AC_f_opcija_false .
+
+<E>  ::= AC_lex_SLOVO @AC_f_znak <G> <E1> .
+
+<E1> ::=  AC_lex_SLOVO @AC_f_znak <G> @AC_f_unija <E1>
+       | .
+
+<F>  ::= <E> @AC_f_komplement
+       | @AC_f_sva_slova .
+
+<G>  ::= AC_lex_MINUS AC_lex_SLOVO @AC_f_od_do
+       | .
+
+$
+
+<S> ::= <C> @AC_f_opcija_false <A> .
+
+<A> ::= <B> @AC_f_slovo <C> <D> <A>
+      | .
+
+<B> ::= AC_lex_SLOVO @AC_f_znak
+      | AC_lex_L_U_ZAG AC_lex_SLOVO @AC_f_znak <G> <E> AC_lex_D_U_ZAG
+      | AC_lex_D_U_ZAG <F> AC_lex_L_U_ZAG .
+
+<C> ::= AC_lex_AKCIJA @AC_f_akcija <C>
+      | .
+
+<D> ::= AC_lex_OPCIJA @AC_f_opcija_true
+      | @AC_f_opcija_false .
+
+<E> ::=  AC_lex_SLOVO @AC_f_znak <G> @AC_f_unija <E>
+      | .
+
+<F> ::= AC_lex_SLOVO @AC_f_znak <G> <E> @AC_f_komplement
+      | @AC_f_sva_slova .
+
+<G> ::= AC_lex_MINUS AC_lex_SLOVO @AC_f_od_do
+      | .

@@ -1,0 +1,7 @@
+-ubaci prijavljivanje gresaka
+-ubaci lokacije
+-dodaj testove razne
+-dodaj funkcije za setanje kroz json strukturu
+-proveri kvotovanje u stringu, dodaj razne \ sekvence
+-kada pravis novi string, uradi prebrojavanje po kvotovanju
+-dodaj XML

@@ -1,0 +1,107 @@
+?-op(50,fy,ne).
+?-op(55,yfx,an).
+?-op(60,yfx,or).
+?-op(65,yfx,im).
+?-op(70,yfx,eq).
+
+skini_eq(eq(Ai,Bi),an(im(Ao,Bo),im(Bo,Ao))):-
+  skini_eq(Ai,Ao),
+  skini_eq(Bi,Bo).
+skini_eq(im(Ai,Bi),im(Ao,Bo)):-
+  skini_eq(Ai,Ao),
+  skini_eq(Bi,Bo).
+skini_eq(an(Ai,Bi),an(Ao,Bo)):-
+  skini_eq(Ai,Ao),
+  skini_eq(Bi,Bo).
+skini_eq(or(Ai,Bi),or(Ao,Bo)):-
+  skini_eq(Ai,Ao),
+  skini_eq(Bi,Bo).
+skini_eq(ne(Ai),ne(Ao)):-
+  skini_eq(Ai,Ao).
+skini_eq(A,A).
+
+skini_im(im(Ai,Bi),or(ne(Ao),Bo)):-
+  skini_im(Ai,Ao),
+  skini_im(Bi,Bo).
+skini_im(an(Ai,Bi),an(Ao,Bo)):-
+  skini_im(Ai,Ao),
+  skini_im(Bi,Bo).
+skini_im(or(Ai,Bi),or(Ao,Bo)):-
+  skini_im(Ai,Ao),
+  skini_im(Bi,Bo).
+skini_im(ne(Ai),ne(Ao)):-
+  skini_im(Ai,Ao).
+skini_im(A,A).
+
+udubi(ne(ne(Ai)),Ao):-
+  udubi(Ai,Ao).
+udubi(ne(an(Ai,Bi)),or(Ao,Bo)):-
+  udubi(ne(Ai),Ao),
+  udubi(ne(Bi),Bo).
+udubi(ne(or(Ai,Bi)),an(Ao,Bo)):-
+  udubi(ne(Ai),Ao),
+  udubi(ne(Bi),Bo).
+udubi(an(Ai,Bi),an(Ao,Bo)):-
+  udubi(Ai,Ao),
+  udubi(Bi,Bo).
+udubi(or(Ai,Bi),or(Ao,Bo)):-
+  udubi(Ai,Ao),
+  udubi(Bi,Bo).
+udubi(ne(Ai),ne(Ao)):-
+  udubi(Ai,Ao).
+udubi(A,A).
+
+normiraj(or(Ai,Bi),C):-
+  normiraj(Ai,Ao),
+  normiraj(Bi,Bo),
+  distribuiraj(or(Ao,Bo),C).
+normiraj(an(Ai,Bi),an(Ao,Bo)):-
+  normiraj(Ai,Ao),
+  normiraj(Bi,Bo).
+normiraj(A,A).
+
+distribuiraj(or(A,an(B,C)),an(D,E)):-
+  distribuiraj(or(A,B),D),
+  distribuiraj(or(A,C),E).
+distribuiraj(or(an(A,B),C),an(D,E)):-
+  distribuiraj(or(A,C),D),
+  distribuiraj(or(B,C),E).
+distribuiraj(A,A).
+
+ispisi(an(A,B)):-
+  ispisi(A),
+  nl,
+  ispisi(B).
+ispisi(or(A,B)):-
+  ispisi(A),
+  write(','),
+  ispisi(B).
+ispisi(ne(A)):-
+  write('-'),
+  ispisi(A).
+ispisi(A):-
+  write(A).
+
+provera(an(A,B)):-
+  provera(A),
+  provera(B).
+provera(A):-
+  clan(A,B),
+  clan(A,ne(B)).
+
+clan(or(A,_),B):-
+  clan(A,B).
+clan(or(_,A),B):-
+  clan(A,B).
+clan(A,A).
+
+taut(A):-
+  display(A),
+  nl,
+  skini_eq(A,A1),
+  skini_im(A1,A2),
+  udubi(A2,A3),
+  normiraj(A3,A4),
+  ispisi(A4),
+  !,
+  provera(A4).

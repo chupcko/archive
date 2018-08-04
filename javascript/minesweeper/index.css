@@ -1,0 +1,12 @@
+.body
+{
+  background-color: rgb(100%, 100%, 100%);
+  color: rgb(0%, 0%, 0%);
+  font-family: "lucida grande", tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 12pt;
+}
+
+input[type="text"]
+{
+  width: 4em;
+}

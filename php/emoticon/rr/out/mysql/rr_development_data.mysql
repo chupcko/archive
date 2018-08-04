@@ -1,0 +1,158 @@
+USE rr;
+
+SET @ADMIN_LICENSE_ID = 1;
+SET @ALL_LICENSE_ID = 2;
+
+INSERT INTO rr_requests VALUES (0, 'development/index', 'development/index.php', NULL, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/login', 'development/login.php', NULL, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'username', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'password', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/logout', 'development/logout.php', @ADMIN_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/execute/list', 'development/execute/list.php', @ADMIN_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/execute/execute', 'development/execute/execute.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/list', 'development/users/list.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/add', 'development/users/add.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'username', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'password', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/delete', 'development/users/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/edit/form', 'development/users/edit/form.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',      'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL',  '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/edit/execute', 'development/users/edit/execute.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',       'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'username', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'password', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/authorize', 'development/users/authorize.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/permissions/list', 'development/users/permissions/list.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',      'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL',  '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/permissions/delete', 'development/users/permissions/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',      'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'user_id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/users/permissions/add', 'development/users/permissions/add.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'user_id',    'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'license_id', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'value',      'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/sessions/list', 'development/sessions/list.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/sessions/delete', 'development/sessions/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/sessions/refresh', 'development/sessions/refresh.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/licenses/list', 'development/licenses/list.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/licenses/add', 'development/licenses/add.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'name',          'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'default_value', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/licenses/delete', 'development/licenses/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/licenses/edit/form', 'development/licenses/edit/form.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',      'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL',  '');
+
+INSERT INTO rr_requests VALUES (0, 'development/licenses/edit/execute', 'development/licenses/edit/execute.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',            'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'name',          'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'default_value', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/list', 'development/requests/list.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/add', 'development/requests/add.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'name',       'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'filename',   'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'license_id', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'developing', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/delete', 'development/requests/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/edit/form', 'development/requests/edit/form.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',      'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'message', 'OPTIONAL',  '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/edit/execute', 'development/requests/edit/execute.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',         'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'name',       'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'filename',   'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'license_id', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'developing', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/arguments/add', 'development/requests/arguments/add.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'request_id',    'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'name',          'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'type',          'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'default_value', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/requests/arguments/delete', 'development/requests/arguments/delete.php', @ADMIN_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'id',         'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'request_id', 'MANDATORY', '');
+
+INSERT INTO rr_requests VALUES (0, 'development/export', 'development/export.php', @ADMIN_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/examples/whoami', 'development/examples/whoami.php', @ALL_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/examples/world', 'development/examples/world.php', NULL, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/examples/data_mysql', 'development/examples/data_mysql.php', @ALL_LICENSE_ID, TRUE);
+
+INSERT INTO rr_requests VALUES (0, 'development/examples/arguments', 'development/examples/arguments.php', @ALL_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'm', 'MANDATORY', '');
+INSERT INTO rr_arguments VALUES (0, @ID, 'o', 'OPTIONAL',  'd');
+
+INSERT INTO rr_requests VALUES (0, 'development/examples/file', 'development/examples/file.php', @ALL_LICENSE_ID, TRUE);
+SET @ID = LAST_INSERT_ID();
+INSERT INTO rr_arguments VALUES (0, @ID, 'f', 'FILE', '');

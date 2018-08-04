@@ -1,0 +1,11 @@
+*.o
+*.a
+json_lexical.h
+json_lexical.c
+json_syntax.h
+json_syntax.c
+xml_lexical.h
+xml_lexical.c
+xml_syntax.h
+xml_syntax.c
+prototype.h

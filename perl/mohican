@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+$DOCUMENTROOT="/tmp/server";
+
+$ZAHTEV=<STDIN>;
+if($ZAHTEV =~ /^GET (\/.*) HTTP\/1\.[01]/)
+{
+  $IME=$1;
+  if(-d $DOCUMENTROOT.$IME)
+  {
+    $IME=$IME."index.html";
+  }
+  if(!open(FILE,"<".$DOCUMENTROOT.$IME))
+  {
+    print "Not Found\n";
+  }
+  else
+  {
+    print "HTTP/1.1 200 OK\n";
+    if($IME=~/.gif$/i)
+    {
+      print "Content-Type: image/gif\n";
+    }
+    elsif($IME=~/.jpg$/i)
+    {
+      print "Content-Type: image/jpeg\n";
+    }
+    elsif($IME=~/.html$/i)
+    {
+      print "Content-Type: text/html\n";
+    }
+    print "\n";
+    while(<FILE>)
+    {
+      print;
+    }
+    close(FILE)
+  }
+}
+else
+{
+  print "Method Not Implemented\n";
+}

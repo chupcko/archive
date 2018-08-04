@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>Table Mouseover</title>
+    <script type="text/javascript" language="javascript">
+      var x = 0;
+      var y = 0;
+
+      function click(e)
+      {
+        try
+        {
+          x = event.x+document.body.scrollLeft;
+          y = event.y+document.body.scrollTop;
+        }
+        catch(er)
+        {
+          x = e.pageX+document.body.scrollLeft;
+          y = e.pageY+document.body.scrollTop;
+        }
+      }
+      document.onmousedown = click;
+      
+      function test(n)
+      {
+        document.getElementById('nn').style.left = x+'px';
+        document.getElementById('nn').style.top = y+'px';
+        document.getElementById('nn').style.visibility = "visible";
+        document.getElementById('nn').innerHTML = n;
+      }
+    </script>
+    <style type="text/css">
+      body
+      {
+        background: white;
+        color: blue;
+      }
+      tr:hover[class="rrr"]
+      {
+        color: green;
+      }
+      td:hover
+      {
+        color: red;
+      }
+      .nevidljiv
+      {
+        position: absolute;
+        visibility: hidden;
+        z-index: 1;
+        border-style: solid;
+        color: red;
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="nevidljiv" ID="nn">ERROR</span>
+    <table border="1">
+      <caption>Naslov</caption>
+      <thead>
+        <tr>
+          <th>a</th>
+          <th>b</th>
+          <th>c</th>
+          <th>d</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rrr">
+          <td onclick="test('1a');">1a</td>
+          <td onclick="test('1b');">1b</td>
+          <td onclick="test('1c');">1c</td>
+          <td onclick="test('1d');">1d</td>
+        </tr>
+        <tr class="rrr">
+          <td onclick="test('2a');">2a</td>
+          <td onclick="test('2b');">2b</td>
+          <td onclick="test('2c');">2c</td>
+          <td onclick="test('2d');">2d</td>
+        </tr>
+        <tr class="rrr">
+          <td onclick="test('3a');">3a</td>
+          <td onclick="test('3b');">3b</td>
+          <td onclick="test('3c');">3c</td>
+          <td onclick="test('3d');">3d</td>
+        </tr>
+        <tr class="rrr">
+          <td onclick="test('4a');">4a</td>
+          <td onclick="test('4b');">4b</td>
+          <td onclick="test('4c');">4c</td>
+          <td onclick="test('4d');">4d</td>
+        </tr>
+        <tr class="rrr">
+          <td onclick="test('5a');">5a</td>
+          <td onclick="test('5b');">5b</td>
+          <td onclick="test('5c');">5c</td>
+          <td onclick="test('5d');">5d</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>a</th>
+          <th>b</th>
+          <th>c</th>
+          <th>d</th>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

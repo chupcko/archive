@@ -1,0 +1,8 @@
+           = [\s\t\n]* | \$ [^\$]* \$ .
+LS_taraba  = \# .
+LS_jednako = \= .
+LS_tacka   = \. .
+LS_broj    = [0-9]+ .
+LS_lz      = \( .
+LS_dz      = \) .
+LS_ime     = [^\=\#\.\(\)\s\t\n\$]+ .

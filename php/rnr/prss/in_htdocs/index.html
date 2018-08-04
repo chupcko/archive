@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>PHP Request Service System Test Page</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+      a,
+      a:active,
+      a:link,
+      a:visited
+      {
+        color: rgb(0%, 0%, 0%);
+      }
+
+      a:hover
+      {
+        background-color: rgb(90%, 90%, 90%);
+      }
+
+      body
+      {
+        background-color: rgb(100%, 100%, 100%);
+        color: rgb(0%, 0%, 0%);
+        font-family: lucida grande, tahoma, verdana, arial, helvetica, sans-serif;
+        font-size: 12pt;
+      }
+
+      .left
+      {
+        float: left;
+      }
+
+      .clear
+      {
+        clear: both;
+      }
+
+      .margin
+      {
+        margin: 1em;
+      }
+
+      .big
+      {
+        width: 80em;
+        height: 25em;
+      }
+
+      .hidden
+      {
+        display: none;
+        position: absolute;
+      }
+
+      .box
+      {
+        margin-top: 1.5em;
+        padding: 1em;
+        border: 3px rgb(0%, 0%, 0%) solid;
+        background: rgb(100%, 100%, 100%);
+      }
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+      function toggle_display(id)
+      {
+        var element = document.getElementById(id);
+        if(element.style.display == 'block')
+          element.style.display = 'none';
+        else
+        {
+          var all = document.getElementsByClassName('box');
+          for(var i = 0; i < all.length; i++)
+          {
+            var item = all[i];
+            item.style.display = 'none';
+          }
+          var offsets = document.getElementById(id+'_mark').getBoundingClientRect();
+          element.style.left = offsets.left+'px';
+          element.style.top = offsets.top+'px';
+          element.style.display = 'block';
+        }
+      }
+
+      function toggle_disabled(id)
+      {
+        var element = document.getElementById(id);
+        element.disabled = !element.disabled;
+      }
+
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    <div>
+      <div class="left margin">
+        <a href="prss.php?prss_request=core/logout" target="output">core/logout</a><br/>
+        <a href="prss.php?prss_request=core/info" target="output">core/info</a>
+        <p/>
+        <a href="prss.php?prss_request=core/login&username=admin&password=a" target="output">core/login admin</a><br/>
+        <a href="prss.php?prss_request=core/login&username=user1&password=u1" target="output">core/login user1</a><br/>
+        <a href="prss.php?prss_request=core/login&username=user2&password=u2" target="output">core/login user2</a><br/>
+        <p/>
+        <a href="prss.php?prss_request=admin/list_sessions" target="output">admin/list_sessions</a><br/>
+        <a href="prss.php?prss_request=admin/prune_sessions" target="output">admin/prune_sessions</a>
+        <p/>
+        <a id="test_arguments_mark" href="#" onclick="toggle_display('test_arguments'); return false;">test/arguments ...</a><br/>
+        <a id="test_upload_mark" href="#" onclick="toggle_display('test_upload'); return false;">test/upload ...</a><br/>
+        <a href="prss.php?prss_request=test/mysql_data" target="output">test/mysql_data</a><br/>
+        <a href="prss.php?prss_request=test/who_i_am" target="output">test/who_i_am</a>
+      </div>
+      <div class="left">
+        <iframe name="output" class="big margin"></iframe>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div id="test_arguments" class="hidden box">
+      <a href="#" onclick="toggle_display('test_arguments'); return false;">Close</a>
+      <b>test/arguments:</b>
+      <p/>
+      <form method="POST" action="prss.php?prss_request=test/arguments" target="output" onsubmit="toggle_display('test_arguments'); return true;">
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_arguments_m'); return false;"/>
+        <input type="input" id="test_arguments_m" name="m" value="m1"> m<br/>
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_arguments_o'); return false;"/>
+        <input type="input" id="test_arguments_o" name="o" value="o1"> o<br/>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+    <div id="test_upload" class="hidden box">
+      <a href="#" onclick="toggle_display('test_upload'); return false;">Close</a>
+      <b>test/upload:</b>
+      <p/>
+      <form method="POST" enctype="multipart/form-data" action="prss.php?prss_request=test/upload" target="output" onsubmit="toggle_display('test_upload'); return true;">
+        <input type="checkbox" checked="checked" onchange="toggle_disabled('test_upload_f'); return false;"/>
+        <input type="file" id="test_upload_f" name="f"> f<br/>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+  </body>
+</html>

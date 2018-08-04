@@ -1,0 +1,5 @@
+-Proveri koncept item, sub, narocito za delete i copy
+-Uvedi brojac empty, za add uzimaj iz empty ako ih ima, mozda da sve empty uvezes
+-Razmisli o testovima
+-Sredi imena za sub ?
+

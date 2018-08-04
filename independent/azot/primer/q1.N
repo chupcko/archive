@@ -1,0 +1,24 @@
+procedure bre() is
+begin
+  t:="proc";
+  return;
+  a:="mama"
+end;
+
+a:="test";
+debug();
+bre();
+debug();
+print("** ",2<3," ",2<=3," ",2=3," ",2<>3," ",2>3," ",2>=3,"\n");
+print("\n\n\n\n");
+n["caa"]:=10;
+n["aaa"]:=5;
+n["bab"]:=1;
+n["aac"]:=8;
+n["cac"]:=11;
+n["aaa"]:=6;
+n["bba"]:=10;
+n["aba"]:=7;
+debug();
+sorti(n);
+debug();

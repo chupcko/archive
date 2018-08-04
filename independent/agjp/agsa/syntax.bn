@@ -1,0 +1,14 @@
+<A> ::= <C> <B> .
+
+<B> ::= <C> <B> |
+        .
+
+<C> ::= NETERMINAL @f_pra JEDNAKO <E> <D> TACKA .
+
+<D> ::= ILI @f_ili <E> <D> |
+        .
+
+<E> ::= NETERMINAL @f_net <E> |
+        TERMINAL @f_ter <E> |
+        FUNKCIJA @f_fja <E> |
+        @f_eps .

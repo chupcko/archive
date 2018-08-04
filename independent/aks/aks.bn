@@ -1,0 +1,41 @@
+$
+  AKS_LUZ = \[ .
+  AKS_DUZ = \] .
+  AKS_ODO = \- .
+  AKS_OPC = \? .
+  AKS_NOT = \^ .
+  AKS_EOI = \0 .
+  AKS_CHR = [^\[\]\-\?\^\0\/] | \/ ([0-7] [0-7]? [0-7]? | [^0-7]) .
+$
+
+<A> ::=
+  <C> @AKS_f_in <B> <A> |
+  .
+
+<B> ::=
+  AKS_OPC @AKS_f_opc_true |
+  @AKS_f_opc_false .
+
+<C> ::=
+  AKS_CHR @AKS_f_chr |
+  AKS_LUZ <D> AKS_DUZ .
+
+<D> ::=
+  AKS_CHR @AKS_f_chr <H> <G> <E> |
+  AKS_NOT <F> .
+
+<E> ::=
+  AKS_NOT AKS_CHR @AKS_f_chr <H> <G> @AKS_f_minus |
+  .
+
+<F> ::=
+  AKS_CHR @AKS_f_chr <H> <G> @AKS_f_complement |
+  @AKS_f_all_chr .
+
+<G> ::=
+  AKS_CHR @AKS_f_chr <H> @AKS_f_union <G> |
+  .
+
+<H> ::=
+  AKS_ODO AKS_CHR @AKS_f_chr @AKS_f_to |
+  .

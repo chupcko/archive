@@ -1,0 +1,69 @@
+=x 3
+=y 3
+= comment
+123|456|789
+456|789|123
+789|123|456
+---+---+---
+123|456|789
+456|789|123
+789|123|456
+---+---+---
+123|456|789
+456|789|123
+789|123|456
+
+Redovi su do 128 karaktera
+
+ako red pocinje sa '=' onda je komandni inace je sa podacima
+'=x' je x dimenzija bloka, moze biti od 2 do 6, default 3
+'=y' je y dimenzija bloke, moze biti od 2 do 6, default 3
+
+podaci su: ' ' ili nesto iz karakter set-a
+ ' ' '\n'
+ '0'  '1'  '2'  '3'  '4'  '5'
+ '6'  '7'  '8'  '9' 'aA' 'bB'
+'cC' 'dD' 'eE' 'fF' 'gG' 'hH'
+'iI' 'jJ' 'kK' 'lL' 'mM' 'nN'
+'oO' 'pP' 'qQ' 'rR' 'sS' 'tT'
+'uU' 'vV' 'wW' 'xX' 'yY' 'zZ'
+
+
+Dakle ako red pocinje sa '=', od sledeceg karaktera zavisi sta je:
+  'xX' x dimenzija bloka, moze biti od 2 do 6, default 3
+  'yY' y dimenzije bloke, moze biti od 2 do 6, default 3
+  ostalo, je komentar
+
+Ako red ne pocinje sa '=', to su podaci, koji se tumace na sledeci nacin:
+  ' ' oznacava prazno mesto
+  '\n' oznacava nov red
+  ostalo iz tabele je sam podatak, ako je x*y<10 onda su podaci od '1' do '9', u suprotnom od '0' do
+
+    00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35
+     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
+
+2x2     1  2  3  4
+2x3     1  2  3  4  5  6
+3x2     1  2  3  4  5  6
+2x4     1  2  3  4  5  6  7  8
+4x2     1  2  3  4  5  6  7  8
+3x3     1  2  3  4  5  6  7  8  9
+2x5  0  1  2  3  4  5  6  7  8  9
+5x2  0  1  2  3  4  5  6  7  8  9
+2x6  0  1  2  3  4  5  6  7  8  9  A  B
+3x4  0  1  2  3  4  5  6  7  8  9  A  B
+4x3  0  1  2  3  4  5  6  7  8  9  A  B
+6x2  0  1  2  3  4  5  6  7  8  9  A  B
+3x5  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E
+5x3  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E
+4x4  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+3x6  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H
+6x3  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H
+4x5  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J
+5x4  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J
+4x6  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N
+6x4  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N
+5x5  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O
+5x6  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T
+6x5  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T
+6x6  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z

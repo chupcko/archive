@@ -1,0 +1,64 @@
+     ~
+0    1
+1    0
+
+        or   and  im   mi   eq   do   up   nim  nmi  xor
+0  0    0    0    1    1    1    1    1    0    0    0
+0  1    1    0    1    0    0    0    1    0    1    1
+1  0    1    0    0    1    0    0    1    1    0    1
+1  1    1    1    1    1    1    0    0    0    0    0
+
+           ite
+0  0  0    0
+0  0  1    1
+0  1  0    0
+0  1  1    1
+1  0  0    0
+1  0  1    0
+1  1  0    1
+1  1  1    1
+
+ite(P,P,P) = P
+ite(P,P,Q) = P or Q
+ite(P,Q,P) = P and Q
+ite(P,Q,Q) = Q
+ite(P,P,~P) = 1
+ite(P,P,~Q) = P mi Q
+ite(P,Q,~P) = P im Q
+ite(P,Q,~Q) = P eq Q
+ite(P,~P,P) = 0
+ite(P,~P,Q) = P nmi Q
+ite(P,~Q,P) = P nim Q
+ite(P,~Q,Q) = P xor Q
+ite(P,~P,~P) = ~P
+ite(P,~P,~Q) = P do Q
+ite(P,~Q,~P) = P up Q
+ite(P,~Q,~Q) = ~Q
+
+ite(P,Q,0) = ite(P,Q,P)
+ite(P,Q,1) = ite(P,Q,~P)
+ite(P,0,Q) = ite(P,~P,Q)
+ite(P,1,Q) = ite(P,P,Q)
+ite(P,0,0) = 0
+ite(P,0,1) = ~P
+ite(P,1,0) = P
+ite(P,1,1) = 1
+
+~~P |=| P
+P, ite(P,Q,R) |= Q
+~P, ite(P,Q,R) |= R
+ite(~P,Q,R) |=| ite(P,R,Q)
+~ite(P,Q,R) |=| ite(P,~Q,~R)
+ite(ite(A,B,C),P,Q) |=| ite(A,ite(B,P,Q),ite(C,P,Q))
+Q, R |= ite(P,Q,R)
+P |= ite(P,P,Q)
+P |= ite(Q,Q,P)
+P |= ite(Q,P,~Q)
+ite(P,ite(Q,A,B),ite(Q,C,D)) |=| ite(Q,ite(P,A,C),ite(P,B,D))
+|= ite(A,ite(B,A,~B),~A)
+|= ite(ite(~A,~B,A),ite(B,A,~B),ite(~A,B,~A))
+|= ite(P,P,~P)
+ite(A,B,C) |= ite(B,B,C)
+ite(A,B,C) |= ite(C,C,B)
+ite(B,C,B) |= ite(A,B,C)
+ite(C,B,C) |= ite(A,B,C)

@@ -1,0 +1,77 @@
+72 25.4 div dup scale
+40 40 translate
+
+/x 20 def
+/c 4 def
+/p 10 def
+/d 20 def
+/e 1 def
+
+/HelveticaBold findfont c scalefont setfont
+
+/height_10 12 def
+/height_5 10 def
+/height_1 8 def
+/height_05 6 def
+
+/line_width 0.05 def
+
+line_width setlinewidth
+newpath
+  p neg 0 moveto
+  x c mul p add 0 lineto
+stroke
+
+newpath
+  0 0 moveto
+  x c mul e add x c mul e add x div lineto
+stroke
+
+0 1 c d mul
+{
+  /i exch def
+  /l x i mul d div def
+  i 20 mod 0 ne
+  i 10 mod 0 ne and
+  i 2 mod 0 ne and
+  {
+    /h height_05 def
+  }
+  {
+    i 20 mod 0 ne
+    i 10 mod 0 ne and
+    i 2 mod 0 eq and
+    {
+      /h height_1 def
+    }
+    {
+      i 20 mod 0 ne
+      i 10 mod 0 eq and
+      i 2 mod 0 eq and
+      {
+        /h height_5 def
+      }
+      {
+        /h height_10 def
+      }
+      ifelse
+    }
+    ifelse
+  }
+  ifelse
+  newpath
+    l 0 moveto
+    l h lineto
+  stroke
+}
+for
+
+0 1 c
+{
+  /i exch def
+  i x mul height_10 moveto
+  i ( ) cvs show
+}
+for
+
+showpage quit

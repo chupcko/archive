@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+$,=" ";
+$\="\n";
+
+while(<>)
+{
+  chop;
+  next if(/still logged in$/);
+  next if(/^runlevel/);
+  next if(/^reboot/);
+  next if(/^shutdown/);
+  next if(/^wtmp begins/);
+  next unless(/./);
+  if(/^(\w*).*\((\d\d):(\d\d)\)$/)
+  {
+    $Vreme{$1}+=$2*60+$3;
+    $Puta{$1}++;
+  }
+}
+
+foreach $ime (sort keys %Vreme)
+{
+  $pime=(getpwnam($ime))[6];
+  printf "%-8s  %-40s  %8d  %d\n",
+    $ime,
+    defined $pime?$pime:'Nemam podatke o imenu',
+    $Vreme{$ime},
+    $Puta{$ime};
+}

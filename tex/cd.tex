@@ -1,0 +1,115 @@
+\input texdraw
+\vsize=277mm
+\hsize=190mm
+\voffset=-15.4mm
+\hoffset=-15.4mm
+\nopagenumbers
+
+% \font\myrm=cmr12
+% \font\mybf=cmbx12
+% \font\mytt=cmtt12
+% \font\mysy=cmsy10 scaled \magstep1
+% \textfont2=\mysy
+% \lineskip=1.2pt
+% \baselineskip=14.4pt
+% \myrm
+
+\def\CDdown#1#2#3{%
+  \btexdraw
+    \drawdim mm
+    \linewd 0.1
+    \move(0 0)
+    \rlvec(6.5 0)
+    \rlvec(0 118)
+    \rlvec(-6.5 0)
+    \rlvec(0 -118)
+
+    \rmove(6.5 0)
+    \rlvec(138 0)
+    \rlvec(0 118)
+    \rlvec(-138 0)
+    \rmove(0 -118)
+
+    \rmove(138 0)
+    \rlvec(6.5 0)
+    \rlvec(0 118)
+    \rlvec(-6.5 0)
+
+    \textref h:C v:C
+    \vtext(3.25 59)
+    {
+      \hbox to 132mm
+      {
+        #1
+      }
+    }
+    \htext(75.5 59)
+    {
+      \vbox to 112mm
+      {
+        \hsize=132mm
+        #2
+        \vfil
+      }
+    }
+    \vtext(147.5 59)
+    {
+      \hbox to 132mm
+      {
+        #3
+      }
+    }
+  \etexdraw
+}
+\def\CDup#1{%
+  \btexdraw
+    \drawdim mm
+    \linewd 0.1
+    \move(0 0)
+    \rlvec(121 0)
+    \rlvec(0 120)
+    \rlvec(-121 0)
+    \rlvec(0 -120)
+
+    \textref h:C v:C
+    \htext(60.5 60)
+    {
+      \vbox to 114mm
+      {
+        \hsize=115mm
+        #1
+        \vfil
+      }
+    }
+  \etexdraw
+}
+
+\font\myrm=cmr17
+\font\mysy=cmsy10 scaled 1700
+
+\CDup
+{
+ {
+  \textfont2=\mysy
+  \myrm
+  \vfil
+  \centerline{Goran `$\cal CHUPCKO$'' Lazi\'c}
+  }
+}
+
+\vskip 5mm
+
+\CDdown
+{
+  \hfil Goran ``$\cal CHUPCKO$'' Lazi\'c\hfil
+}
+{
+  \textfont2=\mysy
+  \myrm
+  \vfil
+  \centerline{Goran `$\cal CHUPCKO$'' Lazi\'c}
+}
+{
+  \hfil Goran `'$\cal CHUPCKO$'' Lazi\'c\hfil
+}
+\bye

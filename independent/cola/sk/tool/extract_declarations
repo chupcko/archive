@@ -1,0 +1,30 @@
+#!/usr/bin/awk -f
+
+BEGIN \
+{
+  in_declaration = 0
+}
+
+/^_BEGIN_DECLARATION_$/ \
+{
+  printf "extern "
+  buffer = "";
+  in_declaration = 1
+  next
+}
+
+/^_END_DECLARATION_$/ \
+{
+  printf "%s;\n", buffer
+  in_declaration = 0
+  next
+}
+
+in_declaration != 0 \
+{
+  printf "%s", buffer
+  if(in_declaration == 2)
+    printf "\n"
+  buffer = $0;
+  in_declaration = 2
+}

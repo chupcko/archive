@@ -1,0 +1,46 @@
+           = [\s \t \n]+ | % [^ \n]* \n .
+LEX_ime    = [^ \s \t \n \% \# \. \( \)]+ .
+LEX_lambda = \# .
+LEX_tacka  = \. .
+LEX_lzag   = \( .
+LEX_dzag   = \) .
+
+izraz ::= faktor
+           {a=$1}
+           [
+             faktor
+             {a=new(@,a,$2)}
+           ](0-inf)
+           {$$=a}
+       .
+
+faktor ::= LEX_ime
+           {$$=new(c,$1,NIL)}
+       |   LEX_lamda
+           {b=NIL}
+           [
+             LEX_ime
+             {
+               if(b=NIL)
+               {
+                 a=new(#,$2,NIl);
+                 b=a;
+               }
+               else
+               {
+                 b.veza=new(#,$2,NIL);
+                 b=b.veza
+               }
+             }
+           ](1-inf)
+           LEX_tacka
+           izraz
+           {
+             b.veza=$4
+             $$=a;
+           }
+       |   LEX_lzag
+           izraz
+           LEX_dzag
+           {$$=$2}
+       .

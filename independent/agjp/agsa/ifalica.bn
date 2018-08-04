@@ -1,0 +1,9 @@
+<S> ::= Kif <S> <E> |
+        Kbegin <S> <R> Kend |
+        Klet .
+
+<E> ::= Kelse <S> |
+        .
+
+<R> ::= tacka_zarez <S> <R> |
+        .

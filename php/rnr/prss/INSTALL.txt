@@ -1,0 +1,2 @@
+cat prss.mysql | mysql -u root -p
+mv in_htdocs out_of_htdocs /srv/www/htdocs

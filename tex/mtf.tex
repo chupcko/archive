@@ -1,0 +1,23 @@
+\def\MtFTeX{M\kern-.15em\lower.4ex\hbox{t}\kern-.125emF\TeX}
+\def\MatF{M\kern-.14em\lower.4ex\hbox{a\kern-.135emt}\kern-.115emF}
+\def\Matoi{M\kern-.14em\lower.4ex\hbox{a\kern-.135emt}\kern-.22em$\ointop$}
+\def\fb#1{%
+  \hbox{%
+    \vrule
+    \vbox{%
+      \hrule
+      \hbox spread 2mm{
+        \hfil
+        \vbox spread 2mm{\vfil\hbox{#1}\vfil}%
+        \hfil
+      }%
+      \hrule
+    }%
+    \vrule
+  }%
+}
+\nopagenumbers
+\fb\MtFTeX\par
+\fb\MatF\par
+\fb\Matoi\par
+\bye

@@ -1,0 +1,59 @@
+Leksika u RI formatu:
+
+#rec       = [_ a-z A-Z] [_ a-z A-Z 0-9] * .
+
+           = [\f \n \r \s \t \v] | \$ [^ \$]* \$ .
+NETERMINAL = < #rec > .
+TERMINAL   = #rec .
+FUNKCIJA   = @ #rec .
+JEDNAKO    = ::\= .
+TACKA      = \. .
+ILI        = \| .
+
+
+Sintaksa u BN formatu:
+
+<A> ::= <C> <B> .
+
+<B> ::=
+  <C> <B> |
+  .
+
+<C> ::= NETERMINAL @f_pra JEDNAKO <E> <D> TACKA .
+
+<D> ::=
+  ILI @f_ili <E> <D> |
+  .
+
+<E> ::=
+  NETERMINAL @f_net <E> |
+  TERMINAL @f_ter <E> |
+  FUNKCIJA @f_fja <E> |
+  @f_eps .
+
+
+Skracjenice u programu:
+  br BRoj
+  ds Desna Strana
+  du DUzina
+  im IMena
+  sl SLova
+  so skup (Set Of)
+  po POcetno
+  pr PRavila
+  vl VeLicina
+
+
+Ispisvanje programa:
+
+     | NET | TER | FJA | EPS
+-----+-----+-----+-----+-----
+ poc | NET | lex | FJA | end
+     | nor |     |     |
+-----+-----+-----+-----+-----
+ nor | NET | TER | FJA | end
+     |     | lex |     |
+-----+-----+-----+-----+-----
+ lex | get | get | FJA | get
+     | NET | TER |     | end
+     | nor |     |     |

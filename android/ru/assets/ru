@@ -1,0 +1,4 @@
+#!/system/bin/sh
+
+cd /data/data/org.chupcko.ru/assets
+./run_root_shell -c ./prepare

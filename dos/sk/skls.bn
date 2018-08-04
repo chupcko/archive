@@ -1,0 +1,16 @@
+<LS_p_s> ::= @LS_f_init <LS_p_d> @LS_f_provera <LS_p_k> @LS_f_vrh LS_tacka .
+
+<LS_p_d> ::=
+  LS_taraba LS_ime @LS_f_n_ime LS_jednako <LS_p_k> @LS_f_n_vrh LS_tacka <LS_p_d> |
+  .
+
+<LS_p_k> ::= <LS_p_f> <LS_p_l> .
+
+<LS_p_l> ::=
+  <LS_p_f> @LS_f_app <LS_p_l> |
+  .
+
+<LS_p_f> ::=
+  LS_broj @LS_f_broj |
+  LS_ime @LS_f_ime |
+  LS_lz <LS_p_k> LS_dz .

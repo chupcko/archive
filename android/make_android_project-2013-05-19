@@ -1,0 +1,304 @@
+#!/bin/sh
+
+if [ ${#} != 1 ]
+then
+  echo "USAGE: ${0} <configuration.file>"
+  exit
+fi
+CONFIGURATION_FILE=${1}
+
+if [ ! -e ${CONFIGURATION_FILE} ]
+then
+  cat << EOI > ${CONFIGURATION_FILE}
+# Path to project directory
+LOCATION='name-1.0'
+
+# Path to Android SDK
+ANDROID_PATH='/usr/local/android-sdk-linux'
+
+# Platform, use 'android-?' from 'android list target'
+PLATFORM='android-?'
+
+# Project name
+NAME='name'
+
+# Package name in reverse dot format
+PACKAGE='dot.domain'
+
+# Activity name
+ACTIVITY='MainActivity'
+
+# Extra jar
+JAR=''
+
+# AVD name, use some from 'android list avd'
+AVD='avd'
+
+# Key DNAME
+#   CN - Name
+#   OU - Domain
+#   O  - Organization
+#   L  - City
+#   ST - State
+#   C  - Country Code
+KEY_DNAME='CN=name, OU=domain.dot, O=organization, L=city, ST=state, C=cc'
+
+# Key alias
+KEY_ALIAS='alias'
+
+# Key password
+KEY_PASSWORD='password'
+
+# Key store password
+KEY_STORE_PASSWORD='password'
+EOI
+  echo "Created configuration file ${CONFIGURATION_FILE}"
+  exit
+fi
+
+echo "Use configuration file ${CONFIGURATION_FILE}"
+source ${CONFIGURATION_FILE}
+
+if [ "${LOCATION}" = '' ]
+then
+  echo "ERROR: Must define LOCATION"
+  exit
+fi
+if echo -n ${LOCATION} | grep -q -E -v '^/'
+then
+  LOCATION=$(dirname $(pwd)/${LOCATION}/.)
+fi
+
+if [ "${ANDROID_PATH}" = '' ]
+then
+  echo "ERROR: Must define ANDROID_PATH"
+  exit
+fi
+if [ ! -x ${ANDROID_PATH}/tools/android ]
+then
+  echo "ERROR: '${ANDROID_PATH}' is bad path to Android SDK"
+  exit
+fi
+
+if [ "${PLATFORM}" = '' ]
+then
+  echo "ERROR: Must define PLATFORM"
+  exit
+fi
+if echo -n ${PLATFORM} | grep -q -E -v '^android-[0-9]+$'
+then
+  echo "ERROR: '${PLATFORM}' is bad platform, use one of:"
+  ${ANDROID_PATH}/tools/android list target | grep -E 'android-[0-9]+' | cut -d ' ' -f 4 | sed 's/^"/  /' | sed 's/"//g'
+  exit
+fi
+if [ ! -r ${ANDROID_PATH}/platforms/${PLATFORM}/android.jar ]
+then
+  echo "ERROR: '${PLATFORM}' is bad platform, use one of:"
+  ${ANDROID_PATH}/tools/android list target | grep -E 'android-[0-9]+' | cut -d ' ' -f 4 | sed 's/^"/  /' | sed 's/"//g'
+  exit
+fi
+
+if [ "${NAME}" = '' ]
+then
+  echo "ERROR: Must define NAME"
+  exit
+fi
+if echo -n ${NAME} | grep -q -E -v '^[a-zA-Z0-9_]+$'
+then
+  echo "ERROR: '${NAME}' is bad project name"
+  exit
+fi
+
+if [ "${PACKAGE}" = '' ]
+then
+  echo "ERROR: Must define PACKAGE"
+  exit
+fi
+if echo -n ${PACKAGE} | grep -q -E -v '^[a-zA-Z0-9_.]+$'
+then
+  echo "ERROR: '${PACKAGE}' is bad package name"
+  exit
+fi
+
+if [ "${ACTIVITY}" = '' ]
+then
+  echo "ERROR: Must define ACTIVITY"
+  exit
+fi
+if echo -n ${ACTIVITY} | grep -q -E -v '^[a-zA-Z0-9_]+$'
+then
+  echo "ERROR: '${ACTIVITY}' is bad activity name"
+  exit
+fi
+
+if [ "${AVD}" = '' ]
+then
+  echo "ERROR: Must define AVD"
+  exit
+fi
+
+if [ "${KEY_DNAME}" = '' ]
+then
+  echo "ERROR: Must define KEY_DNAME"
+  exit
+fi
+
+if [ "${KEY_ALIAS}" = '' ]
+then
+  echo "ERROR: Must define KEY_ALIAS"
+  exit
+fi
+
+if [ "${KEY_PASSWORD}" = '' ]
+then
+  echo "ERROR: Must define KEY_PASSWORD"
+  exit
+fi
+
+if [ "${KEY_STORE_PASSWORD}" = '' ]
+then
+  echo "ERROR: Must define KEY_STORE_PASSWORD"
+  exit
+fi
+
+rm -rf ${LOCATION} 2> /dev/null
+mkdir -p ${LOCATION} 2> /dev/null
+if [ ! -w ${LOCATION} ]
+then
+  echo "ERROR: '${LOCATION}' is non writable"
+  exit
+fi
+echo "Created directory ${LOCATION}"
+
+echo
+${ANDROID_PATH}/tools/android -v create project -n ${NAME} -t ${PLATFORM} -p ${LOCATION} -k ${PACKAGE} -a ${ACTIVITY}
+echo
+
+rm -rf ${LOCATION}/ant.properties ${LOCATION}/bin ${LOCATION}/build.xml ${LOCATION}/local.properties ${LOCATION}/proguard-project.txt ${LOCATION}/project.properties
+echo "Clean directory ${LOCATION}"
+
+cat << EOI > ${LOCATION}/Makefile
+include etc/configuration.mk
+
+KEYSTORE_FILE = etc/keystore.file
+ANDROID_PLATFORM_PATH = \$(ANDROID_PATH)/platforms/\$(PLATFORM)
+PACKAGE_PATH = \$(subst .,/,\$(PACKAGE))
+ifeq (\$(JAR), )
+  JAR_CLASSPATH =
+else
+  JAR_CLASSPATH = -classpath \$(JAR)
+endif
+PATH += :\$(ANDROID_PATH)/tools:\$(ANDROID_PATH)/platform-tools:\$(ANDROID_PATH)/build-tools/17.0.0
+
+.PHONY: all
+all: bin/\$(NAME)-\$(VERSION).apk
+
+\$(KEYSTORE_FILE):
+	keytool -genkey -alias \$(KEY_ALIAS) -keyalg RSA -dname \$(KEY_DNAME) -keysize 2048 -validity 10000 -keypass \$(KEY_PASSWORD) -keystore \$(KEYSTORE_FILE) -storepass \$(KEY_STORE_PASSWORD)
+
+gen/\$(PACKAGE_PATH)/R.java: AndroidManifest.xml res/*/*
+	mkdir -p gen/\$(PACKAGE_PATH)
+	aapt p -m -M AndroidManifest.xml -S res -I \$(ANDROID_PLATFORM_PATH)/android.jar -J gen
+
+bin/classes: gen/\$(PACKAGE_PATH)/R.java src/\$(PACKAGE_PATH)/*
+	mkdir -p bin/classes
+	javac -encoding ascii -source 1.5 -target 1.5 -d bin/classes -bootclasspath \$(ANDROID_PLATFORM_PATH)/android.jar \$(JAR_CLASSPATH) gen/\$(PACKAGE_PATH)/R.java src/\$(PACKAGE_PATH)/*
+	touch bin/classes
+
+bin/classes.dex: bin/classes
+	dx --dex --output=bin/classes.dex bin/classes \$(JAR)
+
+bin/\$(NAME)-\$(VERSION)-raw.apk: AndroidManifest.xml res/*/* bin/classes.dex
+	aapt p -f -M AndroidManifest.xml -S res -I \$(ANDROID_PLATFORM_PATH)/android.jar -F bin/\$(NAME)-\$(VERSION)-raw.apk
+
+bin/\$(NAME)-\$(VERSION)-unsigned.apk: bin/\$(NAME)-\$(VERSION)-raw.apk bin/classes.dex
+#	apkbuilder bin/\$(NAME)-\$(VERSION)-unsigned.apk -u -z bin/\$(NAME)-\$(VERSION)-raw.apk -f bin/classes.dex -rf src -rj libs -nf lib
+#	cp bin/\$(NAME)-\$(VERSION)-raw.apk bin/\$(NAME)-\$(VERSION)-unsigned.apk
+#	(cd bin; zip \$(NAME)-\$(VERSION)-unsigned.apk classes.dex)
+	java -Xmx128M -classpath \$(ANDROID_PATH)/tools/lib/sdklib.jar com.android.sdklib.build.ApkBuilderMain bin/\$(NAME)-\$(VERSION)-unsigned.apk -u -z bin/\$(NAME)-\$(VERSION)-raw.apk -f bin/classes.dex -rf src -rj libs -nf lib
+	
+bin/\$(NAME)-\$(VERSION)-unzipalign.apk: \$(KEYSTORE_FILE) bin/\$(NAME)-\$(VERSION)-unsigned.apk
+	jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore \$(KEYSTORE_FILE) -keypass \$(KEY_PASSWORD) -storepass \$(KEY_STORE_PASSWORD) -signedjar bin/\$(NAME)-\$(VERSION)-unzipalign.apk bin/\$(NAME)-\$(VERSION)-unsigned.apk \$(KEY_ALIAS)
+
+bin/\$(NAME)-\$(VERSION).apk: bin/\$(NAME)-\$(VERSION)-unzipalign.apk
+	zipalign -f 4 bin/\$(NAME)-\$(VERSION)-unzipalign.apk bin/\$(NAME)-\$(VERSION).apk
+
+.PHONY: clean
+clean:
+	rm -rf gen bin
+
+.PHONY: verify
+verify: \$(KEYSTORE_FILE) bin/\$(NAME)-\$(VERSION).apk
+	zipalign -c -v 4 bin/\$(NAME)-\$(VERSION).apk
+	keytool -list -keystore \$(KEYSTORE_FILE) -storepass \$(KEY_STORE_PASSWORD)
+	jarsigner -verbose -verify -certs -keystore \$(KEYSTORE_FILE) bin/\$(NAME)-\$(VERSION).apk
+
+.PHONY: emulator
+emulator:
+	emulator -no-snapshot-save -avd \$(AVD) &
+
+.PHONY: log
+log:
+	adb logcat
+
+.PHONY: clear-log
+clear-log:
+	adb logcat -c
+
+.PHONY: shell
+shell:
+	adb shell
+
+.PHONY: install reinstall start run stop uninstall
+install: bin/\$(NAME)-\$(VERSION).apk
+	adb install bin/\$(NAME)-\$(VERSION).apk
+
+.PHONY: reinstall
+reinstall: bin/\$(NAME)-\$(VERSION).apk
+	adb install -r bin/\$(NAME)-\$(VERSION).apk
+
+.PHONY: start
+start:
+	adb shell am start -a android.intent.action.MAIN -n \$(PACKAGE)/.\$(ACTIVITY)
+
+.PHONY: run stop uninstall
+run: reinstall start
+
+.PHONY: stop
+stop:
+	adb shell kill -9 \`adb shell ps | grep \$(PACKAGE) | tr -s ' ' | cut -d ' ' -f 2\`
+
+.PHONY: uninstall
+uninstall:
+	adb uninstall \$(PACKAGE)
+EOI
+echo "Added file ${LOCATION}/Makefile"
+
+mkdir -p ${LOCATION}/jar 2> /dev/null
+echo "Created directory ${LOCATION}/jar"
+
+mkdir -p ${LOCATION}/lib 2> /dev/null
+echo "Created directory ${LOCATION}/lib"
+
+mkdir -p ${LOCATION}/etc 2> /dev/null
+echo "Created directory ${LOCATION}/etc"
+
+cat << EOI > ${LOCATION}/etc/configuration.mk
+VERSION            = 1.0
+
+ANDROID_PATH       = ${ANDROID_PATH}
+PLATFORM           = ${PLATFORM}
+NAME               = ${NAME}
+PACKAGE            = ${PACKAGE}
+ACTIVITY           = ${ACTIVITY}
+JAR                = ${JAR}
+AVD                = ${AVD}
+KEY_DNAME          = '${KEY_DNAME}'
+KEY_ALIAS          = ${KEY_ALIAS}
+KEY_PASSWORD       = ${KEY_PASSWORD}
+KEY_STORE_PASSWORD = ${KEY_STORE_PASSWORD}
+EOI
+echo "Added file ${LOCATION}/etc/configuration.mk"
+
+cat ${CONFIGURATION_FILE} | grep -E '^[A-Z]' > ${LOCATION}/etc/configuration.file
+echo "Added file ${LOCATION}/etc/configuration.file"

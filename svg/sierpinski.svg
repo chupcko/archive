@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 1155 1000" onload="start(evt)">
+  <title>Sierpinski Triangle</title>
+  <desc>Sierpinski Triangle</desc>
+  <script type="text/ecmascript">
+    <![CDATA[
+
+var size_y = 1000.0;
+var size_x = size_y*2.0/Math.sqrt(3.0);
+var point_radius = 0.5;
+var ns = "http://www.w3.org/2000/svg";
+
+var root = null;
+var g = null;
+
+var n = 50000;
+
+function point(x, y)
+{
+  var c = root.createElementNS(ns, "circle");
+  c.setAttributeNS(null, "cx", x);
+  c.setAttributeNS(null, "cy", y);
+  c.setAttributeNS(null, "r", point_radius);
+  g.appendChild(c);
+}
+
+function start(evt)
+{
+  root = evt.target.ownerDocument;
+  g = root.createElementNS(ns, "g");
+  g.setAttributeNS(null, "stroke", "none");
+  g.setAttributeNS(null, "fill", "black");
+  root.documentElement.appendChild(g);
+
+  corners_x = new Array(0, size_x, size_x/2);
+  corners_y = new Array(size_y, size_y, 0);
+  point_x = corners_x[0];
+  point_y = corners_y[0];
+  point(point_x, point_y);
+  for(var i = 0; i < n; i++)
+  {
+    var index = Math.floor(Math.random()*3);
+    point_x += corners_x[index];
+    point_x /= 2.0;
+    point_y += corners_y[index];
+    point_y /= 2.0;
+    point(point_x, point_y);
+  }
+}
+
+    ]]>
+  </script>
+</svg>

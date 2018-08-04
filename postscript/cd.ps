@@ -1,0 +1,42 @@
+%!
+
+72 25.4 div dup scale
+0.1 setlinewidth
+
+/w 210 def
+/wc 121 def
+/h 297 def
+/hc 121 def
+
+/x2 w wc sub def
+/x1 x2 2 div def
+/x3 w x2 sub def
+/x4 w x1 sub def
+
+/y2 h hc sub def
+/y1 y2 2 div def
+/y3 h y2 sub def
+/y4 h y1 sub def
+
+/Helvetica-Bold findfont
+2 scalefont
+setfont
+
+x2 y1 moveto
+x2 y4 lineto
+stroke
+x3 y1 moveto
+x3 y4 lineto
+stroke
+x1 y2 moveto
+x4 y2 lineto
+stroke
+x1 y3 moveto
+x4 y3 lineto
+stroke
+
+10 10 moveto
+(CHUPCKO) show
+
+showpage
+quit

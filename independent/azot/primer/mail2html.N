@@ -1,0 +1,72 @@
+max_redova:=50;
+
+function Prevedi_red(red) is
+  return substitute(substitute(substitute(red,"&","&amp;"),"/>","&gt;"),"/<","&lt;");
+
+procedure PocetakPisma() is begin
+  zaglavlje:=true;
+  print("<HR>\n<A NAME=\"M",broj_pisama,"\">",broj_pisama,": </A>");
+  if broj_pisama>1 then print("<A HREF=\"#M",broj_pisama-1,"\">[prev: ",broj_pisama-1,"]</A>");
+  print("<A HREF=\"#TOP\">[TOP]</A>");
+  if broj_pisama<sveukupno_pisama then print("<A HREF=\"#M",broj_pisama+1,"\">[next: ",broj_pisama+1,"]</A>");
+  print("<PRE>\n");
+end;
+
+procedure KrajPisma() is begin
+  print("</PRE>\n");
+  if redova>=max_redova then print("Ovo pismo je skraceno na ",max_redova," redova\n");
+  broj_pisama:=broj_pisama+1;
+end;
+
+openr(dat,getenv("MAIL"));
+print("<HTML><BODY><A NAME=\"TOP\">",getenv("MAIL"),"</A>\n<HR>\n");
+if eof(dat) then
+  print("Nema poste\n")
+else begin
+  sveukupno_pisama:=0;
+  zaglavlje:=true;
+  loop begin
+    if eof(dat) then break;
+    red:=read(dat);
+    if zaglavlje then begin
+      if regexp(red,"^Subject: ",n) then begin
+        sveukupno_pisama:=sveukupno_pisama+1;
+        print(sveukupno_pisama,": <A HREF=\"#M",sveukupno_pisama,"\">",chop(Prevedi_red(n["a"])),"</A><BR>\n")
+      end;
+      zaglavlje:=red<>"\n"
+    end
+    else
+      zaglavlje:=regexp(red,"^From ")
+  end;
+  print("<P>\n");
+  seekb(dat,0);
+  broj_pisama:=1;
+  PocetakPisma();
+  loop begin
+    if eof(dat) then break;
+    red:=read(dat);
+    if zaglavlje then begin
+      if regexp(red,"^Date: ") then print(Prevedi_red(red));
+      if regexp(red,"^From: ") then print(Prevedi_red(red));
+      if regexp(red,"^Subject: ") then print(Prevedi_red(red));
+      if red="\n" then begin
+        print("<BR>\n");
+        zaglavlje:=false;
+        redova:=0
+      end
+    end
+    else begin
+      if regexp(red,"^From ") then begin
+        KrajPisma();
+        PocetakPisma()
+      end
+      else begin
+        if redova<max_redova then print(Prevedi_red(red));
+        redova:=redova+1
+      end
+    end
+  end;
+  KrajPisma()
+end;
+print("</BODY></HTML>\n");
+close(dat);

@@ -1,0 +1,11 @@
+           = [\s\t\n] .
+Lplus      = \+ .
+Lminus     = \- .
+Lputa      = \* .
+Lpodeljeno = \/ .
+Lna        = \^ .
+Lx         = [Xx] .
+Lbroj      = [0-9]+ ( \. [0-9]+ )? ( [Ee] [\+\-]? [0-9]+ )? .
+Lfunkcija  = [A-Za-z] [A-Za-z0-9]* .
+Llz        = \( .
+Ldz        = \) .

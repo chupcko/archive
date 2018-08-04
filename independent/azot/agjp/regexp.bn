@@ -1,0 +1,99 @@
+$
+
+<A> ::= <A> RE_lex_ILI <B> @RE_f_ili
+      | <B> .
+
+<B> ::= <B> <C> @RE_f_konkatenacija
+      | <C> .
+
+<C> ::= <C> RE_lex_ZVEZDICA @RE_f_zvezdica
+      | <C> RE_lex_PLUS @RE_f_plus
+      | <C> RE_lex_OPCIJA @RE_f_opcija
+      | <D> .
+
+<D> ::= RE_lex_SLOVO @RE_f_znak @RE_f_slovo
+      | RE_lex_KAPA @RE_f_kapa
+      | RE_lex_DOLAR @RE_f_dolar
+      | RE_lex_L_U_ZAG <E> RE_lex_D_U_ZAG @RE_f_slovo
+      | RE_lex_D_U_ZAG <G> RE_lex_L_U_ZAG @RE_f_slovo
+      | RE_lex_L_ZAG <A> RE_lex_D_ZAG
+      | RE_lex_MANJE <A> RE_lex_VECE @RE_f_manje_vece
+      | RE_lex_AKCIJA @RE_f_akcija .
+
+<E> ::= <E> RE_lex_SLOVO @RE_f_znak <F> @RE_f_unija
+      | RE_lex_SLOVO @RE_f_znak <F> .
+
+<F> ::= RE_lex_MINUS RE_lex_SLOVO @RE_f_od_do
+      | .
+
+<G> ::= <E> @RE_f_komplement
+      | @RE_f_sva_slova .
+
+$
+$
+
+<A>  ::= <B> <A1> .
+<A1> ::= RE_lex_ILI <B> @RE_f_ili <A1>
+       | .
+
+<B>  ::= <C> <B1> .
+<B1> ::= <C> @RE_f_konkatenacija <B1>
+       | .
+
+<C>  ::= <D> <C1> .
+<C1> ::= RE_lex_ZVEZDICA @RE_f_zvezdica <C1>
+       | RE_lex_PLUS @RE_f_plus <C1>
+       | RE_lex_OPCIJA @RE_f_opcija <C1>
+       | .
+
+<D>  ::= RE_lex_SLOVO @RE_f_znak @RE_f_slovo
+       | RE_lex_KAPA @RE_f_kapa
+       | RE_lex_DOLAR @RE_f_dolar
+       | RE_lex_L_U_ZAG <E> RE_lex_D_U_ZAG @RE_f_slovo
+       | RE_lex_D_U_ZAG <G> RE_lex_L_U_ZAG @RE_f_slovo
+       | RE_lex_L_ZAG <A> RE_lex_D_ZAG
+       | RE_lex_MANJE <A> RE_lex_VECE @RE_f_manje_vece
+       | RE_lex_AKCIJA @RE_f_akcija .
+
+<E>  ::= RE_lex_SLOVO @RE_f_znak <F> <E1> .
+<E1> ::= RE_lex_SLOVO @RE_f_znak <F> @RE_f_unija <E1>
+       | .
+
+<F>  ::= RE_lex_MINUS RE_lex_SLOVO @RE_f_od_do
+       | .
+
+<G>  ::= <E> @RE_f_komplement
+       | @RE_f_sva_slova .
+
+$
+
+<S> ::= <D> <C> <B> <A> .
+
+<A> ::= RE_lex_ILI <D> <C> <B> @RE_f_ili <A>
+      | .
+
+<B> ::= <D> <C> @RE_f_konkatenacija <B>
+      | .
+
+<C> ::= RE_lex_ZVEZDICA @RE_f_zvezdica <C>
+      | RE_lex_PLUS @RE_f_plus <C>
+      | RE_lex_OPCIJA @RE_f_opcija <C>
+      | .
+
+<D> ::= RE_lex_SLOVO @RE_f_znak @RE_f_slovo
+      | RE_lex_KAPA @RE_f_kapa
+      | RE_lex_DOLAR @RE_f_dolar
+      | RE_lex_L_U_ZAG RE_lex_SLOVO @RE_f_znak <F> <E> RE_lex_D_U_ZAG @RE_f_slovo
+      | RE_lex_D_U_ZAG <G> RE_lex_L_U_ZAG @RE_f_slovo
+      | RE_lex_L_ZAG <D> <C> <B> <A> RE_lex_D_ZAG
+      | RE_lex_MANJE <D> <C> <B> <A> RE_lex_VECE @RE_f_manje_vece
+      | RE_lex_AKCIJA @RE_f_akcija .
+
+<E> ::= RE_lex_SLOVO @RE_f_znak <F> @RE_f_unija <E>
+      | .
+
+<F> ::= RE_lex_MINUS RE_lex_SLOVO @RE_f_od_do
+      | .
+
+<G> ::= RE_lex_SLOVO @RE_f_znak <F> <E> @RE_f_komplement
+      | @RE_f_sva_slova .

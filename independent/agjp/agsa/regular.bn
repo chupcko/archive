@@ -1,0 +1,49 @@
+<A> ::=
+  IME @g_ime JEDNAKO <C> <F> <E> <D> @g_dokle <B> @g_zavrsi_spoji TACKA <A> |
+  VARIJABLA @g_varijabla JEDNAKO <C> <F> <E> <D> @g_zapamti TACKA <A> |
+  JEDNAKO <C> <F> <E> <D> @g_spoji_del TACKA <A> |
+  .
+
+<B> ::=
+  RAZLIKA <C> <F> <E> <D> @r_tacka |
+  .
+
+<C> ::=
+  VARIJABLA @r_varijable |
+  SLOVO @s_slovo @r_slova |
+  LEVA_UGLASTA_ZAGRADA <G> DESNA_UGLASTA_ZAGRADA @r_slova |
+  LEVA_ZAGRADA <C> <F> <E> <D> DESNA_ZAGRADA .
+
+<D> ::=
+  ILI <C> <F> <E> @r_ili <D> |
+  .
+
+<E> ::=
+  <C> <F> @r_tacka <E> |
+  .
+
+<F> ::=
+  ZVEZDICA @r_plus @r_pitalica <F> |
+  PLUS @r_plus <F> |
+  PITALICA @r_pitalica <F> |
+  .
+
+<G> ::=
+  SLOVO @s_slovo <K> <J> <H> |
+  XOR <I> .
+
+<H> ::=
+  XOR SLOVO @s_slovo <K> <J> @s_razlika |
+  .
+
+<I> ::=
+  SLOVO @s_slovo <K> <J> @s_komplement |
+  @s_sva_slova .
+
+<J> ::=
+  SLOVO @s_slovo <K> @s_unija <J> |
+  .
+
+<K> ::=
+  MINUS SLOVO @s_slovo @s_od_do |
+  .

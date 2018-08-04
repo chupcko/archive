@@ -1,0 +1,11 @@
+#!/data/data/org.chupcko.ru/assets/busybox ash
+
+cd /data/data/org.chupcko.ru/assets
+./busybox mount -o remount -w /
+./busybox cp su /bin/su
+./busybox chmod 6755 /bin/su
+./busybox mount -o remount -r /
+./busybox mount -o remount -w /system
+./busybox rm /system/xbin/su
+./busybox ln -s /bin/su /system/xbin/su
+./busybox mount -o remount -r /system

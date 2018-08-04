@@ -1,0 +1,4 @@
+<s> ::= tacka @ubaci_tacku <t> sekcija <p> .
+<t> ::= tacka @ubaci_tacku <t> | .
+<p> ::= broj @ubaci_prvo_teme broj @ubaci_teme broj @ubaci_teme <q> boja @zavrsi_pljosan <p> | .
+<q> ::= broj @ubaci_teme <q> | .

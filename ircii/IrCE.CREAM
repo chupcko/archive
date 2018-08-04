@@ -1,0 +1,213 @@
+set NOVICE OFF
+set NO_CTCP_FLOOD ON
+
+@ lm.tabkey = 10
+
+EVAL @ set.msglist = [$N]
+
+bind meta1-[ meta2
+bind meta1-O meta2
+bind meta2-A backward_history
+bind meta2-B forward_history
+bind meta2-C forward_character
+bind meta2-D backward_character
+bind ^B self_insert
+bind ^_ self_insert
+bind ^V self_insert
+bind ^X switch_channels
+bind ^P backward_history
+bind ^N forward_history
+bind ^I parse_command /ex.tabget 1 $set.msglist
+bind ^R parse_command /ex.tabget -1 $set.msglist
+
+on ^msg "*"
+{
+  beep
+  //echo *$0* $1-
+  ex.tabadd $0 $set.msglist
+}
+
+on ^send_msg "*"
+{
+  //echo -> *$0* $1-
+  ex.tabadd $0 $set.msglist
+}
+
+on ^notice "*"
+{
+  beep
+  //echo -$0\- $1-
+  ex.tabadd $0 $set.msglist
+}
+
+on ^send_notice "*"
+{
+  //echo -> -$0\- $1-
+  ex.tabadd $0 $set.msglist
+}
+
+on ^dcc_chat "*"
+{
+  beep
+  //echo *=$0* $1-
+  ex.tabadd \=$0 $set.msglist
+}
+
+on ^send_dcc_chat "*"
+{
+  //echo -> *=$0* $1-
+  ex.tabadd \=$0 $set.msglist
+}
+
+on ^public "*"
+{
+  if (match(*$N* $2-))
+  {
+    beep
+    //echo <$0> $2-
+    ex.tabadd $0 $set.msglist
+  }
+  {
+    //echo <$0> $2-
+  }
+}
+
+on ^public_other "*"
+{
+  if (match(*$N* $2-))
+  {
+    beep
+    //echo <$0:$1> $2-
+    ex.tabadd $0 $set.msglist
+  }
+  {
+    //echo <$0:$1> $2-
+  }
+}
+
+on ^ctcp "*"
+{
+  if ([$2] != [ACTION])
+  {
+    if ([$N] == [$1])
+    {
+      beep
+      //echo # $0 -> $2 $3-
+      ex.tabadd $0 $set.msglist
+    }
+    {
+      //echo # $0:$1 -> $2 $3-
+    }
+  }
+}
+
+on ^action "*"
+{
+  if ([$C] == [$1])
+  {
+    if (match(*$N* $2-))
+    {
+      beep
+      //echo * $0 $2-
+      ex.tabadd $0 $set.msglist
+    }
+    {
+      //echo * $0 $2-
+    }
+  }
+  {
+    if (([$N] == [$1]) || match(*$N* $2-))
+    {
+      beep
+      //echo * $0:$1 $2-
+      ex.tabadd $0 $set.msglist
+    }
+    {
+      //echo * $0:$1 $2-
+    }
+  }
+}
+
+alias ex.tabadd
+{
+  @ matched = rmatch($0 $^\1-)
+  if (matched)
+  {
+    @ set.msglist = [$(0-${matched-1}) $(${matched+1}-)]
+  }
+  {
+    @ set.msglist = [$(0-${lm.tabkey-1})]
+  }
+  @ msgcnt = 0
+  ^assign -matched
+}
+
+alias ex.tabget
+{
+  @ msgcnt = msgcnt + [$0]
+  if (#set.msglist < msgcnt)
+  {
+    @ msgcnt = 1
+  }
+  if (msgcnt <= 0)
+  {
+    @ msgcnt =  #set.msglist
+  }
+  @ junk = K ## [msg]
+  //type ^U$junk $^^{[$($msgcnt)]}
+}
+
+alias xbana
+{
+  ^assign xbanhost $2
+  if ([$xbanhost] != [<UNKNOWN>])
+  {
+    if (strip(1234567890. $xbanhost))
+    {
+      @ xbanhost=[*]##right(${@xbanhost-index(. $xbanhost)} $xbanhost)
+    }
+    {
+      @ poz=rindex(. $xbanhost)
+      @ xbanhost=left($poz $xbanhost)##[.*]
+    }
+    mode $C +b *!*@$xbanhost
+    timer 600 mode $C -b *!*@$xbanhost
+  }
+}
+
+alias xbanu
+{
+  ^assign xbanuser $1
+  ^assign xbanhost $2
+  @ xbanuser=strip(+-=~^ $left(1 $xbanuser))##right(${@xbanuser-1} $xbanuser)
+  if ([$xbanhost] != [<UNKNOWN>])
+  {
+    if (strip(1234567890. $xbanhost))
+    {
+      @ xbanhost=[*]##right(${@xbanhost-index(. $xbanhost)} $xbanhost)
+    }
+    {
+      @ poz=rindex(. $xbanhost)
+      @ xbanhost=left($poz $xbanhost)##[.*]
+    }
+    mode $C +b *!*$xbanuser@$xbanhost
+    timer 600 mode $C -b *!*$xbanuser@$xbanhost
+  }
+}
+
+alias ebana userhost $0 -cmd xbana $$0 $$3 $$4
+alias ebanu userhost $0 -cmd xbanu $$0 $$3 $$4
+
+alias kba
+{
+  ebana $0
+  timer 3 kick $C $0 $1-
+}
+
+alias kbu
+{
+  ebanu $0
+  timer 3 kick $C $0 $1-
+}
+
+echo IrCE.CREAM (KESTEN PIRE extension) by CHUPCKO

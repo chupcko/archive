@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ ${0:0:1} = '/' ]
+then
+  DIR="$(dirname ${0})/.."
+else
+  DIR="$(dirname $(pwd)/${0})/.."
+fi
+
+DESTINATION="${DIR}/include/prototype.h"
+DESTINATION_NEW="${DESTINATION}.new"
+
+cat << EOI > ${DESTINATION_NEW}
+#ifndef _PROTOTYPE_H_
+#define _PROTOTYPE_H_
+
+EOI
+cd ${DIR}/source
+for file in $(\ls *.c | sort)
+do
+  echo "/* ${file} */" >> ${DESTINATION_NEW}
+  ${DIR}/tool/extract_declarations ${file} >> ${DESTINATION_NEW}
+  echo >> ${DESTINATION_NEW}
+done
+echo '#endif' >> ${DESTINATION_NEW}
+
+if [ ! -e ${DESTINATION} ]
+then
+  mv ${DESTINATION_NEW} ${DESTINATION}
+else
+  if diff ${DESTINATION_NEW} ${DESTINATION} > /dev/null 2>&1
+  then
+    rm -f ${DESTINATION_NEW}
+  else
+    mv ${DESTINATION_NEW} ${DESTINATION}
+  fi
+fi

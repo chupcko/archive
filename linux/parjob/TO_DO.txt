@@ -1,0 +1,1 @@
+- Ako ne uspe da izvrsi da ponovo napuni taj slot, eventualno da se smanji sleep, jer sada ceka 1 sekundu

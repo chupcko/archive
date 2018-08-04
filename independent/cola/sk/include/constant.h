@@ -1,0 +1,14 @@
+#ifndef _CONSTANT_H
+#define _CONSTANT_H
+
+#define COMBINATOR_S_NAME "S"
+#define COMBINATOR_K_NAME "K"
+#define COMBINATOR_I_NAME "I"
+#define COMBINATOR_F_NAME "F"
+#define COMBINATOR_J_NAME "J"
+#define COMBINATOR_B_NAME "B"
+#define COMBINATOR_C_NAME "C"
+#define COMBINATOR_W_NAME "W"
+#define COMBINATOR_M_NAME "M"
+
+#endif

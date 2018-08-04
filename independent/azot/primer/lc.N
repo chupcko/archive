@@ -1,0 +1,6 @@
+n:=0;
+while not eof() do begin
+  s:=input();
+  n:=n+1;
+end;
+print("Sve ukupno ",n," redova\n");

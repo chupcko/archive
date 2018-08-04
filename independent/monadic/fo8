@@ -1,0 +1,1 @@
+ALL x E y (p(x) THEN q(y)) THEN E y ALL x (p(x) THEN q(y))

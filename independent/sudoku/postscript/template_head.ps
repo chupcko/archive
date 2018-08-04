@@ -1,0 +1,269 @@
+%!PS-Adobe-3.0
+%%EndComments
+
+%%BeginProlog
+%%BeginResource: init_page
+
+/SDK_init_page
+{
+  72 2.54 div dup scale
+  newpath clippath pathbbox
+  3 2 roll sub
+  /maxy exch def
+  exch sub
+  /maxx exch def
+  1 1 translate
+} def
+
+%%EndResource
+%%BeginResource: table_print
+
+/SDK_print_character_and_marker
+{
+  8 dict begin
+  /content exch def
+  /marker exch def
+  /y exch def
+  /x exch def
+
+  0 setlinewidth
+  gsave
+  0 0 moveto
+  content true charpath pathbbox
+  grestore
+  /y2 exch def
+  /x2 exch def
+  /y1 exch def
+  /x1 exch def
+  1 x2 x1 sub sub 2 div x1 sub x add
+  1 y2 y1 sub sub 2 div y1 sub y add
+  moveto
+  content show
+  SDK_marker_line_width setlinewidth
+  marker 1 and 0 ne
+  {
+    SDK_marker_begin x add SDK_marker_begin y add moveto
+    SDK_marker_end x add SDK_marker_end y add lineto
+    stroke
+  }
+  if
+  marker 2 and 0 ne
+  {
+    SDK_marker_begin x add SDK_marker_end y add moveto
+    SDK_marker_end x add SDK_marker_begin y add lineto
+    stroke
+  }
+  if
+  marker 4 and 0 ne
+  {
+    newpath
+    0.5 x add 0.5 y add SDK_marker_radius 0 361 arc
+    stroke
+  }
+  if
+  marker 8 and 0 ne
+  {
+    SDK_marker_begin x add SDK_marker_begin y add moveto
+    SDK_marker_begin x add SDK_marker_end y add lineto
+    SDK_marker_end x add SDK_marker_end y add lineto
+    SDK_marker_end x add SDK_marker_begin y add lineto
+    closepath
+    stroke
+  }
+  if
+  end
+}
+def
+
+/SDK_print_possibility
+{
+  4 dict begin
+  /content exch def
+  /marker exch def
+  /yp exch def
+  /xp exch def
+
+  gsave
+  xp yp translate
+  SDK_xymi SDK_xymi scale
+  SDK_xymx SDK_xymy translate
+  0 1 SDK_y 1 sub
+  {
+    1 dict begin
+    /y exch def
+
+    0 1 SDK_x 1 sub
+    {
+      2 dict begin
+      /x exch def
+
+      /i SDK_y 1 sub y sub SDK_x mul x add def
+      x y
+      marker i get
+      content i get
+      SDK_print_character_and_marker
+      end
+    }
+    for
+    end
+  }
+  for
+  grestore
+  end
+}
+def
+
+/SDK_print_table
+{
+  1 dict begin
+  /table exch def
+
+  /SDK_y exch def
+  /SDK_x exch def
+  /SDK_xy SDK_x SDK_y mul def
+  /SDK_xym
+    SDK_x SDK_y gt
+    {
+      SDK_x
+    }
+    {
+      SDK_y
+    }
+    ifelse
+  def
+  /SDK_xymi 1 SDK_xym div def
+  /SDK_xymx SDK_xym SDK_x sub 2 div def
+  /SDK_xymy SDK_xym SDK_y sub 2 div def
+  0 setlinewidth
+  0 1 SDK_xy 1 sub
+  {
+    1 dict begin
+    /y exch def
+
+    0 1 SDK_xy 1 sub
+    {
+      1 dict begin
+      /x exch def
+
+      SDK_background_fill table SDK_xy 1 sub y sub get x get 1 get get setgray
+      newpath
+      x y moveto
+      x y 1 add lineto
+      x 1 add y 1 add lineto
+      x 1 add y lineto
+      closepath
+      fill
+      end
+    }
+    for
+    end
+  }
+  for
+  SDK_line_fill setgray
+  0 1 SDK_xy
+  {
+    2 dict begin
+    /xy exch def
+
+    /l SDK_thin_line_width def
+    xy SDK_y mod 0 eq
+    {
+      /l SDK_fat_line_width def
+    }
+    if
+    l setlinewidth
+    /l l 2 div def
+    0 l sub xy moveto
+    SDK_xy l add xy lineto
+    stroke
+    /l SDK_thin_line_width def
+    xy SDK_x mod 0 eq
+    {
+      /l SDK_fat_line_width def
+    }
+    if
+    l setlinewidth
+    /l l 2 div def
+    xy 0 l sub moveto
+    xy SDK_xy l add lineto
+    stroke
+    end
+  }
+  for
+  0 1 SDK_xy 1 sub
+  {
+    1 dict begin
+    /y exch def
+
+    0 1 SDK_xy 1 sub
+    {
+      2 dict begin
+      /x exch def
+
+      /cell table SDK_xy 1 sub y sub get x get def
+      SDK_foreground_fill cell 2 get get setgray
+      x y
+      cell 3 get
+      cell 4 get
+      cell 0 get
+      0 eq
+      {
+        SDK_print_character_and_marker
+      }
+      {
+        SDK_print_possibility
+      }
+      ifelse
+      end
+    }
+    for
+    end
+  }
+  for
+  end
+}
+def
+
+% table                 ::= [ row ... ] % xy times
+% row                   ::= [ cell ... ] % xy times
+% cell                  ::= [ type index_background_fill index_foreground_fill marker_r content_r ]
+% type                  ::= 0 % normal
+% type                  ::= 1 % possibility
+% index_background_fill ::= 0 .. 5
+% index_foreground_fill ::= 0 .. 5
+% marker_r              ::= marker % for type = normal
+% marker_r              ::= [ marker ... ] % xy timed, for type = possibility
+% content_r             ::= content % for type = normal
+% content_r             ::= [ content ... ] % xy timed, for type = possibility
+% marker                ::= integer % bits: square(3,8) round(2,4) backslash(1,2) slash(0,1)
+% content               ::= (character)
+
+%%EndResource
+%%EndProlog
+
+%%BeginSetup
+
+/SDK_line_fill 0.0 def
+/SDK_thin_line_width 0.02 def
+/SDK_fat_line_width 0.05 def
+/SDK_background_fill [1.0 0.8 0.6 0.4 0.2 0.0] def
+/SDK_foreground_fill [0.0 0.2 0.4 0.6 0.8 1.0] def
+/SDK_font_size 0.6 def
+/SDK_marker_line_width 0.01 def
+/SDK_marker_size 0.7 def
+
+/SDK_marker_radius SDK_marker_size 2 div def
+/SDK_marker_begin 1 SDK_marker_size sub 2 div def
+/SDK_marker_end 1 SDK_marker_begin sub def
+/Helvetica findfont SDK_font_size scalefont setfont
+
+/SDK_x 0 def
+/SDK_y 0 def
+/SDK_xy 0 def
+/SDK_xym 0 def
+/SDK_xymi 0 def
+/SDK_xymx 0 def
+/SDK_xymy 0 def
+
+%%EndSetup
+

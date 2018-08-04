@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+
+$port=2047 unless $port;
+$them='camera1.rosa.co.yu' unless $them;
+
+use Socket;
+
+$sockaddr='S n a4 x8';
+chop($hostname=`hostname`);
+
+($name,$aliases,$proto)=getprotobyname('tcp');
+($name,$aliases,$port)=getservbyname($port,'tcp') unless $port=~/^\d+$/;
+($name,$aliases,$type,$len,$thisaddr)=gethostbyname($hostname);
+($name,$aliases,$type,$len,$thataddr)=gethostbyname($them);
+
+$this=pack($sockaddr,AF_INET,0,$thisaddr);
+$that=pack($sockaddr,AF_INET,$port,$thataddr);
+
+socket(S,PF_INET,SOCK_STREAM,$proto) || die "socket: $!";
+bind(S,$this) || die "bind: $!";
+if(!connect(S,$that))
+{
+  print "Content-Type: image/jpeg\n\n";
+  open(F,"/home/httpd/html/rosa1.jpg");
+  while(<F>)
+  {
+    print;
+  }
+  close(F);
+}
+else
+{
+  select(S);
+  $|=1;
+  select(stdout);
+
+  print S "GET /cgi-bin/video HTTP/1.0\n\n";
+  $slika=0;
+  $radim=1;
+  $odvajac="";
+  while($radim)
+  {
+    $_=<S>;
+    if($_ =~ /^Content-Type: multipart\/x-mixed-replace; boundary=(.*)$/)
+    {
+      $odvajac=$1;
+    }
+    elsif($_ =~ /^--$odvajac$/)
+    {
+      if($slika)
+      {
+        $radim=0;
+      }
+      else
+      {
+        $slika=1;
+      }
+    }
+    elsif($slika)
+    {
+      print;
+    }
+  }
+  close(S);
+}

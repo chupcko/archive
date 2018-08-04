@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Comet demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+      function ttt(time)
+      {
+        document.getElementById('content').innerHTML = time;
+      }
+      
+      function init()
+      {
+        document.getElementById('aa').src="backend.php";
+      }
+    </script>
+  </head>
+  <body onload="init();">
+    <div id="content">The server time will be shown here</div>
+    <iframe id="aa" style="display: none;">ERROR</iframe>
+  </body>
+</html>

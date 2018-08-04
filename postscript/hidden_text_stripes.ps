@@ -1,0 +1,76 @@
+72 2.54 div dup scale
+/HelveticaBold findfont 1 scalefont setfont
+
+/message (CHUPCKO) def
+/message_width 0.9 def
+/background_gray 0.2 def
+/foreground_gray 0.1 def
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+
+page_urx page_llx sub 2 div
+page_ury page_lly sub 2 div
+translate
+90 rotate
+page_lly page_ury sub 2 div
+page_llx page_urx sub 2 div
+translate
+
+newpath clippath pathbbox
+/page_ury exch def
+/page_urx exch def
+/page_lly exch def
+/page_llx exch def
+gsave
+  background_gray setgray
+  fill
+grestore
+
+newpath 0 0 moveto message true charpath pathbbox
+/message_ury exch def
+/message_urx exch def
+/message_lly exch def
+/message_llx exch def
+/to_scale page_urx page_llx sub message_width mul message_urx message_llx sub div def
+/message_ury message_ury to_scale mul def
+/message_urx message_urx to_scale mul def
+/message_lly message_lly to_scale mul def
+/message_llx message_llx to_scale mul def
+
+gsave
+  page_urx page_llx add message_urx message_llx add sub 2 div
+  page_ury page_lly add message_ury message_lly add sub 2 div
+  translate
+  to_scale dup scale
+
+  foreground_gray setgray
+  0 0 moveto message show
+grestore
+
+page_llx 0.2 page_urx 0.2 add
+{
+  /i exch def
+  0 setgray
+  newpath
+  i 0.02 add page_lly moveto
+  i 0.08 add page_lly lineto
+  i 0.08 add page_ury lineto
+  i 0.02 add page_ury lineto
+  closepath
+  fill
+  1 setgray
+  newpath
+  i 0.10 add page_lly moveto
+  i 0.2 add page_lly lineto
+  i 0.2 add page_ury lineto
+  i 0.10 add page_ury lineto
+  closepath
+  fill
+}
+for
+
+showpage quit

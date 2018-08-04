@@ -1,0 +1,72 @@
+DROP DATABASE IF EXISTS hum;
+CREATE DATABASE hum CHARACTER SET utf8 COLLATE utf8_bin;
+GRANT ALL PRIVILEGES ON hum.* TO 'hum'@'localhost' IDENTIFIED BY 'hum';
+FLUSH PRIVILEGES;
+USE hum;
+
+DROP TABLE IF EXISTS employers;
+CREATE TABLE employers
+(
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  username      CHAR(64)        NOT NULL DEFAULT '',
+  password      CHAR(32)        NOT NULL DEFAULT '',
+  boss_id       BIGINT UNSIGNED          DEFAULT 0,
+  vacation_days INT UNSIGNED    NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  FOREIGN KEY (boss_id) REFERENCES employers (id) ON DELETE CASCADE,
+  UNIQUE KEY employers__username (username)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS vacations;
+CREATE TABLE vacations
+(
+  id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  employer_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  time_insert TIMESTAMP       NOT NULL DEFAULT NOW(),
+  date_from   DATE            NOT NULL DEFAULT '0000-00-00',
+  date_to     DATE            NOT NULL DEFAULT '0000-00-00',
+  status      ENUM(
+                    'wait',
+                    'approved',
+                    'rejected'
+                  )           NOT NULL DEFAULT 'wait',
+  PRIMARY KEY (id),
+  FOREIGN KEY (employer_id) REFERENCES employers (id) ON DELETE CASCADE
+) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP FUNCTION IF EXISTS f_employer_id_from_username;
+DELIMITER ;;
+CREATE FUNCTION f_employer_id_from_username(var_username CHAR(64))
+  RETURNS BIGINT
+  BEGIN
+    DECLARE var_id CHAR(64) DEFAULT -1;
+    SELECT
+      id INTO var_id
+    FROM
+      employers
+    WHERE
+      username = var_username;
+    RETURN var_id;
+  END;
+;;
+DELIMITER ;
+
+-- Data
+
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('boss1', MD5('b1'), NULL, 25);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user11', MD5('u11'), f_employer_id_from_username('boss1'), 20);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user12', MD5('u12'), f_employer_id_from_username('boss1'), 20);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user13', MD5('u13'), f_employer_id_from_username('boss1'), 20);
+
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('boss2', MD5('b2'), NULL, 25);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user21', MD5('u21'), f_employer_id_from_username('boss2'), 20);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user22', MD5('u22'), f_employer_id_from_username('boss2'), 20);
+INSERT INTO employers (username, password, boss_id, vacation_days) VALUES ('user23', MD5('u23'), f_employer_id_from_username('boss2'), 20);
+
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user12'), '2015-01-01', '2015-01-20', 'approved');
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user12'), '2015-12-20', '2016-01-05', 'approved');
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user12'), '2016-02-01', '2016-02-05', 'rejected');
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user12'), '2016-03-01', '2016-03-05', 'approved');
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user12'), '2016-12-10', '2016-12-15', 'wait');
+
+INSERT INTO vacations (employer_id, date_from, date_to, status) VALUES (f_employer_id_from_username('user13'), '2016-12-10', '2016-12-15', 'wait');
