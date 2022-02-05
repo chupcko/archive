@@ -216,7 +216,7 @@ const StoreProvider = (props) => {
   };
 
   const chooseSolutionAttempt = (g) => {
-    g.attempt = g.words[Math.floor((Date.now()-new Date(2021, 5, 19, 0, 0, 0, 0))/(24*60*60*1000))%g.words.length];
+    g.attempt = g.words[Math.floor((new Date(Date.now()).setHours(0, 0, 0, 0)-new Date(2021, 5, 19, 0, 0, 0, 0))/(24*60*60*1000))%g.words.length];
   };
 
   const choseRandomAttempt = (g) => {
