@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>COLOR</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+#canvas {
+  border: 2px solid black;
+}
+
+.text_size {
+  width: 12em
+}
+
+      /*]]>*/
+    </style>
+    <script src="util.js"></script>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+N = 800;
+
+function clickPoint(event)
+{
+  var x;
+  var y;
+  if
+  (
+    event.pageX !== undefined &&
+    event.pageY !== undefined
+  )
+  {
+    x = event.pageX;
+    y = event.pageY;
+  }
+  else
+  {
+    x = event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;
+    y = event.clientY+document.body.scrollTop+document.documentElement.scrollTop;
+  }
+  return {
+    x: x-canvas.offsetLeft,
+    y: y-canvas.offsetTop
+  };
+}
+
+var Rx, Ry, Gx, Gy, Bx, By;
+
+function init() {
+  canvas = document.getElementById('canvas');
+  canvasContext = canvas.getContext('2d');
+  canvas.addEventListener
+  (
+    'click',
+    function(event)
+    {
+      var point = clickPoint(event);
+      click(point.x/N, (N-point.y)/N);
+      return false;
+    },
+    false
+  );
+  canvas.width = N;
+  canvas.height = N;
+
+  let X, Y, Z, I;
+  [X, Y, Z] = RGB_2_XYZ(255, 0, 0);
+  [Rx, Ry, I] = XYZ_2_xyY(X, Y, Z);
+  [X, Y, Z] = RGB_2_XYZ(0, 255, 0);
+  [Gx, Gy, I] = XYZ_2_xyY(X, Y, Z);
+  [X, Y, Z] = RGB_2_XYZ(0, 0, 255);
+  [Bx, By, I] = XYZ_2_xyY(X, Y, Z);
+  draw();
+}
+
+function draw()
+{
+  canvasContext.fillStyle = 'rgb(0, 0, 0)';
+  canvasContext.fillRect(0, 0, N, N);
+
+  let rx = Math.floor(Rx*N);
+  let ry = N-Math.floor(Ry*N);
+  let gx = Math.floor(Gx*N);
+  let gy = N-Math.floor(Gy*N);
+  let bx = Math.floor(Bx*N);
+  let by = N-Math.floor(By*N);
+
+  canvasContext.strokeStyle = 'rgb(255, 255, 255)';
+  canvasContext.beginPath();
+  canvasContext.moveTo(rx+0.5, ry+0.5);
+  canvasContext.lineTo(gx+0.5, gy+0.5);
+  canvasContext.lineTo(bx+0.5, by+0.5);
+  canvasContext.lineTo(rx+0.5, ry+0.5);
+  canvasContext.stroke();
+  canvasContext.fillStyle = 'rgb(255, 0, 0)';
+  canvasContext.fillRect(rx-3, ry-3, 7, 7);
+  canvasContext.fillStyle = 'rgb(0, 255, 0)';
+  canvasContext.fillRect(gx-3, gy-3, 7, 7);
+  canvasContext.fillStyle = 'rgb(0, 0, 255)';
+  canvasContext.fillRect(bx-3, by-3, 7, 7);
+}
+
+function det(x1, y1, x2, y2, x, y)
+{
+  return (x-x1)*(y2-y1)-(y-y1)*(x2-x1);
+}
+
+function ort_pro(x1, y1, x2, y2, x, y)
+{
+  let m = (y1-y2)/(x1-x2);
+  let k = y1-x1*m;
+
+  let mo = -1/m;
+  let ko = y-x*mo;
+
+  let rx = (ko-k)/(m-mo);
+  let ry = m*rx+k;
+
+  return [rx, ry];
+}
+
+function click(x, y)
+{
+  draw();
+  document.getElementById('xy_x_text').innerHTML = x;
+  document.getElementById('xy_y_text').innerHTML = y;
+
+  let gr = det(Gx, Gy, Rx, Ry, x, y);
+  let bg = det(Bx, By, Gx, Gy, x, y);
+  let rb = det(Rx, Ry, Bx, By, x, y);
+
+  document.getElementById('d_gr_text').innerHTML = gr;
+  document.getElementById('d_bg_text').innerHTML = bg;
+  document.getElementById('d_rb_text').innerHTML = rb;
+
+  canvasContext.fillStyle = 'rgb(255, 255, 255)';
+  canvasContext.fillRect(Math.floor(x*N), N-Math.floor(y*N), 3, 3);
+
+  if(gr >= 0 && bg >= 0 && rb >= 0)
+  {
+    /* x, y*/
+    return;
+  }
+  if(gr < 0 && bg < 0)
+  {
+    /* Gx, Gy */
+    canvasContext.fillRect(Math.floor(Gx*N), N-Math.floor(Gy*N), 3, 3);
+    return;
+  }
+  if(bg < 0 && rb < 0)
+  {
+    /* Bx, By */
+    canvasContext.fillRect(Math.floor(Bx*N), N-Math.floor(By*N), 3, 3);
+    return;
+  }
+  if(rb < 0 && gr < 0)
+  {
+    /* Rx, Ry */
+    canvasContext.fillRect(Math.floor(Rx*N), N-Math.floor(Ry*N), 3, 3);
+    return;
+  }
+  if(gr < 0)
+  {
+    let [grx, gry] = ort_pro(Gx, Gy, Rx, Ry, x, y);
+    if(grx <= Gx)
+    {
+      /* Gx, Gy */
+      canvasContext.fillRect(Math.floor(Gx*N), N-Math.floor(Gy*N), 3, 3);
+      return;
+    }
+    if(grx >= Rx)
+    {
+      /* Rx, Ry */
+      canvasContext.fillRect(Math.floor(Rx*N), N-Math.floor(Ry*N), 3, 3);
+      return;
+    }
+    canvasContext.fillRect(Math.floor(grx*N), N-Math.floor(gry*N), 3, 3);
+    return;
+  }
+  if(bg < 0)
+  {
+    let [bgx, bgy] = ort_pro(Bx, By, Gx, Gy, x, y);
+    if(bgy <= By)
+    {
+      /* Bx, By */
+      canvasContext.fillRect(Math.floor(Bx*N), N-Math.floor(By*N), 3, 3);
+      return;
+    }
+    if(bgy >= Gy)
+    {
+      /* Gx, Gy */
+      canvasContext.fillRect(Math.floor(Gx*N), N-Math.floor(Gy*N), 3, 3);
+      return;
+    }
+    canvasContext.fillRect(Math.floor(bgx*N), N-Math.floor(bgy*N), 3, 3);
+    return;
+  }
+  if(rb < 0)
+  {
+    let [rbx, rby] = ort_pro(Rx, Ry, Bx, By, x, y);
+    if(rbx <= Bx)
+    {
+      /* Bx, By */
+      canvasContext.fillRect(Math.floor(Bx*N), N-Math.floor(By*N), 3, 3);
+      return;
+    }
+    if(rbx >= Rx)
+    {
+      /* Rx, Ry */
+      canvasContext.fillRect(Math.floor(Rx*N), N-Math.floor(Ry*N), 3, 3);
+      return;
+    }
+    canvasContext.fillRect(Math.floor(rbx*N), N-Math.floor(rby*N), 3, 3);
+    return;
+  }
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="init();">
+    <canvas id="canvas"></canvas>
+    <table border="0">
+      <tr>
+        <td>x =</td><td class="text_size"><span id="xy_x_text"></span></td>
+        <td>y =</td><td class="text_size"><span id="xy_y_text"></span></td>
+      </tr>
+      <tr>
+        <td>GR =</td><td class="text_size"><span id="d_gr_text"></span></td>
+        <td>BG =</td><td class="text_size"><span id="d_bg_text"></span></td>
+        <td>RB =</td><td class="text_size"><span id="d_rb_text"></span></td>
+      </tr>
+    </table>
+  </body>
+</html>

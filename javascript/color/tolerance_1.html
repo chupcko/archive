@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>COLOR</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+#canvas {
+  border: 2px solid black;
+}
+
+.text_size {
+  width: 12em
+}
+
+.slider_size {
+  width: 400px;
+}
+
+      /*]]>*/
+    </style>
+    <script src="util.js"></script>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+N = 800;
+
+function clickPoint(event)
+{
+  let e = this.control;
+  let left = 0;
+  let top = 0;
+  do
+  {
+    left += e.offsetLeft;
+    top += e.offsetTop;
+    e = e.offsetParent;
+  } while(e);
+  return {
+    x: event.clientX-left,
+    y: event.clientY-top
+  };
+}
+
+function init() {
+  canvas = document.getElementById('canvas');
+  canvasContext = canvas.getContext('2d');
+  canvas.style.position = 'absolute';
+  canvas.style.zIndex = '0';
+  canvas.width = N;
+  canvas.height = N;
+  control = document.getElementById('control');
+  controlContext = control.getContext('2d');
+  control.style.position = 'absolute';
+  control.style.zIndex = '1';
+  control.width = N;
+  control.height = N;
+  control.addEventListener
+  (
+    'click',
+    function(event)
+    {
+      var point = clickPoint(event);
+      click(point.x/N, (N-point.y)/N);
+      return false;
+    },
+    false
+  );
+  draw();
+}
+
+function draw()
+{
+  for(xn = 0; xn < N; xn++)
+  {
+    let x = xn/N;
+    for(yn = 0; yn < N; yn++)
+    {
+      let y = (N-yn)/N;
+      let [R, G, B] = XYZ_2_RGB(x, y, 1-x-y);
+      [R, G, B] = RGB_normalize(R, G, B);
+      if
+      (
+        R < 0 ||
+        G < 0 ||
+        B < 0
+      )
+      {
+        canvasContext.fillStyle = 'rgb(0, 0, 0)';
+      }
+      else
+      {
+        canvasContext.fillStyle = `rgb(${R}, ${G}, ${B})`;
+      }
+      canvasContext.fillRect(xn, yn, 1, 1);
+    }
+  }
+}
+
+function click(x, y)
+{
+  tolerance = Number(document.getElementById('tolerance').value);
+  document.getElementById('xy_x_text').innerHTML = x;
+  document.getElementById('xy_y_text').innerHTML = y;
+  let [R, G, B] = XYZ_2_RGB(x, y, 1-x-y);
+  document.getElementById('RGB_R_text').innerHTML = R;
+  document.getElementById('RGB_G_text').innerHTML = G;
+  document.getElementById('RGB_B_text').innerHTML = B;
+  let [H, S, V] = RGB_2_HSV(R, G, B);
+  document.getElementById('HSV_H_text').innerHTML = H;
+  document.getElementById('HSV_S_text').innerHTML = S;
+  document.getElementById('HSV_V_text').innerHTML = V;
+
+  controlContext.clearRect(0, 0, N, N);
+  let xp = x*N;
+  let yp = N-y*N;
+  let rp = tolerance*N;
+  controlContext.strokeStyle = 'rgb(128, 128, 128)';
+  controlContext.beginPath();
+  controlContext.arc(xp, yp, rp, 0, 2*Math.PI);
+  controlContext.stroke();
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="init();">
+    Tolerance: <input type="text" id="tolerance" value="3"/>
+    <p>
+    <span style="width: 800px; height: 800px; display: inline-block"><canvas id="canvas"></canvas><canvas id="control"></canvas></span>
+    <p>
+    <table border="0">
+      <tr>
+        <td>x =</td><td class="text_size"><span id="xy_x_text"></span></td>
+        <td>R =</td><td class="text_size"><span id="RGB_R_text"></span></td>
+        <td>H =</td><td class="text_size"><span id="HSV_H_text"></span></td>
+      </tr>
+      <tr>
+        <td>y =</td><td><span id="xy_y_text"></span></td>
+        <td>G =</td><td><span id="RGB_G_text"></span></td>
+        <td>S =</td><td><span id="HSV_S_text"></span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td><td>&nbsp;</td>
+        <td>B =</td><td><span id="RGB_B_text"></span></td>
+        <td>V =</td><td><span id="HSV_V_text"></span></td>
+      </tr>
+    </table>
+  </body>
+</html>

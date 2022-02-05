@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>COLOR</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+.canvas {
+  border: 2px solid gray;
+}
+
+.text_size {
+  width: 12em
+}
+
+.slider_size_H {
+  width: 360px;
+}
+
+.slider_size {
+  width: 200px;
+}
+
+      /*]]>*/
+    </style>
+    <script src="util.js"></script>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+NH = 320;
+NS = 100;
+
+function clickPoint(event, c)
+{
+  var x;
+  var y;
+  if
+  (
+    event.pageX !== undefined &&
+    event.pageY !== undefined
+  )
+  {
+    x = event.pageX;
+    y = event.pageY;
+  }
+  else
+  {
+    x = event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;
+    y = event.clientY+document.body.scrollTop+document.documentElement.scrollTop;
+  }
+  return {
+    x: x-c.offsetLeft,
+    y: y-c.offsetTop
+  };
+}
+
+function init() {
+  canvasColor = document.getElementById('canvasColor');
+  canvasColorContext = canvasColor.getContext('2d');
+  canvasError = document.getElementById('canvasError');
+  canvasErrorContext = canvasError.getContext('2d');
+  canvasColor.addEventListener
+  (
+    'click',
+    function(event)
+    {
+      var point = clickPoint(event, canvasColor);
+      click(point.x, point.y);
+      return false;
+    },
+    false
+  );
+  canvasError.addEventListener
+  (
+    'click',
+    function(event)
+    {
+      var point = clickPoint(event, canvasError);
+      click(point.x, point.y);
+      return false;
+    },
+    false
+  );
+  canvasColor.width = NH*2;
+  canvasColor.height = NS*2;
+  canvasError.width = NH*2;
+  canvasError.height = NS*2;
+  draw();
+}
+
+function draw()
+{
+  for(h = 0; h < NH; h++)
+  {
+    for(s = 0; s < NS; s++)
+    {
+      let [R, G, B] = HSV_2_RGB(h, s, 100);
+      let [X, Y, Z] = RGB_2_XYZ(R, G, B);
+      let [x, y, I] = XYZ_2_xyY(X, Y, Z);
+      let [Xb, Yb, Zb] = xyY_2_XYZ(x, y, Y);
+      let [Rb, Gb, Bb] = XYZ_2_RGB(Xb, Yb, Zb);
+      let [Hb, Sb, Vb] = RGB_2_HSV(Rb, Gb, Bb);
+      let d = Math.sqrt((Hb-h)**2+(Sb-s)**2);
+      canvasColorContext.fillStyle = `rgb(${R}, ${G}, ${B})`;
+      canvasColorContext.fillRect(h*2, s*2, 2, 2);
+      canvasErrorContext.fillStyle = `rgb(${d*100}, 0, 0)`;
+      canvasErrorContext.fillRect(h*2, s*2, 2, 2);
+    }
+  }
+}
+
+function click(hh, ss)
+{
+  let h = hh/2;
+  let s = ss/2;
+
+  let [R, G, B] = HSV_2_RGB(h, s, 100);
+  let [X, Y, Z] = RGB_2_XYZ(R, G, B);
+  let [x, y, I] = XYZ_2_xyY(X, Y, Z);
+  let [Xb, Yb, Zb] = xyY_2_XYZ(x, y, Y);
+  let [Rb, Gb, Bb] = XYZ_2_RGB(Xb, Yb, Zb);
+  let [Hb, Sb, Vb] = RGB_2_HSV(Rb, Gb, Bb);
+
+  let dH = Math.abs(Hb-h);
+  let dS = Math.abs(Sb-s);
+  let d = Math.sqrt(dH**2+dS**2);
+
+  document.getElementById('HSV_H_text').innerHTML = h;
+  document.getElementById('HSV_S_text').innerHTML = s;
+
+  document.getElementById('XY_x_text').innerHTML = x;
+  document.getElementById('XY_y_text').innerHTML = y;
+
+  document.getElementById('HSV_Hb_text').innerHTML = Hb;
+  document.getElementById('HSV_Sb_text').innerHTML = Sb;
+  document.getElementById('HSV_Vb_text').innerHTML = Vb;
+
+  document.getElementById('dH_text').innerHTML = dH;
+  document.getElementById('dS_text').innerHTML = dS;
+  document.getElementById('d_text').innerHTML = d;
+}
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="init();">
+    <canvas id="canvasColor" class="canvas"></canvas><p/>
+    <canvas id="canvasError" class="canvas"></canvas>
+    <table border="0">
+      <tr>
+        <td>H =</td><td class="text_size"><span id="HSV_H_text"></span></td>
+        <td>S =</td><td class="text_size"><span id="HSV_S_text"></span></td>
+      </tr>
+      <tr>
+        <td>x =</td><td class="text_size"><span id="XY_x_text"></span></td>
+        <td>y =</td><td class="text_size"><span id="XY_y_text"></span></td>
+      </tr>
+      <tr>
+        <td>Hb =</td><td class="text_size"><span id="HSV_Hb_text"></span></td>
+        <td>Sb =</td><td class="text_size"><span id="HSV_Sb_text"></span></td>
+        <td>Vb =</td><td class="text_size"><span id="HSV_Vb_text"></span></td>
+      </tr>
+      <tr>
+        <td>dH =</td><td class="text_size"><span id="dH_text"></span></td>
+        <td>dS =</td><td class="text_size"><span id="dS_text"></span></td>
+        <td>d =</td><td class="text_size"><span id="d_text"></span></td>
+      </tr>
+    </table>
+  </body>
+</html>

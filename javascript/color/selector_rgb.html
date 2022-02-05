@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>COLOR</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+#sample {
+  border: 2px solid black;
+  width: 100px;
+  height: 100px;
+}
+
+.text_size {
+  width: 12em
+}
+
+.slider_size {
+  width: 512px;
+}
+
+      /*]]>*/
+    </style>
+    <script src="util.js"></script>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+function calc() {
+  let R = Number(document.getElementById('R').value);
+  let G = Number(document.getElementById('G').value);
+  let B = Number(document.getElementById('B').value);
+  document.getElementById('RGB_R_text').innerHTML = R;
+  document.getElementById('RGB_G_text').innerHTML = G;
+  document.getElementById('RGB_B_text').innerHTML = B;
+  document.getElementById('sample').style.backgroundColor = `rgb(${R}, ${G}, ${B})`;
+
+  let [H, S, V] = RGB_2_HSV(R, G, B);
+  document.getElementById('HSV_H_text').innerHTML = H;
+  document.getElementById('HSV_S_text').innerHTML = S;
+  document.getElementById('HSV_V_text').innerHTML = V;
+
+  let [X, Y, Z] = RGB_2_XYZ(R, G, B);
+  document.getElementById('XYZ_X_text').innerHTML = X;
+  document.getElementById('XYZ_Y_text').innerHTML = Y;
+  document.getElementById('XYZ_Z_text').innerHTML = Z;
+
+  let [x, y, I] = XYZ_2_xyY(X, Y, Z);
+  document.getElementById('xyY_x_text').innerHTML = x;
+  document.getElementById('xyY_y_text').innerHTML = y;
+  document.getElementById('xyY_Y_text').innerHTML = I;
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="calc();">
+    <H2>RGB</H2>
+    <table border="0">
+      <tr>
+        <td rowspan="3"><div id="sample"></div></td>
+        <td>R =</td>
+        <td><input type="range" class="slider_size" min="0" max="255" value="0" id="R" oninput="calc();"></td>
+      </tr>
+      <tr>
+        <td>G =</td>
+        <td><input type="range" class="slider_size" min="0" max="255" value="0" id="G" oninput="calc();"></td>
+      </tr>
+      <tr>
+        <td>B =</td>
+        <td><input type="range" class="slider_size" min="0" max="255" value="0" id="B" oninput="calc();"></td>
+      </tr>
+    </table>
+    <p/>
+    <table border="0">
+      <tr>
+        <td>R =</td><td class="text_size"><span id="RGB_R_text"></span></td>
+        <td>H =</td><td class="text_size"><span id="HSV_H_text"></span></td>
+        <td>X =</td><td class="text_size"><span id="XYZ_X_text"></span></td>
+        <td>x =</td><td class="text_size"><span id="xyY_x_text"></span></td>
+      </tr>
+      <tr>
+        <td>G =</td><td><span id="RGB_G_text"></span></td>
+        <td>S =</td><td><span id="HSV_S_text"></span></td>
+        <td>Y =</td><td><span id="XYZ_Y_text"></span></td>
+        <td>y =</td><td><span id="xyY_y_text"></span></td>
+      </tr>
+      <tr>
+        <td>B =</td><td><span id="RGB_B_text"></span></td>
+        <td>V =</td><td><span id="HSV_V_text"></span></td>
+        <td>Z =</td><td><span id="XYZ_Z_text"></span></td>
+        <td>Y =</td><td><span id="xyY_Y_text"></span></td>
+      </tr>
+    </table>
+  </body>
+</html>
