@@ -1,9 +1,9 @@
 import { createContext, useState } from 'react';
 
-const STATE_NONE = 0;
-const STATE_HAVE = 1;
+const STATE_NONE  = 0;
+const STATE_HAVE  = 1;
 const STATE_PLACE = 2;
-const STATE_MAX = 3;
+const STATE_MAX   = 3;
 
 const COLORS = [ '#b2babb', '#f7dc6f', '#7dcea0' ];
 
@@ -26,22 +26,21 @@ const WORDS = [
   'could', 'wrung', 'light', 'those', 'moist', 'shard', 'pleat', 'aloft', 'skill', 'elder', 'frame', 'humor', 'pause', 'ulcer', 'ultra', 'robin',
   'cynic', 'aroma', 'caulk', 'shake', 'dodge', 'swill', 'tacit', 'other', 'thorn', 'trove', 'bloke', 'vivid', 'spill', 'chant', 'choke', 'rupee',
   'nasty', 'mourn', 'ahead', 'brine', 'cloth', 'hoard', 'sweet', 'month', 'lapse', 'watch', 'today', 'focus', 'smelt', 'tease', 'cater', 'movie',
-  'saute', 'allow', 'renew', 'their', 'slosh', 'purge', 'chest', 'depot', 'epoxy', 'nymph', 'found', 'shall', 'harry', 'stove', 'lowly', 'snout',
-  'trope', 'fewer', 'shawl', 'natal', 'comma', 'foray', 'scare', 'stair', 'black', 'squad', 'royal', 'chunk', 'mince', 'shame', 'cheek', 'ample',
-  'flair', 'foyer', 'cargo', 'oxide', 'plant', 'olive', 'inert', 'askew', 'heist', 'shown', 'zesty', 'hasty', 'trash', 'fella', 'larva', 'forgo',
-  'story', 'hairy', 'train', 'homer', 'badge', 'midst', 'canny', 'fetus', 'butch', 'farce', 'slung', 'tipsy', 'metal', 'yield', 'delve', 'being',
-  'scour', 'glass', 'gamer', 'scrap', 'money', 'hinge', 'album', 'vouch', 'asset', 'tiara', 'crept', 'bayou', 'atoll', 'manor', 'creak', 'showy',
-  'phase', 'froth', 'depth', 'gloom', 'flood', 'trait', 'girth', 'piety', 'payer', 'goose', 'float', 'donor', 'atone', 'primo', 'apron', 'blown',
-  'cacao', 'loser', 'input', 'gloat', 'awful', 'brink', 'smite', 'beady', 'rusty', 'retro', 'droll', 'gawky', 'hutch', 'pinto', 'gaily', 'egret',
-  'lilac', 'sever', 'field', 'fluff', 'hydro', 'flack', 'agape', 'voice', 'stead', 'stalk', 'berth', 'madam', 'night', 'bland', 'liver', 'wedge',
-  'augur', 'roomy', 'wacky', 'flock', 'angry', 'bobby', 'trite', 'aphid', 'tryst', 'midge', 'power', 'elope', 'cinch', 'motto', 'stomp', 'upset',
-  'bluff', 'cramp', 'quart', 'coyly', 'youth', 'rhyme', 'buggy', 'alien', 'smear', 'unfit', 'patty', 'cling', 'glean', 'label', 'hunky', 'khaki',
-  'poker', 'gruel', 'twice', 'twang', 'shrug', 'treat', 'unlit', 'waste', 'merit', 'woven', 'octal', 'needy', 'clown', 'widow', 'irony', 'ruder',
-  'gauze', 'chief', 'onset', 'prize', 'fungi', 'charm', 'gully', 'inter', 'whoop', 'taunt', 'leery', 'class', 'theme', 'lofty', 'tibia', 'booze',
-  'alpha', 'thyme', 'eclat', 'doubt', 'parer', 'chute', 'stick', 'trice', 'alike', 'sooth', 'recap', 'saint', 'liege', 'glory', 'grate', 'admit',
-  'brisk', 'soggy', 'usurp', 'scald', 'scorn', 'leave', 'twine', 'sting', 'bough', 'marsh', 'sloth', 'dandy', 'vigor', 'howdy', 'enjoy', 'valid',
-  'ionic', 'equal', 'unset', 'floor', 'catch', 'spade', 'stein', 'exist', 'quirk', 'denim', 'grove', 'spiel', 'mummy', 'fault', 'foggy', 'flout',
-  'carry', 'sneak', 'libel', 'waltz', 'aptly', 'piney', 'inept', 'aloud', 'photo', 'dream', 'stale', 'vomit', 'ombre', 'fanny', 'unite', 'snarl',
+  'saute', 'allow', 'renew', 'their', 'slosh', 'purge', 'chest', 'depot', 'epoxy', 'nymph', 'found', 'shall', 'stove', 'lowly', 'snout', 'trope',
+  'fewer', 'shawl', 'natal', 'comma', 'foray', 'scare', 'stair', 'black', 'squad', 'royal', 'chunk', 'mince', 'shame', 'cheek', 'ample', 'flair',
+  'foyer', 'cargo', 'oxide', 'plant', 'olive', 'inert', 'askew', 'heist', 'shown', 'zesty', 'trash', 'larva', 'forgo', 'story', 'hairy', 'train',
+  'homer', 'badge', 'midst', 'canny', 'fetus', 'butch', 'farce', 'slung', 'tipsy', 'metal', 'yield', 'delve', 'being', 'scour', 'glass', 'gamer',
+  'scrap', 'money', 'hinge', 'album', 'vouch', 'asset', 'tiara', 'crept', 'bayou', 'atoll', 'manor', 'creak', 'showy', 'phase', 'froth', 'depth',
+  'gloom', 'flood', 'trait', 'girth', 'piety', 'goose', 'float', 'donor', 'atone', 'primo', 'apron', 'blown', 'cacao', 'loser', 'input', 'gloat',
+  'awful', 'brink', 'smite', 'beady', 'rusty', 'retro', 'droll', 'gawky', 'hutch', 'pinto', 'egret', 'lilac', 'sever', 'field', 'fluff', 'flack',
+  'agape', 'voice', 'stead', 'stalk', 'berth', 'madam', 'night', 'bland', 'liver', 'wedge', 'augur', 'roomy', 'wacky', 'flock', 'angry', 'trite',
+  'aphid', 'tryst', 'midge', 'power', 'elope', 'cinch', 'motto', 'stomp', 'upset', 'bluff', 'cramp', 'quart', 'coyly', 'youth', 'rhyme', 'buggy',
+  'alien', 'smear', 'unfit', 'patty', 'cling', 'glean', 'label', 'hunky', 'khaki', 'poker', 'gruel', 'twice', 'twang', 'shrug', 'treat', 'waste',
+  'merit', 'woven', 'needy', 'clown', 'widow', 'irony', 'ruder', 'gauze', 'chief', 'onset', 'prize', 'fungi', 'charm', 'gully', 'inter', 'whoop',
+  'taunt', 'leery', 'class', 'theme', 'lofty', 'tibia', 'booze', 'alpha', 'thyme', 'doubt', 'parer', 'chute', 'stick', 'trice', 'alike', 'recap',
+  'saint', 'glory', 'grate', 'admit', 'brisk', 'soggy', 'usurp', 'scald', 'scorn', 'leave', 'twine', 'sting', 'bough', 'marsh', 'sloth', 'dandy',
+  'vigor', 'howdy', 'enjoy', 'valid', 'ionic', 'equal', 'floor', 'catch', 'spade', 'stein', 'exist', 'quirk', 'denim', 'grove', 'spiel', 'mummy',
+  'fault', 'foggy', 'flout', 'carry', 'sneak', 'libel', 'waltz', 'aptly', 'piney', 'inept', 'aloud', 'photo', 'dream', 'stale', 'unite', 'snarl',
   'baker', 'there', 'glyph', 'pooch', 'hippy', 'spell', 'folly', 'louse', 'gulch', 'vault', 'godly', 'threw', 'fleet', 'grave', 'inane', 'shock',
   'crave', 'spite', 'valve', 'skimp', 'claim', 'rainy', 'musty', 'pique', 'daddy', 'quasi', 'arise', 'aging', 'valet', 'opium', 'avert', 'stuck',
   'recut', 'mulch', 'genre', 'plume', 'rifle', 'count', 'incur', 'total', 'wrest', 'mocha', 'deter', 'study', 'lover', 'safer', 'rivet', 'funny',
@@ -153,7 +152,8 @@ const WORDS = [
   'peril', 'piece', 'blame', 'haute', 'spied', 'undid', 'intro', 'basal', 'shine', 'gecko', 'rodeo', 'guard', 'steer', 'loamy', 'scamp', 'scram',
   'manly', 'hello', 'vaunt', 'organ', 'feral', 'knock', 'extra', 'condo', 'adapt', 'willy', 'polka', 'rayon', 'skirt', 'faith', 'torso', 'match',
   'mercy', 'tepid', 'sleek', 'riser', 'twixt', 'peace', 'flush', 'catty', 'login', 'eject', 'roger', 'rival', 'untie', 'refit', 'aorta', 'adult',
-  'judge', 'rower', 'artsy', 'rural', 'shave'
+  'judge', 'rower', 'artsy', 'rural', 'shave', 'bobby', 'eclat', 'fella', 'gaily', 'harry', 'hasty', 'hydro', 'liege', 'octal', 'ombre', 'payer',
+  'sooth', 'unset', 'unlit', 'vomit', 'fanny'
 ];
 
 const StoreContext = createContext(
@@ -273,71 +273,57 @@ const StoreProvider = (props) => {
     setGame(g);
   };
 
-  const copy = () => {
-    let g = {
-      done: game.done,
-      error: game.error,
-      row: game.row,
-      rows: [],
-      words: game.words.slice(),
-      attempt: game.attempt
-    };
-    for(let row in game.rows) {
-      g.rows[row] = [];
-      for(let letter in game.rows[row]) {
-        g.rows[row][letter] = {
-          state: game.rows[row][letter].state,
-          color: game.rows[row][letter].color,
-          letter: game.rows[row][letter].letter
-        }
-      }
-    }
-    return g;
-  };
-
   const change = (index) => {
-    let g = copy();
-    g.rows[g.row][index].state++;
-    g.rows[g.row][index].state %= STATE_MAX;
-    g.rows[g.row][index].color = COLORS[g.rows[g.row][index].state];
-    setGame(g);
+    setGame(
+      (g) => {
+        g.rows[g.row][index].state++;
+        g.rows[g.row][index].state %= STATE_MAX;
+        g.rows[g.row][index].color = COLORS[g.rows[g.row][index].state];
+        return { ...g };
+      }
+    );
   };
 
   const next = () => {
-    let g = copy();
-
-    let code = getCode(g);
-    if(codeIsSolved(code)) {
-      g.done = true;
-    } else {
-      let i = 0;
-      while(i < g.words.length) {
-        if(!codeIsEqual(code, codeCalc(g.words[i], g.attempt))) {
-          g.words.splice(i, 1);
+    setGame(
+      (g) => {
+        let code = getCode(g);
+        if(codeIsSolved(code)) {
+          g.done = true;
         } else {
-          i++;
+          let i = 0;
+          while(i < g.words.length) {
+            if(!codeIsEqual(code, codeCalc(g.words[i], g.attempt))) {
+              g.words.splice(i, 1);
+            } else {
+              i++;
+            }
+          }
+          if(g.words.length > 0) {
+            g.row++;
+            choseRandomAttempt(g, false);
+            addRow(g);
+          } else {
+            g.done = true;
+            g.error = 'There is no such word in the database';
+          }
         }
+        return { ...g };
       }
-      if(g.words.length > 0) {
-        g.row++;
-        choseRandomAttempt(g, false);
-        addRow(g);
-      } else {
-        g.done = true;
-        g.error = 'There is no such word in the database';
-      }
-    }
-    setGame(g);
+    );
   };
 
   const done = () => {
-    let g = copy();
-    for(let i = 0; i < LEN; i++) {
-      g.rows[g.row][i].state = STATE_PLACE;
-      g.rows[g.row][i].color = COLORS[STATE_PLACE];
-    }
-    g.done = true;
-    setGame(g);
+    setGame(
+      (g) => {
+        for(let i = 0; i < LEN; i++) {
+          g.rows[g.row][i].state = STATE_PLACE;
+          g.rows[g.row][i].color = COLORS[STATE_PLACE];
+        }
+        g.done = true;
+        return { ...g };
+      }
+    );
   };
 
   const check = (input) => {

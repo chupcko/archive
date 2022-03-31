@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 
-import { Divider } from '@mui/material';
+import Divider from '@mui/material/Divider';
 
 import { StoreContext } from './Store';
 

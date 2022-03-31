@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 
-import { Stack, Button, Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import { StoreContext } from './Store';
 
@@ -16,11 +19,13 @@ const RowEdit = (props) => {
             variant="outlined"
             key={ index }
             onClick={ () => { change(index); } }
-            style={ {
-              backgroundColor: game.rows[props.index][index].color,
-              minWidth: '2em',
-              maxWidth: '2em'
-            } }
+            style={
+              {
+                backgroundColor: game.rows[props.index][index].color,
+                minWidth: '2em',
+                maxWidth: '2em'
+              }
+            }
           >
             <b>{ game.rows[props.index][index].letter }</b>
           </Button>

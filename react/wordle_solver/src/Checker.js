@@ -1,6 +1,9 @@
 import { useContext, useState } from 'react';
 
-import { Stack, TextField, Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import { StoreContext } from './Store';
 

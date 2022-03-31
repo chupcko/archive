@@ -1,7 +1,10 @@
 import { render } from 'react-dom';
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { teal, blue, red } from '@mui/material/colors';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import createTheme from '@mui/material/styles/createTheme';
+import blue from '@mui/material/colors/blue';
+import red from '@mui/material/colors/red';
+import teal from '@mui/material/colors/teal';
 
 import { StoreProvider } from './Store';
 
@@ -25,7 +28,9 @@ const theme = createTheme(
 
 render(
   <StoreProvider>
-    <App />
+    <ThemeProvider theme={ theme } >
+      <App />
+    </ThemeProvider>
   </StoreProvider>,
   document.querySelector('#root')
 );
