@@ -1,1 +1,1 @@
-document.location.href = 'http://start.chupcko.org/';
+document.location.href = 'http://chupcko.org/start/';
