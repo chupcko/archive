@@ -1,7 +1,7 @@
 {
   "name": "CHUPCKO's Start Page",
   "version": "1.0",
-  "description": "Set http://chupcko.org/start/ as new tab page",
+  "description": "Set https://chupcko.org/start/ as new tab page",
   "manifest_version": 3,
   "chrome_url_overrides": { "newtab": "main.html" }
 }
