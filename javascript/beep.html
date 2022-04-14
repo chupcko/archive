@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Beep</title>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+:root {
+  --body-margin: 16px;
+}
+
+.body {
+  background-color: white;
+  font-family: arial, sans-serif;
+  margin: var(--body-margin);
+  user-select: none;
+}
+
+.center {
+  left: 50%;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.container {
+  display: inline-block;
+}
+
+.button {
+  background: red;
+  border-color: black;
+  border-radius: 10em;
+  border-style: solid;
+  border-width: 1em;
+  box-shadow: 1em 1em gray;
+  height: 20em;
+  width: 20em;
+}
+
+.button:active {
+  box-shadow: 0.5em 0.5em gray;
+  transform: translate(0.5em, 0.5em);
+}
+
+.button:focus {
+  outline-style: none;
+}
+
+.label {
+  color: white;
+  font-size: 64px;
+}
+
+.counter {
+  bottom: var(--body-margin);
+  position: fixed;
+  right: var(--body-margin);
+}
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+const COUNTER_NAME = 'counter';
+const DETUNE = 10;
+
+const Audio = new AudioContext();
+let Counter = 0;
+
+function init() {
+  let counter_s = localStorage.getItem('counter');
+  if(counter_s !== null) {
+    Counter = parseInt(counter_s);
+    counter_show();
+  }
+  return false;
+}
+
+function counter_show() {
+  let counter_s = Counter.toString()
+  document.getElementById('counter').innerHTML = counter_s;
+  localStorage.setItem('counter', counter_s);
+}
+
+function counter_increment() {
+  Counter++;
+  counter_show();
+}
+
+function beep() {
+  let frequency = 440.0;
+  let duration = 1.0/3.0;
+  let random = Math.random();
+  if(random < 0.1) {
+    frequency = 220.0;
+    duration = 5.0;
+  } else if(random > 0.9) {
+    frequency = 880.0;
+    duration = 5.0;
+  }
+
+  const o1 = Audio.createOscillator();
+  o1.type = 'sine';
+  o1.frequency.value = frequency;
+  o1.detune.value = DETUNE;
+
+  const o2 = Audio.createOscillator();
+  o2.type = 'sine';
+  o2.frequency.value = -frequency;
+  o2.detune.value = -DETUNE;
+
+  const m = Audio.createChannelMerger(2);
+
+  const g = Audio.createGain();
+  g.gain.value = 1.0;
+
+  o1.connect(m, 0, 0);
+  o2.connect(m, 0, 1);
+  m.connect(g);
+  g.connect(Audio.destination);
+
+  const begin_time = Audio.currentTime;
+  const end_time = begin_time+duration;
+
+  o1.start(begin_time);
+  o2.start(begin_time);
+
+  g.gain.linearRampToValueAtTime(0, end_time);
+  o1.stop(end_time);
+  o2.stop(end_time);
+
+  counter_increment();
+  return false;
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body class="body" onLoad="return init();">
+    <div class="center">
+      <div class="container">
+        <button class="button" onclick="return beep();">
+          <span class="label">BEEP</span>
+        </button>
+      </div>
+    </div>
+    <div class="counter" id="counter">0</div>
+  </body>
+</html>

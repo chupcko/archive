@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Guitar Tuner</title>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+.body {
+  background-color: white;
+  font-family: arial, sans-serif;
+  user-select: none;
+}
+
+.button {
+  background: blue;
+  border-color: black;
+  border-style: solid;
+  border-width: 0.2em;
+  height: 6em;
+  margin: 1em;
+  width: 8em;
+}
+
+.label {
+  color: white;
+  font-size: 4em;
+}
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+const Audio = new AudioContext();
+let Oscillator = undefined;
+let Last_offset = undefined;
+
+function offset_to_frequency(offset) {
+  return 440.0*Math.pow(2, offset/12);
+}
+
+function play(offset) {
+  if(offset === Last_offset) {
+    Oscillator.stop(0);
+    Oscillator = undefined;
+    Last_offset = undefined;
+  } else {
+    if(Oscillator === undefined) {
+      Oscillator = Audio.createOscillator();
+      Oscillator.connect(Audio.destination);
+      Oscillator.frequency.value = offset_to_frequency(offset);
+      Oscillator.start(0);
+    } else {
+      Oscillator.frequency.value = offset_to_frequency(offset);
+    }
+    Last_offset = offset;
+  }
+  return false;
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body class="body">
+    <button class="button" onclick="return play(-5);">
+      <span class="label">E4</span>
+    </button>
+    <button class="button" onclick="return play(7);">
+      <span class="label">E5</span>
+    </button>
+    <br/>
+    <button class="button" onclick="return play(-10);">
+      <span class="label">B3</span>
+    </button>
+    <button class="button" onclick="return play(2);">
+      <span class="label">B4</span>
+    </button>
+    <br/>
+    <button class="button" onclick="return play(-14);">
+      <span class="label">G3</span>
+    </button>
+    <button class="button" onclick="return play(-2);">
+      <span class="label">G4</span>
+    </button>
+    <br/>
+    <button class="button" onclick="return play(-19);">
+      <span class="label">D3</span>
+    </button>
+    <button class="button" onclick="return play(-7);">
+      <span class="label">D4</span>
+    </button>
+    <br/>
+    <button class="button" onclick="return play(-24);">
+      <span class="label">A2</span>
+    </button>
+    <button class="button" onclick="return play(-12);">
+      <span class="label">A3</span>
+    </button>
+    <br/>
+    <button class="button" onclick="return play(-29);">
+      <span class="label">E2</span>
+    </button>
+    <button class="button" onclick="return play(-17);">
+      <span class="label">E3</span>
+    </button>
+  </body>
+</html>
