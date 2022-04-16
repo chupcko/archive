@@ -43,11 +43,11 @@ function initFinish()
 
 function initNew(dimX, dimY, minesNumber)
 {
-  if(Box != undefined)
-    Box.stop();
   document.getElementById('dimX').value = dimX;
   document.getElementById('dimY').value = dimY;
   document.getElementById('minesNumber').value = minesNumber;
+  if(Box != undefined)
+    Box.destroy();
   Box = new boxClass('box', 'time', 'mines', Images, dimX, dimY, minesNumber);
 }
 

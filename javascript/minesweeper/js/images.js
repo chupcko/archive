@@ -72,11 +72,11 @@ function imagesClass()
       setTimeout
       (
         (
-          function(that)
+          function(self)
           {
             return function()
             {
-              that.whenLoad(finish);
+              self.whenLoad(finish);
             }
           }
         )(this),

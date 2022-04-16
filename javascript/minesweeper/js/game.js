@@ -373,7 +373,7 @@ function gameClass(dimX, dimY, minesNumber)
       while(this.haveAction == true)
   };
 
-  this.helpPlay = function()
+  this.helpPlay = function(doReset)
   {
     if(this.playable == true)
     {
@@ -384,9 +384,11 @@ function gameClass(dimX, dimY, minesNumber)
       if(this.haveAction == true)
         return;
       this.helpOpenRandom();
+      return true;
     }
-    else
+    if(doReset)
       this.reset();
+    return false;
   };
 
   this.getPlayable = function()

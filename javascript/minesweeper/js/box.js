@@ -42,49 +42,45 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
     return undefined;
   };
 
+  this.clickCallback =
+  (
+    function(self)
+    {
+      return function(event)
+      {
+        var point = self.point(event);
+        if(point != undefined)
+        {
+          self.game.open(point.x, point.y);
+          self.draw();
+        }
+        return false;
+      }
+    }
+  )(this);
+
+  this.contextmenuCallback =
+  (
+    function(self)
+    {
+      return function(event)
+      {
+        var point = self.point(event);
+        if(point != undefined)
+        {
+          self.game.mark(point.x, point.y);
+          self.draw();
+        }
+        event.preventDefault();
+        return false;
+      }
+    }
+  )(this);
+
   this.canvas = document.getElementById(this.idBox);
   this.canvasContext = this.canvas.getContext('2d');
-  this.canvas.addEventListener
-  (
-    'click',
-    (
-      function(that)
-      {
-        return function(event)
-        {
-          var point = that.point(event);
-          if(point != undefined)
-          {
-            that.game.open(point.x, point.y);
-            that.draw();
-          }
-          return false;
-        }
-      }
-    )(this),
-    false
-  );
-  this.canvas.addEventListener
-  (
-    'contextmenu',
-    (
-      function(that)
-      {
-        return function(event)
-        {
-          var point = that.point(event);
-          if(point != undefined)
-          {
-            that.game.mark(point.x, point.y);
-            that.draw();
-          }
-          event.preventDefault();
-          return false;
-        }
-      }
-    )(this),
-    false
-  );
+  this.canvas.addEventListener('click', this.clickCallback, false);
+  this.canvas.addEventListener('contextmenu', this.contextmenuCallback, false);
   this.canvas.width = this.borderSize+this.frameSize+this.dimX*this.fieldSize+this.frameSize+this.borderSize;
   this.canvas.height = this.borderSize+this.frameSize+this.dimY*this.fieldSize+this.frameSize+this.borderSize;
 
@@ -125,7 +121,7 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
 
   this.play = function()
   {
-    this.game.helpPlay();
+    this.game.helpPlay(true);
     this.draw();
   };
 
@@ -137,6 +133,9 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
   this.autoPlayStartStop = function()
   {
     if(this.autoPlayTimer == undefined)
+    {
+      this.game.helpPlay(true);
+      this.draw();
       this.autoPlayTimer = setInterval
       (
         (
@@ -144,12 +143,15 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
           {
             return function()
             {
-              self.play();
+              if(self.game.helpPlay(false) == false)
+                self.autoPlayStop();
+              self.draw()
             }
           }
         )(this),
         this.autoPlayDelay
       );
+    }
     else
     {
       clearInterval(this.autoPlayTimer);
@@ -171,7 +173,7 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
     var time = this.game.getTime();
     var timeInt = Math.floor(time/1000);
     var timeDec = time%1000;
-    this.elementTime.innerHTML = timeInt+'.'+(timeDec.toString()+'0'.repeat(digits)).substring(0, digits);
+    this.elementTime.innerHTML = timeInt+'.'+('00'+timeDec.toString()).slice(-3).substring(0, digits);
   };
 
   this.timeStart = function()
@@ -188,7 +190,7 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
             }
           }
         )(this),
-        100
+        50
       );
   };
 
@@ -206,7 +208,10 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
     if(this.game.getPlayable() == true)
     {
       if(this.game.isStarted())
+      {
+        this.timeStop();
         this.timeStart();
+      }
       else
         this.timeShow(1);
       this.canvasContext.fillStyle = 'rgb(75%, 75%, 75%)';
@@ -295,10 +300,12 @@ function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
     this.elementMines.innerHTML = this.game.getMinesRemain();
   };
 
-  this.stop = function()
+  this.destroy = function()
   {
     this.autoPlayStop()
-    this.timeStop;
+    this.timeStop();
+    this.canvas.removeEventListener('click', this.clickCallback, false);
+    this.canvas.removeEventListener('contextmenu', this.contextmenuCallback, false);
   };
 
   this.draw();
