@@ -9,7 +9,10 @@ function gameClass(dimX, dimY, minesNumber)
   this.shuffled = undefined;
   this.boom = undefined;
   this.openedNumber = undefined;
+  this.minesRemain = undefined;
   this.haveAction = undefined;
+  this.startTime = undefined;
+  this.stopTime = undefined;
 
   this.ValueBomb = -1;
   this.FlagOpen  = 0;
@@ -40,7 +43,21 @@ function gameClass(dimX, dimY, minesNumber)
     this.shuffled = false;
     this.boom = false;
     this.openedNumber = 0;
+    this.minesRemain = this.minesNumber;
     this.haveAction = false;
+    this.startTime = undefined;
+    this.stopTime = undefined;
+  };
+
+  this.start = function()
+  {
+    if(this.startTime == undefined)
+      this.startTime = (new Date()).getTime();
+  };
+
+  this.stop = function()
+  {
+    this.stopTime = (new Date()).getTime();
   };
 
   this.getCode = function(x, y)
@@ -146,8 +163,8 @@ function gameClass(dimX, dimY, minesNumber)
       var y = undefined;
       do
       {
-        x = (Math.random()*this.dimX)|0;
-        y = (Math.random()*this.dimY)|0;
+        x = Math.floor(Math.random()*this.dimX);
+        y = Math.floor(Math.random()*this.dimY);
       }
       while
       (
@@ -230,6 +247,7 @@ function gameClass(dimX, dimY, minesNumber)
   {
     if(this.playable == true)
     {
+      this.start();
       if(this.shuffled != true)
         this.shuffle(x, y);
       if(this.fields[x][y].flag == this.FlagOpen)
@@ -238,6 +256,7 @@ function gameClass(dimX, dimY, minesNumber)
       {
         if(this.fields[x][y].value == this.ValueBomb)
         {
+          this.stop();
           this.fields[x][y].flag = this.FlagBoom;
           this.playable = false;
           this.boom = true;
@@ -246,11 +265,13 @@ function gameClass(dimX, dimY, minesNumber)
         {
           this.openAll(x, y);
           if(this.openedNumber == this.dimX*this.dimY-this.minesNumber)
+          {
+            this.stop();
             this.playable = false;
+          }
         }
       }
     }
-    return this.playable;
   };
 
   this.markHintDo = function(x, y)
@@ -285,13 +306,18 @@ function gameClass(dimX, dimY, minesNumber)
   {
     if(this.playable == true)
     {
+      this.start();
       if(this.fields[x][y].flag == this.FlagOpen)
         this.markHint(x, y);
       else if(this.fields[x][y].flag != this.FlagClose)
+      {
         this.fields[x][y].flag = this.FlagClose;
+        this.minesRemain++;
+      }
       else
       {
         this.fields[x][y].flag = this.FlagMark;
+        this.minesRemain--;
         this.haveAction = true;
       }
     }
@@ -305,8 +331,8 @@ function gameClass(dimX, dimY, minesNumber)
       var y = undefined;
       do
       {
-        x = (Math.random()*this.dimX)|0;
-        y = (Math.random()*this.dimY)|0;
+        x = Math.floor(Math.random()*this.dimX);
+        y = Math.floor(Math.random()*this.dimY);
       }
       while(this.fields[x][y].flag != this.FlagClose);
       this.open(x, y);
@@ -371,6 +397,26 @@ function gameClass(dimX, dimY, minesNumber)
   this.getBoom = function()
   {
     return this.boom;
+  };
+
+  this.getMinesRemain = function()
+  {
+    return this.minesRemain;
+  };
+
+  this.isStarted = function()
+  {
+    return this.startTime != undefined;
+  };
+
+  this.getTime = function()
+  {
+    if(this.startTime == undefined)
+      return 0;
+    var lastTime = this.stopTime;
+    if(lastTime == undefined)
+      lastTime = (new Date()).getTime();
+    return lastTime-this.startTime;
   };
 
   this.reset();

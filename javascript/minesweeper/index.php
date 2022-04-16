@@ -24,24 +24,24 @@
     </script>
   </head>
   <body onload="init();" class="body">
-    <form onsubmit="initFinish(); return false;">
-      X: <input type="text" id="dimX" value="40"/>
-      Y: <input type="text" id="dimY" value="40"/>
-      Mines: <input type="text" id="minesNumber" value="200"/>
-      <input type="submit" value="New"/>
-    </form>
+    <button onclick="initNew(8, 8, 10); return false;">Beginner</button>
+    <button onclick="initNew(16, 16, 40); return false;">Intermediate</button>
+    <button onclick="initNew(30, 16, 99); return false;">Expert</button>
+    X: <input type="text" id="dimX" value="40"/>
+    Y: <input type="text" id="dimY" value="40"/>
+    Mines: <input type="text" id="minesNumber" value="200"/>
+    <button onclick="initFinish(); return false;">New</button>
     <p/>
-    <input type="submit" value="Open Random" onclick="Box.openRandom(); return false;"/>
-    <input type="submit" value="Mark One" onclick="Box.markOne(); return false;"/>
-    <input type="submit" value="Open One" onclick="Box.openOne(); return false;"/>
-    <input type="submit" value="Mark All" onclick="Box.markAll(); return false;"/>
-    <input type="submit" value="Open All" onclick="Box.openAll(); return false;"/>
-    <input type="submit" value="Play" onclick="Box.play(); return false;"/>
+    <button onclick="Box.openRandom(); return false;">Open Random</button>
+    <button onclick="Box.markOne(); return false;">Mark One</button>
+    <button onclick="Box.openOne(); return false;">Open One</button>
+    <button onclick="Box.markAll(); return false;">Mark All</button>
+    <button onclick="Box.openAll(); return false;">Open All</button>
+    <button onclick="Box.play(); return false;">Play</button>
+    Delay: <input type="text" id="delay" value="100"/>
+    <button onclick="autoPlayStartStop(); return false;">Auto Play Start/Stop</button>
     <p/>
-    <form onsubmit="autoPlayStartStop(); return false;">
-    Time: <input type="text" id="time" value="500"/>
-    <input type="submit" value="Auto Play Start/Stop"/>
-    </form>
+    Time: <span id="time" class="number">0.0</span> Mines: <span id="mines" class="number">0</span>
     <p/>
     <canvas id="box"></canvas>
     <p/>

@@ -1,6 +1,8 @@
-function boxClass(idName, images, dimX, dimY, minesNumber)
+function boxClass(idBox, idTime, idMines, images, dimX, dimY, minesNumber)
 {
-  this.idName = idName;
+  this.idBox = idBox;
+  this.idTime = idTime;
+  this.idMines = idMines;
   this.images = images;
   this.dimX = dimX;
   this.dimY = dimY;
@@ -14,25 +16,16 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
 
   this.game = new gameClass(this.dimX, this.dimY, this.minesNumber);
 
-  this.autoPlayTime = 500;
+  this.autoPlayDelay = 100;
   this.autoPlayTimer = undefined;
+
+  this.timeTimer = undefined;
 
   this.point = function(event)
   {
-    var x = new Number();
-    var y = new Number();
-    if(event.x != undefined && event.y != undefined)
-    {
-      x = event.x;
-      y = event.y;
-    }
-    else
-    {
-      x = event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;
-      y = event.clientY+document.body.scrollTop+document.documentElement.scrollTop;
-    }
-    x -= this.canvas.offsetLeft;
-    y -= this.canvas.offsetTop;
+    var rect = this.canvas.getBoundingClientRect();
+    var x = Math.round(event.clientX-rect.left);
+    var y = Math.round(event.clientY-rect.top);
     if
     (
       x >= this.borderSize+this.frameSize && x < this.borderSize+this.frameSize+this.dimX*this.fieldSize &&
@@ -41,15 +34,15 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
     {
       var returnValue =
       {
-        x: ((x-this.borderSize-this.frameSize)/this.fieldSize)|0,
-        y: ((y-this.borderSize-this.frameSize)/this.fieldSize)|0,
+        x: Math.floor((x-this.borderSize-this.frameSize)/this.fieldSize),
+        y: Math.floor((y-this.borderSize-this.frameSize)/this.fieldSize),
       };
       return returnValue;
     }
     return undefined;
   };
 
-  this.canvas = document.getElementById(this.idName);
+  this.canvas = document.getElementById(this.idBox);
   this.canvasContext = this.canvas.getContext('2d');
   this.canvas.addEventListener
   (
@@ -95,6 +88,11 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
   this.canvas.width = this.borderSize+this.frameSize+this.dimX*this.fieldSize+this.frameSize+this.borderSize;
   this.canvas.height = this.borderSize+this.frameSize+this.dimY*this.fieldSize+this.frameSize+this.borderSize;
 
+  this.elementTime = document.getElementById(this.idTime);
+  this.elementMines = document.getElementById(this.idMines);
+
+  this.elementTime.innerHTML = '0.0';
+
   this.openRandom = function()
   {
     this.game.helpOpenRandom();
@@ -131,9 +129,9 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
     this.draw();
   };
 
-  this.autoPlaySetTime = function(time)
+  this.autoPlaySetDelay = function(delay)
   {
-    this.autoPlayTime = time;
+    this.autoPlayDelay = delay;
   };
 
   this.autoPlayStartStop = function()
@@ -150,11 +148,11 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
             }
           }
         )(this),
-        this.autoPlayTime
+        this.autoPlayDelay
       );
     else
     {
-      clearInterval(this.autoPlayTimer)
+      clearInterval(this.autoPlayTimer);
       this.autoPlayTimer = undefined;
     }
   };
@@ -168,14 +166,60 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
     }
   };
 
+  this.timeShow = function(digits)
+  {
+    var time = this.game.getTime();
+    var timeInt = Math.floor(time/1000);
+    var timeDec = time%1000;
+    this.elementTime.innerHTML = timeInt+'.'+(timeDec.toString()+'0'.repeat(digits)).substring(0, digits);
+  };
+
+  this.timeStart = function()
+  {
+    if(this.timeTimer == undefined)
+      this.timeTimer = setInterval
+      (
+        (
+          function(self)
+          {
+            return function()
+            {
+              self.timeShow(1);
+            }
+          }
+        )(this),
+        100
+      );
+  };
+
+  this.timeStop = function()
+  {
+    if(this.timeTimer != undefined)
+    {
+      clearInterval(this.timeTimer);
+      this.timeTimer = undefined;
+    }
+  };
+
   this.draw = function()
   {
     if(this.game.getPlayable() == true)
+    {
+      if(this.game.isStarted())
+        this.timeStart();
+      else
+        this.timeShow(1);
       this.canvasContext.fillStyle = 'rgb(75%, 75%, 75%)';
-    else if(this.game.getBoom() == true)
-      this.canvasContext.fillStyle = 'rgb(100%, 0%, 0%)';
+    }
     else
-      this.canvasContext.fillStyle = 'rgb(0%, 100%, 0%)';
+    {
+      this.timeStop();
+      this.timeShow(3);
+      if(this.game.getBoom() == true)
+        this.canvasContext.fillStyle = 'rgb(100%, 0%, 0%)';
+      else
+        this.canvasContext.fillStyle = 'rgb(0%, 100%, 0%)';
+    }
     this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvasContext.drawImage
     (
@@ -248,6 +292,13 @@ function boxClass(idName, images, dimX, dimY, minesNumber)
           this.images.getImage(this.game.getCode(x, y)),
           this.borderSize+this.frameSize+x*this.fieldSize, this.borderSize+this.frameSize+y*this.fieldSize
         );
+    this.elementMines.innerHTML = this.game.getMinesRemain();
+  };
+
+  this.stop = function()
+  {
+    this.autoPlayStop()
+    this.timeStop;
   };
 
   this.draw();

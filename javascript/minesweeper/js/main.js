@@ -18,13 +18,11 @@ var MaxDimX = 100;
 var MinDimY = 2;
 var MaxDimY = 40;
 var MinMinesNumber = 1;
-var MinTime = 10;
-var MaxTime = 5000;
+var MinDelay = 10;
+var MaxDelay = 5000;
 
 function initFinish()
 {
-  if(Box != undefined)
-    Box.autoPlayStop();
   var dimX = parseInt(document.getElementById('dimX').value);
   var dimY = parseInt(document.getElementById('dimY').value);
   var minesNumber = parseInt(document.getElementById('minesNumber').value);
@@ -40,20 +38,27 @@ function initFinish()
     minesNumber = MinMinesNumber;
   minesNumber = Math.max(minesNumber, MinMinesNumber);
   minesNumber = Math.min(minesNumber, dimX*dimY-1);
+  initNew(dimX, dimY, minesNumber);
+}
+
+function initNew(dimX, dimY, minesNumber)
+{
+  if(Box != undefined)
+    Box.stop();
   document.getElementById('dimX').value = dimX;
   document.getElementById('dimY').value = dimY;
   document.getElementById('minesNumber').value = minesNumber;
-  Box = new boxClass('box', Images, dimX, dimY, minesNumber);
+  Box = new boxClass('box', 'time', 'mines', Images, dimX, dimY, minesNumber);
 }
 
 function autoPlayStartStop()
 {
-  var time = parseInt(document.getElementById('time').value);
-  if(isNaN(time))
-    time = MinTime;
-  time = Math.max(time, MinTime);
-  time = Math.min(time, MaxTime);
-  document.getElementById('time').value = time;
-  Box.autoPlaySetTime(time);
+  var delay = parseInt(document.getElementById('delay').value);
+  if(isNaN(delay))
+    delay = MinTime;
+  delay = Math.max(delay, MinDelay);
+  delay = Math.min(delay, MaxDelay);
+  document.getElementById('delay').value = delay;
+  Box.autoPlaySetDelay(delay);
   Box.autoPlayStartStop();
 }
