@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import createTheme from '@mui/material/styles/createTheme';
@@ -26,11 +26,10 @@ const theme = createTheme(
   }
 );
 
-render(
+createRoot(document.querySelector('#root')).render(
   <StoreProvider>
     <ThemeProvider theme={ theme } >
       <App />
     </ThemeProvider>
   </StoreProvider>,
-  document.querySelector('#root')
 );
