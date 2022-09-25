@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Color</title>
+    <style type="text/css">
+      /*<![CDATA[*/
+
+.body {
+  background-color: #ffffff;
+  user-select: none;
+}
+
+.center {
+  left: 50%;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.color {
+  color: #000000;
+  font-family: Consolas;
+  font-size: 10rem;
+}
+
+.hidden {
+  opacity: 0;
+  transition-delay: 0s, 1s;
+  transition-duration: 1s, 0s;
+  transition-property: opacity, visibility;
+  visibility: hidden;
+}
+
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+let White = [ 0xff, 0xff, 0xff ];
+
+let Table = {
+  'KeyK':   [ 0x00, 0x00, 0x00 ],
+  'KeyB':   [ 0x00, 0x00, 0xff ],
+  'KeyG':   [ 0x00, 0xff, 0x00 ],
+  'KeyC':   [ 0x00, 0xff, 0xff ],
+  'KeyR':   [ 0xff, 0x00, 0x00 ],
+  'KeyM':   [ 0xff, 0x00, 0xff ],
+  'KeyY':   [ 0xff, 0xff, 0x00 ],
+  'KeyW':   White,
+  'Escape': White,
+  'Space':  White,
+  'Enter':  White
+};
+
+let Timer;
+
+function init() {
+  document.addEventListener('keyup', key);
+  start();
+  return false;
+}
+
+function key(event) {
+  let color = Table[event.code];
+  if(color !== undefined) {
+    change_color(color[0], color[1], color[2]);
+  }
+}
+
+function color_hex(r, g, b) {
+  return `#${ r.toString(16).padStart(2, '0') }${ g.toString(16).padStart(2, '0') }${ b.toString(16).padStart(2, '0') }`;
+}
+
+function change_color(r, g, b) {
+  let color_hex_string = color_hex(r, g, b);
+  document.getElementById('body').style.backgroundColor = color_hex_string;
+  let color_element = document.getElementById('color');
+  color_element.style.color = color_hex(0xff-r, 0xff-g, 0xff-b);
+  color_element.innerHTML = color_hex_string;
+  color_element.classList.remove('hidden');
+  start();
+}
+
+function start() {
+  if(Timer !== undefined) {
+    clearTimeout(Timer);
+  }
+  Timer = setTimeout(hide, 1000);
+}
+
+function hide() {
+  Timer = undefined;
+  document.getElementById('color').classList.add('hidden');
+}
+
+      /*]]>*/
+    </script>
+  </head>
+  <body id="body" class="body" onload="return init();">
+    <div class="center">
+      <div id="color" class="color">#ffffff</div>
+    </div>
+  </body>
+</html>

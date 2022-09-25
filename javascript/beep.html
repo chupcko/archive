@@ -71,22 +71,21 @@ const Audio = new AudioContext();
 let Counter = 0;
 
 function init() {
-  let counter_s = localStorage.getItem('counter');
-  if(counter_s !== null) {
-    Counter = parseInt(counter_s);
+  let counter = localStorage.getItem(COUNTER_NAME);
+  if(counter !== null) {
+    Counter = parseInt(counter);
     counter_show();
   }
   return false;
 }
 
 function counter_show() {
-  let counter_s = Counter.toString()
-  document.getElementById('counter').innerHTML = counter_s;
-  localStorage.setItem('counter', counter_s);
+  document.getElementById('counter').innerHTML = Counter.toString();
 }
 
 function counter_increment() {
   Counter++;
+  localStorage.setItem(COUNTER_NAME, Counter.toString());
   counter_show();
 }
 
@@ -139,7 +138,7 @@ function beep() {
       /*]]>*/
     </script>
   </head>
-  <body class="body" onLoad="return init();">
+  <body class="body" onload="return init();">
     <div class="center">
       <div class="container">
         <button class="button" onclick="return beep();">
