@@ -13,7 +13,7 @@ const App = (props) => {
 
   useEffect(
     () => {
-      init(false);
+      init();
     },
     []
   );

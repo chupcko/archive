@@ -215,10 +215,6 @@ const StoreProvider = (props) => {
     return true;
   };
 
-  const chooseSolutionAttempt = (g) => {
-    g.attempt = g.words[Math.floor((new Date(Date.now()).setHours(0, 0, 0, 0)-new Date(2021, 5, 19, 0, 0, 0, 0))/(24*60*60*1000))%g.words.length];
-  };
-
   const choseRandomAttempt = (g) => {
     g.attempt = g.words[Math.floor(Math.random()*g.words.length)];
   };
@@ -256,7 +252,7 @@ const StoreProvider = (props) => {
     return code;
   };
 
-  const init = (solve) => {
+  const init = () => {
     let g = {
       done: false,
       error: undefined,
@@ -264,11 +260,7 @@ const StoreProvider = (props) => {
       rows: [],
       words: WORDS.slice()
     };
-    if(solve) {
-      chooseSolutionAttempt(g);
-    } else {
-      choseRandomAttempt(g);
-    }
+    choseRandomAttempt(g);
     addRow(g);
     setGame(g);
   };

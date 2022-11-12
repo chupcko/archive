@@ -19,11 +19,8 @@ const Solver = (props) => {
       {
         game.row != undefined && <>
           <Stack direction="row" spacing={ 1 } >
-            <Button variant="contained" onClick={ () => { init(false); } } >
+            <Button variant="contained" onClick={ init } >
               Reset
-            </Button>
-            <Button variant="contained" onClick={ () => { init(true); } } color="error" >
-              Do not CLICK!!!
             </Button>
           </Stack>
           {
