@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>i3c</title>
+    <style>
+
+body {
+  margin: 0;
+}
+
+    </style>
+    <script type="importmap">
+
+{
+  "imports": {
+    "three": "./js/three.module.js",
+    "OrbitControls": "./js/OrbitControls.js",
+    "STLExporter": "./js/STLExporter.js"
+  }
+}
+
+    </script>
+    <script type="module">
+
+import * as THREE from 'three';
+import { OrbitControls } from 'OrbitControls';
+import { STLExporter } from 'STLExporter';
+
+const SIZE = 3;
+const FRUSTUM_SIZE = 5;
+const FOV = 50;
+var Renderer;
+var Camera;
+var Controls;
+var Scene;
+const MESHES_SIZE = 3;
+var Meshes = [];
+
+function init() {
+  Renderer = new THREE.WebGLRenderer();
+  Renderer.setPixelRatio(window.devicePixelRatio);
+  Renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(Renderer.domElement);
+
+  window.addEventListener(
+    'resize',
+    () => {
+      Renderer.setSize(window.innerWidth, window.innerHeight);
+      let aspect = window.innerWidth/window.innerHeight;
+      if(Camera.isOrthographicCamera) {
+        Camera.left = -FRUSTUM_SIZE*aspect/2;
+        Camera.right = FRUSTUM_SIZE*aspect/2;
+        Camera.top = FRUSTUM_SIZE/2;
+        Camera.bottom = -FRUSTUM_SIZE/2;
+      }
+      if(Camera.isPerspectiveCamera) {
+        Camera.aspect = aspect;
+      }
+      Camera.updateProjectionMatrix();
+      Controls.update();
+    }
+  );
+  window.addEventListener('keydown', key_down);
+
+  init_orthographic_camera();
+
+  Controls = new OrbitControls(Camera, Renderer.domElement);
+
+  Scene = new THREE.Scene();
+  Scene.background = new THREE.Color(0x111111);
+  Scene.add(new THREE.AmbientLight(0xaaaaaa));
+  Scene.add(new THREE.AxesHelper(3));
+  let light = new THREE.PointLight(0xffffff, 2, 100);
+  light.position.set(SIZE, SIZE, SIZE);
+  Scene.add(light);
+
+  Meshes[0] = part(0x000088);
+  Scene.add(Meshes[0]);
+
+  Meshes[1] = part(0x008800);
+  Meshes[1].rotateX(Math.PI/2.0);
+  Scene.add(Meshes[1]);
+
+  Meshes[2] = part(0x880000);
+  Meshes[2].rotateY(Math.PI/2.0);
+  Scene.add(Meshes[2]);
+
+  animate();
+}
+
+function init_orthographic_camera() {
+  let aspect = window.innerWidth/window.innerHeight;
+  Camera = new THREE.OrthographicCamera(
+    -FRUSTUM_SIZE*aspect/2,
+    FRUSTUM_SIZE*aspect/2,
+    FRUSTUM_SIZE/2,
+    -FRUSTUM_SIZE/2,
+    0.1,
+    100
+  );
+  Camera.position.set(SIZE, SIZE, SIZE);
+  Camera.lookAt(0, 0, 0);
+}
+
+function init_perspective_camera() {
+  Camera = new THREE.PerspectiveCamera(FOV, window.innerWidth/window.innerHeight, 0.1, 100);
+  Camera.position.set(SIZE, SIZE, SIZE);
+  Camera.lookAt(0, 0, 0);
+}
+
+function part(color) {
+  const N = 16;
+  let vertices = [];
+  for(let i = 0; i < 8*N; i++) {
+    let t = i*2*Math.PI/(8*N);
+    let cos_t = Math.cos(t);
+    let sin_t = Math.sin(t);
+    if(Math.floor((Math.floor(i/N)+1)/2)%2 == 0) {
+      vertices.push(
+        cos_t, sin_t, -Math.abs(sin_t),
+        cos_t, sin_t, Math.abs(sin_t)
+      );
+    } else {
+      vertices.push(
+        cos_t, sin_t, -Math.abs(cos_t),
+        cos_t, sin_t, Math.abs(cos_t)
+      );
+    }
+  }
+  let indices = [];
+  for(let i = 0; i < 8*N; i++) {
+    let p1 = i*2;
+    let p2 = i*2+1;
+    let p3 = (i*2+2)%(2*8*N);
+    let p4 = (i*2+3)%(2*8*N);
+    indices.push(
+      p1, p2, p3,
+      p3, p2, p4
+    );
+  }
+  let geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return new THREE.Mesh(
+    geometry,
+    new THREE.MeshStandardMaterial(
+      {
+        color: color,
+        side: THREE.DoubleSide,
+        wireframe: false
+      }
+    )
+  );
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  Renderer.render(Scene, Camera);
+}
+
+function key_down(event) {
+  switch(event.key) {
+    case ' ':
+      Controls.reset();
+      break;
+    case 'e':
+      console.log((new STLExporter()).parse(Scene));
+      break;
+    case '1':
+      Meshes[0].visible = !Meshes[0].visible;
+      break;
+    case '2':
+      Meshes[1].visible = !Meshes[1].visible;
+      break;
+    case '3':
+      Meshes[2].visible = !Meshes[2].visible;
+      break;
+    case 'w':
+      for(let i = 0; i < MESHES_SIZE; i++) {
+        Meshes[i].material.wireframe = true;
+      }
+      break;
+    case 's':
+      for(let i = 0; i < MESHES_SIZE; i++) {
+        Meshes[i].material.wireframe = false;
+      }
+      break;
+    case 'o':
+      if(Camera.isPerspectiveCamera) {
+        init_orthographic_camera();
+        Controls.object = Camera;
+        Controls.update();
+      }
+      break;
+    case 'p':
+      if(Camera.isOrthographicCamera) {
+        init_perspective_camera();
+        Controls.object = Camera;
+        Controls.update();
+      }
+      break;
+  }
+}
+
+init();
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

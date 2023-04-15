@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>English Tenses</title>
+    <style>
+
+body,
+select {
+  font-family: arial, sans-serif;
+  font-size: 16px;
+}
+
+.box {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.space {
+  margin: 5px;
+  padding: 5px;
+}
+
+.text {
+  font-size: 18px;
+}
+
+.title {
+  font-weight: bold;
+}
+
+    </style>
+    <script type="module">
+
+import { Rules } from './js/rules.js';
+
+function make(verb, attributes) {
+  let output = '';
+  for(let subject of Rules.subjects) {
+    let sentences = Rules.sentences(verb, subject, attributes);
+    if(sentences === false) {
+      console.error('No in rules:', verb, subject, attributes);
+      return false;
+    }
+    if(sentences.short === false) {
+      output += `${ sentences.long }<br/>`;
+    } else {
+      output += `${ sentences.long } (${ sentences.short })<br/>`;
+    }
+  }
+  return output;
+}
+
+function show() {
+  let verb = document.getElementById('verb').value;
+  let time = Array.from(document.getElementsByName('time')).find((x) => x.checked).value;
+  let aspect = Array.from(document.getElementsByName('aspect')).find((x) => x.checked).value;
+  document.getElementById('content_positive_statement').innerHTML = make(verb, `positive statement ${ time } ${ aspect }`);
+  document.getElementById('content_positive_question').innerHTML = make(verb, `positive question ${ time } ${ aspect }`);
+  document.getElementById('content_negative_statement').innerHTML = make(verb, `negative statement ${ time } ${ aspect }`);
+  document.getElementById('content_negative_question').innerHTML = make(verb, `negative question ${ time } ${ aspect }`);
+}
+window.show = show;
+
+function fill_verbs() {
+  let select = document.getElementById('verb');
+  let option;
+  for(let verb in Rules.verbs) {
+    option = document.createElement('option');
+    option.value = verb;
+    option.innerHTML = verb;
+    select.appendChild(option);
+  }
+  option.selected = true;
+}
+
+fill_verbs();
+show();
+
+    </script>
+  </head>
+  <body>
+    <span class="box space">
+      <select id="verb" onchange="show();"></select>
+    </span>
+    <span class="box space">
+      <input type="radio" id="time_past" name="time" value="past" onchange="show();" /><label for="time_past">Past</label>
+      <input type="radio" id="time_present" name="time" value="present" onchange="show();" checked="checked" /><label for="time_present">Present</label>
+      <input type="radio" id="time_future" name="time" value="future" onchange="show();" /><label for="time_future">Future</label>
+    </span>
+    <span class="box space">
+      <input type="radio" id="aspect_simple" name="aspect" value="nonPerfect simple" onchange="show();" checked="checked" /><label for="aspect_simple">Simple</label>
+      <input type="radio" id="aspect_continuous" name="aspect" value="nonPerfect continuous" onchange="show();" /><label for="aspect_continuous">Continuous</label>
+      <input type="radio" id="aspect_perfect_simple" name="aspect" value="perfect simple" onchange="show();" /><label for="aspect_perfect_simple">Perfect Simple</label>
+      <input type="radio" id="aspect_perfect_continuous" name="aspect" value="perfect continuous" onchange="show();" /><label for="aspect_perfect_continuous">Perfect Continuous</label>
+    </span>
+    <div class="title space">Positive Statement</div><div class="text space" id="content_positive_statement"></div>
+    <div class="title space">Positive Question</div><div class="text space" id="content_positive_question"></div>
+    <div class="title space">Negatve Statement</div><div class="text space" id="content_negative_statement"></div>
+    <div class="title space">Negatve Question</div><div class="text space" id="content_negative_question"></div>
+    <p>
+    Version: 2023-04-15<br/>
+    &copy; Goran "CHUPCKO" Lazi&#x0107;, Jelena Raki&#x0107;
+  </body>
+</html>

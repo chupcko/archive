@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>English Tenses</title>
+    <style>
+
+body,
+select {
+  font-family: arial, sans-serif;
+  font-size: 16px;
+}
+
+.box {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.space {
+  margin: 5px;
+  padding: 5px;
+}
+
+    </style>
+    <script type="module">
+
+import { Rules } from './js/rules.js';
+
+function show() {
+  let verb = document.getElementById('verb').value;
+  let question = document.getElementById('question').checked;
+  let negative = document.getElementById('negative').checked;
+  let time = Array.from(document.getElementsByName('time')).find((x) => x.checked).value;
+  let aspect = Array.from(document.getElementsByName('aspect')).find((x) => x.checked).value;
+  let attributes = `${ question ? 'question' : 'statement' } ${ negative ? 'negative' : 'positive' } ${ time } ${ aspect }`;
+  let output = '';
+  for(let subject of Rules.subjects) {
+    let sentences = Rules.sentences(verb, subject, attributes);
+    if(sentences === false) {
+      document.getElementById('content').innerHTML = 'ERROR';
+      console.error('No in rules:', verb, subject, attributes);
+      return;
+    }
+    if(sentences.short === false) {
+      output += `${ sentences.long }<br/>`;
+    } else {
+      output += `${ sentences.long } (${ sentences.short })<br/>`;
+    }
+  }
+  document.getElementById('content').innerHTML = output;
+}
+window.show = show;
+
+function fill_verbs() {
+  let select = document.getElementById('verb');
+  let option;
+  for(let verb in Rules.verbs) {
+    option = document.createElement('option');
+    option.value = verb;
+    option.innerHTML = verb;
+    select.appendChild(option);
+  }
+  option.selected = true;
+}
+
+fill_verbs();
+show();
+
+    </script>
+  </head>
+  <body>
+    <span class="box space">
+      <select id="verb" onchange="show();"></select>
+    </span>
+    <span class="box space">
+      <input type="checkbox" id="question" name="question" onchange="show();" /><label for="question">Question</label>
+    </span>
+    <span class="box space">
+      <input type="checkbox" id="negative" name="negative" onchange="show();" /><label for="negative">Negative</label>
+    </span>
+    <span class="box space">
+      <input type="radio" id="time_past" name="time" value="past" onchange="show();" /><label for="time_past">Past</label>
+      <input type="radio" id="time_present" name="time" value="present" onchange="show();" checked="checked" /><label for="time_present">Present</label>
+      <input type="radio" id="time_future" name="time" value="future" onchange="show();" /><label for="time_future">Future</label>
+    </span>
+    <span class="box space">
+      <input type="radio" id="aspect_simple" name="aspect" value="nonPerfect simple" onchange="show();" checked="checked" /><label for="aspect_simple">Simple</label>
+      <input type="radio" id="aspect_continuous" name="aspect" value="nonPerfect continuous" onchange="show();" /><label for="aspect_continuous">Continuous</label>
+      <input type="radio" id="aspect_perfect_simple" name="aspect" value="perfect simple" onchange="show();" /><label for="aspect_perfect_simple">Perfect Simple</label>
+      <input type="radio" id="aspect_perfect_continuous" name="aspect" value="perfect continuous" onchange="show();" /><label for="aspect_perfect_continuous">Perfect Continuous</label>
+    </span>
+    <div class="space" id="content"></div>
+  </body>
+</html>
