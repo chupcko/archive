@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IEEE754-b32</title>
+    <link rel="stylesheet" href="./css/float_b32_view.css"/>
+    <style type="text/css">
+
+:root {
+  --body-margin: 16px;
+  --color: rgb(0%, 0%, 0%);
+  --font-family: arial, sans-serif;
+  --font-size: 16px;
+}
+
+.body {
+  background-color: rgb(100%, 100%, 100%);
+  color: var(--color);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  margin: var(--body-margin);
+  user-select: none;
+}
+
+    </style>
+    <script type="importmap">
+
+{
+  "imports": {
+    "float_b32": "./js/float_b32.js",
+    "float_b32_view": "./js/float_b32_view.js"
+  }
+}
+
+    </script>
+    <script type="module">
+
+import { FloatB32View_class } from 'float_b32_view';
+
+new FloatB32View_class('place');
+
+    </script>
+  </head>
+  <body class="body">
+    <div id="place"></div>
+    <br/>
+    &copy; 2024 Goran "<a href="https://chupcko.org/" class="link">CHUPCKO</a>" Lazi&#x0107;
+  </body>
+</html>

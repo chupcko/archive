@@ -1,0 +1,61 @@
+:root {
+  --bit-border-style: solid;
+  --bit-border-width: 2px;
+  --bit-margin: 2px;
+  --bit-size: 1em;
+  --font-family: arial, sans-serif;
+  --font-size: 16px;
+  --space-size: 8px;
+}
+
+.bits {
+  display: flex;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+}
+
+.bit {
+  align-items: center;
+  border-style: var(--bit-border-style);
+  border-width: var(--bit-border-width);
+  display: flex;
+  height: var(--bit-size);
+  justify-content: center;
+  margin: var(--bit-margin);
+  width: var(--bit-size);
+}
+
+.bit_content {
+  text-align: center;
+}
+
+.space {
+  width: var(--space-size);
+}
+
+.sign {
+  border-color: rgb(100%, 10%, 10%);
+}
+
+.exponent {
+  border-color: rgb(10%, 100%, 10%);
+}
+
+.mantisa {
+  border-color: rgb(10%, 10%, 100%);
+}
+
+.float {
+  border: none;
+  border-bottom: 1px dashed rgb(0%, 0%, 0%);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  outline: none;
+  color: rgb(0%, 0%, 100%);
+  background-color: rgb(90%, 90%, 100%);
+}
+
+.number {
+  cursor: pointer;
+  text-decoration: underline;
+}
